@@ -3,7 +3,7 @@ PopulateSpawnables(menu)
     switch(menu)
     {
         case "Spawnables":
-            if(!isDefined(level.spawnable))
+            if(!IsDefined(level.spawnable))
                 level.spawnable = [];
 
             self addMenu("Spawnables");
@@ -11,14 +11,14 @@ PopulateSpawnables(menu)
 
                 if(Is_True(level.spawnable["Skybase_Spawned"]))
                 {
-                    self addOptBool((isDefined(level.SkybaseTeleporters) && level.SkybaseTeleporters.size), "Spawn Skybase Teleporter", ::SpawnSkybaseTeleporter);
+                    self addOptBool((IsDefined(level.SkybaseTeleporters) && level.SkybaseTeleporters.size), "Spawn Skybase Teleporter", ::SpawnSkybaseTeleporter);
                     self addOpt("");
                 }
 
                 self addOptSlider("Drop Tower", ::SpawnSystem, "Spawn;Dismantle;Delete", "Drop Tower", ::SpawnDropTower);
                 self addOptSlider("Merry Go Round", ::SpawnSystem, "Spawn;Dismantle;Delete", "Merry Go Round", ::SpawnMerryGoRound);
 
-                if(isDefined(level.spawnable["Merry Go Round_Spawned"]))
+                if(IsDefined(level.spawnable["Merry Go Round_Spawned"]))
                     self addOptIncSlider("Merry Go Round Speed", ::SetMerryGoRoundSpeed, 1, 1, 10, 1);
             break;
     }
@@ -28,10 +28,10 @@ SpawnSystem(action, type, func)
 {
     checkModel = GetSpawnableBaseModel();
 
-    if(!isDefined(checkModel))
+    if(!IsDefined(checkModel))
         return self iPrintlnBold("^1ERROR: ^7Couldn't Find A Valid Base Model For Spawnables");
 
-    if(!isDefined(level.spawnable))
+    if(!IsDefined(level.spawnable))
         level.spawnable = [];
 
     if(Is_True(level.spawnable[type + "_Building"]))
@@ -65,7 +65,7 @@ SpawnSystem(action, type, func)
             return self iPrintlnBold("^1ERROR: ^7" + CleanString(type) + " Has Already Been Spawned");
     }
 
-    if(isDefined(level.SpawnableSystemBusy))
+    if(IsDefined(level.SpawnableSystemBusy))
         return self iPrintlnBold("^1ERROR: ^7The Spawnable System Is Currently Busy");
 
     level.SpawnableSystemBusy = type;
@@ -81,7 +81,7 @@ SpawnSystem(action, type, func)
 
             level.spawnable[type + "_Building"] = true;
 
-            if(isDefined(func))
+            if(IsDefined(func))
                 self [[ func ]]();
 
             if(Is_True(level.spawnable[type + "_Building"]))
@@ -95,11 +95,11 @@ SpawnSystem(action, type, func)
             break;
 
         case "Dismantle":
-            if(isDefined(level.SpawnableArray[type]) && level.SpawnableArray[type].size)
+            if(IsDefined(level.SpawnableArray[type]) && level.SpawnableArray[type].size)
             { 
                 for(a = 0; a < level.SpawnableArray[type].size; a++)
                 {
-                    if(!isDefined(level.SpawnableArray[type][a]))
+                    if(!IsDefined(level.SpawnableArray[type][a]))
                         continue;
 
                     level.SpawnableArray[type][a] NotSolid();
@@ -110,11 +110,11 @@ SpawnSystem(action, type, func)
 
             if(type == "Skybase")
             {
-                if(isDefined(level.SkybaseTeleporters) && level.SkybaseTeleporters.size)
+                if(IsDefined(level.SkybaseTeleporters) && level.SkybaseTeleporters.size)
                 {
                     for(a = 0; a < level.SkybaseTeleporters.size; a++)
                     {
-                        if(!isDefined(level.SkybaseTeleporters[a]))
+                        if(!IsDefined(level.SkybaseTeleporters[a]))
                             continue;
 
                         level.SkybaseTeleporters[a] Unlink();
@@ -139,9 +139,13 @@ DeleteSpawnable(spawn, type)
     level notify(spawn + "_Stop");
 
     if(isLargeSpawnable(spawn))
+    {
         foreach(player in level.players)
+        {
             if(Is_True(player.OnSpawnable))
                 player StopRidingSpawnable(spawn);
+        }
+    }
 
     level.spawnable[spawn + "_" + type] = true;
 
@@ -149,19 +153,21 @@ DeleteSpawnable(spawn, type)
         wait 5;
 
     for(a = 0; a < level.SpawnableArray[spawn].size; a++)
-        if(isDefined(level.SpawnableArray[spawn][a]))
-            level.SpawnableArray[spawn][a] delete();
+    {
+        if(IsDefined(level.SpawnableArray[spawn][a]))
+            level.SpawnableArray[spawn][a] Delete();
+    }
 
     if(spawn == "Skybase")
     {
-        if(isDefined(level.SkybaseTeleporters) && level.SkybaseTeleporters.size)
+        if(IsDefined(level.SkybaseTeleporters) && level.SkybaseTeleporters.size)
         {
             for(a = 0; a < level.SkybaseTeleporters.size; a++)
             {
-                if(!isDefined(level.SkybaseTeleporters[a]))
+                if(!IsDefined(level.SkybaseTeleporters[a]))
                     continue;
 
-                level.SkybaseTeleporters[a] delete();
+                level.SkybaseTeleporters[a] Delete();
             }
         }
 
@@ -189,13 +195,13 @@ isLargeSpawnable(type)
 
 SpawnableArray(spawn)
 {
-    if(!isDefined(spawn) || !isDefined(self))
+    if(!IsDefined(spawn) || !IsDefined(self))
         return;
 
-    if(!isDefined(level.SpawnableArray))
+    if(!IsDefined(level.SpawnableArray))
         level.SpawnableArray = [];
 
-    if(!isDefined(level.SpawnableArray[spawn]))
+    if(!IsDefined(level.SpawnableArray[spawn]))
         level.SpawnableArray[spawn] = [];
 
     level.SpawnableArray[spawn][level.SpawnableArray[spawn].size] = self;
@@ -203,7 +209,7 @@ SpawnableArray(spawn)
 
 SeatSystem(type)
 {
-    if(!isDefined(type) || !isDefined(self))
+    if(!IsDefined(type) || !IsDefined(self))
         return;
 
     level endon(type + "_Stop");
@@ -212,11 +218,11 @@ SeatSystem(type)
     self SetCursorHint("HINT_NOICON");
     self SetHintString("Press [{+activate}] To Ride The " + type);
 
-    while(isDefined(self))
+    while(IsDefined(self))
     {
         self waittill("trigger", player);
 
-        if(isDefined(self.Rider) && player == self.Rider)
+        if(IsDefined(self.Rider) && player == self.Rider)
         {
             player StopRidingSpawnable(type, self);
             wait 1;
@@ -224,7 +230,7 @@ SeatSystem(type)
             continue;
         }
 
-        if(isDefined(self.Rider) || Is_True(player.OnSpawnable) || player isPlayerLinked(self))
+        if(IsDefined(self.Rider) || Is_True(player.OnSpawnable) || player isPlayerLinked(self))
             continue;
 
         player.SpawnableSavedOrigin = player.origin;
@@ -259,7 +265,7 @@ StopRidingSpawnable(type, seat)
     self SetOrigin(self.SpawnableSavedOrigin);
     self SetPlayerAngles(self.SpawnableSavedAngles);
 
-    if(isDefined(seat))
+    if(IsDefined(seat))
     {
         seat.Rider = undefined;
         seat SetHintString("Press [{+activate}] To Ride The " + type);
@@ -272,25 +278,31 @@ StopRidingSpawnable(type, seat)
 GetSpawnableBaseModel(favor)
 {
     //This will be a fallback for maps that don't have the favored models for spawnables
-    for(a = 0; a < level.MenuModels.size; a++)
-        if(isDefined(level.MenuModels[a]) && IsSubStr(level.MenuModels[a], "vending_") && !IsSubStr(level.MenuModels[a], "upgrade") && !IsSubStr(level.MenuModels[a], "packapunch"))
-            model = level.MenuModels[a];
-    
-    for(a = 0; a < level.MenuModels.size; a++)
+    for(a = 0; a < level.menu_models.size; a++)
     {
-        if(IsSubStr(level.MenuModels[a], "vending_doubletap") || IsSubStr(level.MenuModels[a], "vending_sleight") || IsSubStr(level.MenuModels[a], "vending_three_gun"))
+        if(IsDefined(level.menu_models[a]) && IsSubStr(level.menu_models[a], "vending_") && !IsSubStr(level.menu_models[a], "upgrade") && !IsSubStr(level.menu_models[a], "packapunch"))
+            model = level.menu_models[a];
+    }
+    
+    for(a = 0; a < level.menu_models.size; a++)
+    {
+        if(IsSubStr(level.menu_models[a], "vending_doubletap") || IsSubStr(level.menu_models[a], "vending_sleight") || IsSubStr(level.menu_models[a], "vending_three_gun"))
         {
-            model = level.MenuModels[a];
+            model = level.menu_models[a];
 
-            if(isDefined(favor) && isDefined(model) && (model == favor || IsSubStr(model, favor)))
+            if(IsDefined(favor) && IsDefined(model) && (model == favor || IsSubStr(model, favor)))
                 return model;
         }
     }
 
-    if(!isDefined(model)) //If a model still isn't found after this, then spawnbales won't be available for the map
-        for(a = 0; a < level.MenuModels.size; a++)
-            if(isDefined(level.MenuModels[a]) && IsSubStr(level.MenuModels[a], "machine"))
-                model = level.MenuModels[a];
+    if(!IsDefined(model)) //If a model still isn't found after this, then spawnbales won't be available for the map
+    {
+        for(a = 0; a < level.menu_models.size; a++)
+        {
+            if(IsDefined(level.menu_models[a]) && IsSubStr(level.menu_models[a], "machine"))
+                model = level.menu_models[a];
+        }
+    }
 
     return model;
 }

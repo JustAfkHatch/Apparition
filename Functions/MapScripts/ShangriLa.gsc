@@ -29,8 +29,10 @@ ShangHideAndSeekSong()
     gongs = GetEntArray("sq_gong", "targetname");
 
     for(a = 0; a < gongs.size; a++)
+    {
         if(gongs[a].right_gong)
             gongs[a] notify("triggered", self);
+    }
 
     wait 0.1;
     pans = GetEntArray("zhdsnd_pans", "targetname");
@@ -46,7 +48,9 @@ ShangHideAndSeekSong()
             }
         }
         else if(pans[a].script_int == 5) //Pan 5 Has To Get Shot Once
+        {
             MagicBullet(level.start_weapon, pans[a].origin + (-5, 0, 0), pans[a].origin, self);
+        }
 
         wait 0.05;
     }
@@ -66,7 +70,7 @@ TempleAllowFullEE()
         if(level._sundial_buttons_pressed == playerCount)
             level._sundial_buttons_pressed = 4;
 
-        if(playerCount == 1 && isDefined(level.var_66c77de0))
+        if(playerCount == 1 && IsDefined(level.var_66c77de0))
             level.var_d8ceed1b = level.var_66c77de0;
 
         if(level.var_a775df2e >= (playerCount - 1) && !level flag::get("dgcwf_on_plate"))

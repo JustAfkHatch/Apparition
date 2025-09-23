@@ -16,7 +16,7 @@ PopulateMOTDScripts(menu)
                 
                 foreach(index, generator in generators)
                 {
-                    if(!isDefined(generator) || generator IsGeneratorActive())
+                    if(!IsDefined(generator) || generator IsGeneratorActive())
                         continue;
                     
                     self addOpt(GetMOTDGeneratorName(index), ::DamageMOTDGenerator, generator);
@@ -47,7 +47,7 @@ FeedDevilDogs()
 
     foreach(catcher in level.soul_catchers)
     {
-        if(!isDefined(catcher) || Is_True(catcher.is_charged))
+        if(!IsDefined(catcher) || Is_True(catcher.is_charged))
             continue;
         
         catcher thread FeedDevilDog(self);
@@ -79,7 +79,7 @@ FeedDevilDog(player)
 
 DamageMOTDGenerator(generator)
 {
-    if(!isDefined(generator) || Is_True(generator.triggering))
+    if(!IsDefined(generator) || Is_True(generator.triggering))
         return;
     
     generator.triggering = true;
@@ -92,16 +92,16 @@ DamageMOTDGenerator(generator)
 
     self RefreshMenu(menu, curs);
 
-    if(isDefined(generator) && Is_True(generator.triggering))
+    if(IsDefined(generator) && Is_True(generator.triggering))
         generator.triggering = BoolVar(generator.triggering);
 }
 
 IsGeneratorActive()
 {
-    if(isDefined(self.unitrigger_stub) && Is_True(self.unitrigger_stub.is_activated_in_afterlife))
+    if(IsDefined(self.unitrigger_stub) && Is_True(self.unitrigger_stub.is_activated_in_afterlife))
         return true;
     
-    if(!isDefined(self.unitrigger_stub) && !isDefined(self.t_bump))
+    if(!IsDefined(self.unitrigger_stub) && !IsDefined(self.t_bump))
         return true;
     
     return false;
@@ -124,7 +124,6 @@ ModifyPlayerAfterLives(amount, player)
         player PlaySoundToPlayer("zmb_afterlife_add", player);
     
 	player clientfield::set_player_uimodel("player_lives", player.lives);
-
     self RefreshMenu(menu, curs);
 }
 

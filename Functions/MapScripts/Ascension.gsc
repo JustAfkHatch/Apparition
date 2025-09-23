@@ -65,7 +65,7 @@ ControlLunarLander()
     {
         player = level.players[a];
 
-        if(!isDefined(player) || !IsAlive(player) || Is_True(player.lander) || !player IsTouching(zipline_door1) && !player IsTouching(zipline_door2) && !player IsTouching(lander_trig) && !player IsTouching(rider_trigger) && !player IsTouching(base) && player != self)
+        if(!IsDefined(player) || !IsAlive(player) || Is_True(player.lander) || !player IsTouching(zipline_door1) && !player IsTouching(zipline_door2) && !player IsTouching(lander_trig) && !player IsTouching(rider_trigger) && !player IsTouching(base) && player != self)
             continue;
 
         player SetOrigin(spots[a].origin);
@@ -110,7 +110,9 @@ ControlLander(lander)
             SetLanderFX(lander, base, 1);
         }
         else if(self MeleeButtonPressed())
+        {
             break;
+        }
         else
         {
             SetLanderFX(lander, base, 0);
@@ -151,7 +153,7 @@ ControlLander(lander)
     {
         player = level.players[a];
 
-        if(!isDefined(player) || !IsAlive(player) || !Is_True(player.lander))
+        if(!IsDefined(player) || !IsAlive(player) || !Is_True(player.lander))
             continue;
 
         player Unlink();
@@ -175,10 +177,10 @@ ControlLander(lander)
 
 SetLanderFX(lander, base, state)
 {
-    if(isDefined(lander) && lander clientfield::get("COSMO_LANDER_MOVE_FX") != state)
+    if(IsDefined(lander) && lander clientfield::get("COSMO_LANDER_MOVE_FX") != state)
         lander clientfield::set("COSMO_LANDER_MOVE_FX", state);
 
-    if(isDefined(base) && base clientfield::get("COSMO_LANDER_RUMBLE_AND_QUAKE") != state)
+    if(IsDefined(base) && base clientfield::get("COSMO_LANDER_RUMBLE_AND_QUAKE") != state)
         base clientfield::set("COSMO_LANDER_RUMBLE_AND_QUAKE", state);
 }
 
@@ -224,7 +226,9 @@ move_gate(pos, lower, time = 1)
         self NotSolid();
 
         if(self.classname == "script_brushmodel")
+        {
             self MoveTo(pos.origin + (VectorScale((0, 0, -1), 132)), time);
+        }
         else
         {
             self PlaySound("zmb_lander_gate");
@@ -254,7 +258,7 @@ move_gate(pos, lower, time = 1)
 
 takeoff_nuke(max_zombies, range, delay, trig)
 {
-    if(isDefined(delay))
+    if(IsDefined(delay))
         wait delay;
 
     zombies = GetAISpeciesArray("axis");
@@ -283,68 +287,68 @@ zombie_burst()
     PlaySoundAtPosition("nuked", self.origin);
     PlayFX(level._effect["zomb_gib"], self.origin);
 
-    if(isDefined(self.lander_death))
+    if(IsDefined(self.lander_death))
         self [[ self.lander_death ]]();
 
-    self delete();
+    self Delete();
 }
 
 lander_clean_up_corpses(spot, range)
 {
     corpses = GetCorpseArray();
 
-    if(isDefined(corpses) && corpses.size)
+    if(IsDefined(corpses) && corpses.size)
+    {
         for(i = 0; i < corpses.size; i++)
+        {
             if(DistanceSquared(spot, corpses[i].origin) <= (range * range))
                 corpses[i] thread lander_remove_corpses();
+        }
+    }
 }
 
 lander_remove_corpses()
 {
     wait RandomFloatRange(0.05, 0.25);
 
-    if(!isDefined(self))
+    if(!IsDefined(self))
         return;
 
     PlayFX(level._effect["zomb_gib"], self.origin);
-    self delete();
+    self Delete();
 }
 
 player_blocking_lander()
 {
-    players = GetPlayers();
     lander = GetEnt("lander", "targetname");
     rider_trigger = GetEnt(lander.station + "_riders", "targetname");
     crumb = struct::get(rider_trigger.target, "targetname");
 
-    for(i = 0; i < players.size; i++)
+    foreach(player in GetPlayers())
     {
-        if(rider_trigger IsTouching(players[i]))
-        {
-            players[i] SetOrigin(crumb.origin + (RandomIntRange(-20, 20), RandomIntRange(-20, 20), 0));
-            players[i] DoDamage(players[i].health + 10000, players[i].origin);
-        }
+        if(!rider_trigger IsTouching(player))
+            continue;
+        
+        player SetOrigin(crumb.origin + (RandomIntRange(-20, 20), RandomIntRange(-20, 20), 0));
+        player DoDamage(player.health + 10000, player.origin);
     }
 
     zombies = GetAISpeciesArray("axis");
 
     for(i = 0; i < zombies.size; i++)
     {
-        if(isDefined(zombies[i]))
-        {
-            if(rider_trigger IsTouching(zombies[i]))
-            {
-                level.zombie_total++;
+        if(!IsDefined(zombies[i]) || !rider_trigger IsTouching(zombies[i]))
+            continue;
+        
+        level.zombie_total++;
 
-                PlaySoundAtPosition("nuked", zombies[i].origin);
-                PlayFX(level._effect["zomb_gib"], zombies[i].origin);
+        PlaySoundAtPosition("nuked", zombies[i].origin);
+        PlayFX(level._effect["zomb_gib"], zombies[i].origin);
 
-                if(isDefined(zombies[i].lander_death))
-                    zombies[i] [[ zombies[i].lander_death ]]();
+        if(IsDefined(zombies[i].lander_death))
+            zombies[i] [[ zombies[i].lander_death ]]();
 
-                zombies[i] delete();
-            }
-        }
+        zombies[i] Delete();
     }
 
     wait 0.5;
@@ -406,7 +410,7 @@ ActivateComputer()
             trigger notify("trigger", self);
             wait 0.01;
 
-            if(isDefined(trigger))
+            if(IsDefined(trigger))
                 trigger.origin = location.origin;
 
             break;
@@ -478,7 +482,6 @@ RefuelRocket()
     {
         level flag::set("lander_a_used");
         lander clientfield::set("COSMO_LAUNCH_PANEL_BASEENTRY_STATUS", 1);
-
         wait 0.1;
     }
 
@@ -486,7 +489,6 @@ RefuelRocket()
     {
         level flag::set("lander_b_used");
         lander clientfield::set("COSMO_LAUNCH_PANEL_CATWALK_STATUS", 1);
-
         wait 0.1;
     }
 
@@ -494,7 +496,6 @@ RefuelRocket()
     {
         level flag::set("lander_c_used");
         lander clientfield::set("COSMO_LAUNCH_PANEL_STORAGE_STATUS", 1);
-
         wait 0.1;
     }
 
@@ -503,7 +504,7 @@ RefuelRocket()
 
     panel = GetEnt("rocket_launch_panel", "targetname");
 
-    if(isDefined(panel))
+    if(IsDefined(panel))
         panel SetModel("p7_zm_asc_console_launch_key_full_green");
 
     while(!(level flag::get("lander_a_used") && level flag::get("lander_b_used") && level flag::get("lander_c_used") && level flag::get("launch_activated")))
@@ -527,10 +528,10 @@ LaunchRocket()
     menu = self getCurrent();
     trig = GetEnt("trig_launch_rocket", "targetname");
 
-    if(level flag::get("launch_complete") || !isDefined(trig))
+    if(level flag::get("launch_complete") || !IsDefined(trig))
         return self iPrintlnBold("^1ERROR: ^7Rocket Has Already Been Launched");
 
-    if(isDefined(trig))
+    if(IsDefined(trig))
         trig notify("trigger", self);
 
     while(!level flag::get("launch_complete"))
@@ -567,11 +568,11 @@ CompleteTimeClock()
             clock = model;
     }
 
-    if(isDefined(clock))
-        clock delete();
+    if(IsDefined(clock))
+        clock Delete();
 
-    if(isDefined(timer_hand))
-        timer_hand delete();
+    if(IsDefined(timer_hand))
+        timer_hand Delete();
 
     while(!level flag::get("pressure_sustained"))
         wait 0.1;
@@ -588,10 +589,12 @@ activate_casimir_light(num)
     alreadySpawned = false;
 
     foreach(ent in GetEntArray("script_model", "classname"))
+    {
         if(ent.model == "tag_origin" && ent.origin == spot.origin)
             alreadySpawned = true;
+    }
 
-    if(isDefined(spot) && !alreadySpawned)
+    if(IsDefined(spot) && !alreadySpawned)
     {
         light = Spawn("script_model", spot.origin);
         light SetModel("tag_origin");
@@ -646,38 +649,38 @@ CompleteCosmoOrb()
 
 play_egg_vox(ann_alias, gersh_alias, plr_num)
 {
-    if(isDefined(ann_alias))
+    if(IsDefined(ann_alias))
         level play_cosmo_announcer_vox(ann_alias);
 
-    if(isDefined(plr_num) && !isDefined(level.var_92ed253c))
+    if(IsDefined(plr_num) && !IsDefined(level.var_92ed253c))
     {
         players = GetPlayers();
         rand = RandomIntRange(0, players.size);
 
-        players[rand] PlaySoundWithNotify("vox_plr_" + players[rand].characterindex + "_level_start_" + randomintrange(0, 4), "level_start_vox_done");
+        players[rand] PlaySoundWithNotify("vox_plr_" + players[rand].characterindex + "_level_start_" + RandomIntRange(0, 4), "level_start_vox_done");
         players[rand] waittill("level_start_vox_done");
         level.var_92ed253c = 1;
     }
 
-    if(isDefined(gersh_alias))
+    if(IsDefined(gersh_alias))
         level play_gersh_vox(gersh_alias);
 
-    if(isDefined(plr_num))
+    if(IsDefined(plr_num))
         players[RandomIntRange(0, GetPlayers().size)] zm_audio::create_and_play_dialog("eggs", "gersh_response", plr_num);
 }
 
 play_cosmo_announcer_vox(alias, alarm_override, wait_override)
 {
-    if(!isDefined(alias))
+    if(!IsDefined(alias))
         return;
 
-    if(!isDefined(level.cosmann_is_speaking))
+    if(!IsDefined(level.cosmann_is_speaking))
         level.cosmann_is_speaking = 0;
 
-    if(!isDefined(alarm_override))
+    if(!IsDefined(alarm_override))
         alarm_override = 0;
 
-    if(!isDefined(wait_override))
+    if(!IsDefined(wait_override))
         wait_override = 0;
 
     if(level.cosmann_is_speaking == 0 && wait_override == 0)
@@ -704,10 +707,10 @@ play_cosmo_announcer_vox(alias, alarm_override, wait_override)
 
 play_gersh_vox(alias)
 {
-    if(!isDefined(alias))
+    if(!IsDefined(alias))
         return;
 
-    if(!isDefined(level.gersh_is_speaking))
+    if(!IsDefined(level.gersh_is_speaking))
         level.gersh_is_speaking = 0;
 
     if(level.gersh_is_speaking == 0)

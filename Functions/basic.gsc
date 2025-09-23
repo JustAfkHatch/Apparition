@@ -4,7 +4,7 @@ PopulateBasicScripts(menu, player)
     {
         case "Basic Scripts":
             self addMenu("Basic Scripts");
-                self addOptBool(player.godmode, "God Mode", ::Godmode, player);
+                self addOptBool(player.playerGodmode, "God Mode", ::Godmode, player);
                 self addOptBool(player.PlayerDemiGod, "Demi-God", ::DemiGod, player);
                 self addOptBool(player.Noclip, "Noclip", ::Noclip1, player);
                 self addOptBool(player.NoclipBind1, "Bind Noclip To [{+frag}]", ::BindNoclip, player);
@@ -45,9 +45,9 @@ PopulateBasicScripts(menu, player)
 
             self addMenu("Perk Menu");
             
-                if(isDefined(MenuPerks) && MenuPerks.size)
+                if(IsDefined(MenuPerks) && MenuPerks.size)
                 {
-                    self addOptBool((isDefined(player.perks_active) && player.perks_active.size == MenuPerks.size), "All Perks", ::PlayerAllPerks, player);
+                    self addOptBool((IsDefined(player.perks_active) && player.perks_active.size == MenuPerks.size), "All Perks", ::PlayerAllPerks, player);
                     self addOptBool(player._retain_perks, "Retain Perks", ::PlayerRetainPerks, player);
 
                     for(a = 0; a < MenuPerks.size; a++)
@@ -64,14 +64,16 @@ PopulateBasicScripts(menu, player)
 
             self addMenu("Gobblegum Menu");
 
-                if(isDefined(MenuBGB) && MenuBGB.size)
+                if(IsDefined(MenuBGB) && MenuBGB.size)
+                {
                     for(a = 0; a < MenuBGB.size; a++)
                         self addOptBool((player.bgb == MenuBGB[a]), GobblegumName(MenuBGB[a]), ::GivePlayerGobblegum, MenuBGB[a], player);
+                }
             break;
         
         case "Visual Effects":
 
-            if(!isDefined(player.ClientVisualEffect))
+            if(!IsDefined(player.ClientVisualEffect))
                 player.ClientVisualEffect = "None";
 
             types = Array("visionset", "overlay");
@@ -90,8 +92,10 @@ PopulateBasicScripts(menu, player)
                         skip = false;
 
                         for(b = 0; b < invalid.size; b++)
+                        {
                             if(IsSubStr(key, invalid[b]))
                                 skip = true;
+                        }
                         
                         if(skip)
                             continue;
@@ -111,12 +115,12 @@ Godmode(player)
     if(Is_True(player.PlayerDemiGod))
         player DemiGod(player);
     
-    player.godmode = BoolVar(player.godmode);
+    player.playerGodmode = BoolVar(player.playerGodmode);
 }
 
 DemiGod(player)
 {
-    if(Is_True(player.godmode))
+    if(Is_True(player.playerGodmode))
         player Godmode(player);
 
     player.PlayerDemiGod = BoolVar(player.PlayerDemiGod);
@@ -164,7 +168,7 @@ Noclip1(player)
     else
     {
         player Unlink();
-        player.nocliplinker delete();
+        player.nocliplinker Delete();
 
         player EnableWeapons();
         player EnableOffHandWeapons();
@@ -247,7 +251,7 @@ UFOMode(player)
     else
     {
         player Unlink();
-        player.ufolinker delete();
+        player.ufolinker Delete();
 
         player EnableWeapons();
         player EnableOffHandWeapons();
@@ -271,7 +275,7 @@ UnlimitedAmmo(type, player)
         {
             weapon = player GetCurrentWeapon();
 
-            if(isDefined(weapon) && weapon != level.weaponnone)
+            if(IsDefined(weapon) && weapon != level.weaponnone)
             {
                 player GiveMaxAmmo(weapon);
 
@@ -294,7 +298,7 @@ UnlimitedEquipment(player)
     {
         offhand = player GetCurrentOffhand();
 
-        if(isDefined(offhand) && offhand != level.weaponnone)
+        if(IsDefined(offhand) && offhand != level.weaponnone)
             player GiveMaxAmmo(offhand);
         
         player waittill("grenade_fire");
@@ -328,17 +332,21 @@ PlayerAllPerks(player)
     for(a = 0; a < perks.size; a++)
         array::add(MenuPerks, perks[a], 0);
 
-    if(!isDefined(player.perks_active) || player.perks_active.size != MenuPerks.size)
+    if(!IsDefined(player.perks_active) || player.perks_active.size != MenuPerks.size)
     {
         for(a = 0; a < MenuPerks.size; a++)
+        {
             if(!player HasPerk(MenuPerks[a]) && !player zm_perks::has_perk_paused(MenuPerks[a]))
                 player thread zm_perks::give_perk(MenuPerks[a], true);
+        }
     }
     else
     {
         for(a = 0; a < MenuPerks.size; a++)
+        {
             if(player HasPerk(MenuPerks[a]) || player zm_perks::has_perk_paused(MenuPerks[a]))
                 player notify(MenuPerks[a] + "_stop");
+        }
     }
 }
 
@@ -358,12 +366,14 @@ PlayerRetainPerks(player)
     {
         player._retain_perks = false;
 
-        if(isDefined(player._retain_perks_array))
+        if(IsDefined(player._retain_perks_array))
             player._retain_perks_array = undefined;
         
         for(a = 0; a < MenuPerks.size; a++)
+        {
             if(player HasPerk(MenuPerks[a]) || player zm_perks::has_perk_paused(MenuPerks[a]))
                 player thread zm_perks::perk_think(MenuPerks[a]);
+        }
     }
 }
 
@@ -423,7 +433,7 @@ GivePlayerGobblegum(name, player)
             player zm_utility::enable_player_move_states();
             player TakeWeapon(weapon);
 
-            if(player laststand::player_is_in_laststand() || (isdefined(player.intermission) && player.intermission))
+            if(player laststand::player_is_in_laststand() || (IsDefined(player.intermission) && player.intermission))
                 return;
             
             if(player zm_utility::is_multiple_drinking())
@@ -447,7 +457,7 @@ GivePlayerGobblegum(name, player)
             
             player util::waittill_any_timeout(1, "weapon_change_complete");
 
-            if(!player laststand::player_is_in_laststand() && (!(isdefined(player.intermission) && player.intermission)))
+            if(!player laststand::player_is_in_laststand() && (!(IsDefined(player.intermission) && player.intermission)))
                 player zm_utility::decrement_is_drinking();
         }
 
@@ -466,7 +476,7 @@ SetMovementSpeed(scale, player)
     player.MovementSpeed = (scale == 1) ? undefined : scale;
     player SetMoveSpeedScale(scale);
     
-    while(isDefined(player.MovementSpeed) && player.MovementSpeed != 1)
+    while(IsDefined(player.MovementSpeed) && player.MovementSpeed != 1)
     {
         player SetMoveSpeedScale(scale);
         wait 0.5;
@@ -585,9 +595,13 @@ GetVisualType(effect)
     type = undefined;
 
     for(a = 0; a < types.size; a++)
+    {
         foreach(key in GetArrayKeys(level.vsmgr[types[a]].info))
-            if(isDefined(key) && key == effect)
-                type = isDefined(type) ? "Both" : types[a];
+        {
+            if(IsDefined(key) && key == effect)
+                type = IsDefined(type) ? "Both" : types[a];
+        }
+    }
 
     return type;
 }
@@ -604,7 +618,7 @@ GetVisualEffectState(effect)
         {
             state = level.vsmgr[types[a]].info[effect].state;
 
-            if(isDefined(state.players[self GetEntityNumber()].active) && state.players[self GetEntityNumber()].active == 1)
+            if(IsDefined(state.players[self GetEntityNumber()].active) && state.players[self GetEntityNumber()].active == 1)
                 return true;
         }
 
@@ -613,10 +627,10 @@ GetVisualEffectState(effect)
 
     state = level.vsmgr[type].info[effect].state;
     
-    if(!isDefined(state.players[self GetEntityNumber()]))
+    if(!IsDefined(state.players[self GetEntityNumber()]))
         return false;
     
-    return isDefined(state.players[self GetEntityNumber()].active) && state.players[self GetEntityNumber()].active == 1;
+    return IsDefined(state.players[self GetEntityNumber()].active) && state.players[self GetEntityNumber()].active == 1;
 }
 
 SetClientVisualEffects(effect, player)
@@ -625,10 +639,10 @@ SetClientVisualEffects(effect, player)
 
     type = GetVisualType(effect);
 
-    if(!isDefined(type))
+    if(!IsDefined(type))
         return;
 
-    if(isDefined(player.ClientVisualEffect))
+    if(IsDefined(player.ClientVisualEffect))
     {
         if(effect == player.ClientVisualEffect)
             effect = "None";
@@ -636,17 +650,17 @@ SetClientVisualEffects(effect, player)
             dEffect = effect;
     }
 
-    if(isDefined(player.ClientVisualEffect) && player.ClientVisualEffect != "None" || isDefined(dEffect))
+    if(IsDefined(player.ClientVisualEffect) && player.ClientVisualEffect != "None" || IsDefined(dEffect))
     {
-        if(isDefined(dEffect))
+        if(IsDefined(dEffect))
             disable = dEffect;
         else
         {
-            if(isDefined(player.ClientVisualEffect))
+            if(IsDefined(player.ClientVisualEffect))
                 disable = player.ClientVisualEffect;
         }
         
-        if(isDefined(disable))
+        if(IsDefined(disable))
         {
             removeType = GetVisualType(disable);
 
@@ -658,11 +672,11 @@ SetClientVisualEffects(effect, player)
         }
     }
 
-    if(!isDefined(dEffect))
+    if(!IsDefined(dEffect))
     {
         player.ClientVisualEffect = effect;
 
-        if(isDefined(effect) && effect != "None")
+        if(IsDefined(effect) && effect != "None")
         {
             if(type == "visionset" || type == "Both")
                 visionset_mgr::activate("visionset", effect, player);
@@ -720,7 +734,7 @@ CustomCrosshairs(text, player)
         if(!Is_True(player.CustomCrosshairs))
             return;
 
-        if(isDefined(player.CustomCrosshairsUI))
+        if(IsDefined(player.CustomCrosshairsUI))
             player.CustomCrosshairsUI DestroyHud();
         
         player.CustomCrosshairsUI = undefined;
@@ -728,12 +742,12 @@ CustomCrosshairs(text, player)
         return;
     }
 
-    if(Is_True(player.CustomCrosshairs) && isDefined(player.CustomCrosshairsUI))
+    if(Is_True(player.CustomCrosshairs) && IsDefined(player.CustomCrosshairsUI))
         return player.CustomCrosshairsUI SetTextString(text);
 
     player.CustomCrosshairs = true;
 
-    if(!isDefined(player.CustomCrosshairsUI))
+    if(!IsDefined(player.CustomCrosshairsUI))
         player.CustomCrosshairsUI = player createText("default", 1.2, 1, text, "CENTER", "CENTER", 0, 0, 1, level.RGBFadeColor);
 }
 
@@ -749,7 +763,7 @@ SetCharacterModelIndex(index, player, disableEffect)
     
     player endon("disconnect");
 
-    if(!isDefined(disableEffect) || !disableEffect)
+    if(!IsDefined(disableEffect) || !disableEffect)
     {
         PlayFX(level._effect["teleport_splash"], player.origin);
         PlayFX(level._effect["teleport_aoe_kill"], player GetTagOrigin("j_spineupper"));
@@ -796,17 +810,17 @@ ServerRespawnPlayer(player)
     if(player.sessionstate != "spectator")
         return;
     
-    if(!isDefined(level.custom_spawnplayer))
+    if(!IsDefined(level.custom_spawnplayer))
         level.custom_spawnplayer = zm::spectator_respawn;
 
     player [[ level.spawnplayer ]]();
     thread zm::refresh_player_navcard_hud();
 
-    if(isDefined(level.script) && level.round_number > 6 && player.score < 1500)
+    if(IsDefined(level.script) && level.round_number > 6 && player.score < 1500)
     {
         player.old_score = player.score;
 
-        if(isDefined(level.spectator_respawn_custom_score))
+        if(IsDefined(level.spectator_respawn_custom_score))
             player [[ level.spectator_respawn_custom_score ]]();
 
         player.score = 1500;
@@ -828,7 +842,7 @@ PlayerDeath(type, player)
 {
     player endon("disconnect");
     
-    if(Is_True(player.godmode))
+    if(Is_True(player.playerGodmode))
         player Godmode(player);
 
     if(Is_True(player.PlayerDemiGod))

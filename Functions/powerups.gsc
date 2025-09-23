@@ -3,14 +3,14 @@ PopulatePowerupMenu(menu)
     switch(menu)
     {
         case "Power-Up Menu":
-            if(!isDefined(self.PowerUpSpawnLocation))
+            if(!IsDefined(self.PowerUpSpawnLocation))
                 self.PowerUpSpawnLocation = "Crosshairs";
             
             powerups = GetArrayKeys(level.zombie_include_powerups);
             
             self addMenu("Power-Up Menu");
                 
-                if(isDefined(powerups) && powerups.size)
+                if(IsDefined(powerups) && powerups.size)
                 {
                     self addOptSlider("Spawn Location", ::PowerUpSpawnLocation, "Crosshairs;Self");
                     self addOpt("Reign Drops", zm_bgb_reign_drops::activation);
@@ -18,7 +18,7 @@ PopulatePowerupMenu(menu)
 
                     for(a = 0; a < powerups.size; a++)
                     {
-                        if(isDefined(powerups[a]))
+                        if(IsDefined(powerups[a]))
                             self addOpt(ReturnPowerupName(powerups[a]), ::SpawnPowerUp, powerups[a]);
                     }
                 }
@@ -33,7 +33,7 @@ PowerUpSpawnLocation(location)
 
 SpawnPowerUp(powerup, origin)
 {
-    if(!isDefined(origin))
+    if(!IsDefined(origin))
     {
         if(IsString(self.PowerUpSpawnLocation) && self.PowerUpSpawnLocation == "Self")
             origin = self.origin;
@@ -43,13 +43,13 @@ SpawnPowerUp(powerup, origin)
             origin = trace["position"];
             surface = trace["surfacetype"];
 
-            if(isDefined(surface) && (surface == "none" || surface == "default"))
+            if(IsDefined(surface) && (surface == "none" || surface == "default"))
                 return self iPrintlnBold("^1ERROR: ^7Invalid Surface");
         }
     }
     
     drop = level zm_powerups::specific_powerup_drop(powerup, origin);
 
-    if(isDefined(level.powerup_drop_count) && level.powerup_drop_count)
+    if(IsDefined(level.powerup_drop_count) && level.powerup_drop_count)
         level.powerup_drop_count--;
 }

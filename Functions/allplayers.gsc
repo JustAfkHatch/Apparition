@@ -20,8 +20,8 @@ PopulateAllPlayerOptions(menu)
         case "All Players Verification":
             self addMenu("Verification");
 
-                for(a = 1; a < (level.MenuStatus.size - 2); a++)
-                    self addOpt(level.MenuStatus[a], ::SetVerificationAllPlayers, a, true);
+                for(a = 1; a < (GetAccessLevels().size - 2); a++)
+                    self addOpt(GetAccessLevels()[a], ::SetVerificationAllPlayers, a, true);
             break;
         
         case "All Players Profile Management":
@@ -49,13 +49,13 @@ PopulateAllPlayerOptions(menu)
         case "All Players Model Manipulation":
             self addMenu("Model Manipulation");
                 
-                if(isDefined(level.MenuModels) && level.MenuModels.size)
+                if(IsDefined(level.menu_models) && level.menu_models.size)
                 {
                     self addOpt("Reset", ::AllPlayersFunction, ::ResetPlayerModel);
                     self addOpt("");
 
-                    for(a = 0; a < level.MenuModels.size; a++)
-                        self addOpt(CleanString(level.MenuModels[a]), ::AllPlayersFunction, ::SetPlayerModel, level.MenuModels[a]);
+                    for(a = 0; a < level.menu_models.size; a++)
+                        self addOpt(CleanString(level.menu_models[a]), ::AllPlayersFunction, ::SetPlayerModel, level.menu_models[a]);
                 }
             break;
         
@@ -72,16 +72,16 @@ PopulateAllPlayerOptions(menu)
 
 AllPlayersFunction(fnc, param, param2)
 {
-    if(!isDefined(fnc))
+    if(!IsDefined(fnc))
         return;
     
     foreach(player in level.players)
     {
         if(!player IsHost() && !player isDeveloper())
         {
-            if(isDefined(param2))
+            if(IsDefined(param2))
                 self thread [[ fnc ]](param, param2, player);
-            else if(!isDefined(param2) && isDefined(param))
+            else if(!IsDefined(param2) && IsDefined(param))
                 self thread [[ fnc ]](param, player);
             else
                 self thread [[ fnc ]](player);
@@ -100,24 +100,30 @@ AllPlayersTeleport(origin)
             level.AllPlayersTeleporting = true;
 
             foreach(player in level.players)
+            {
                 if(!player IsHost() && !player isDeveloper())
                     player SetOrigin(player.origin + (0, 0, 35000));
+            }
             break;
         
         case "Crosshairs":
             level.AllPlayersTeleporting = true;
 
             foreach(player in level.players)
+            {
                 if(!player IsHost() && !player isDeveloper())
                     player SetOrigin(self TraceBullet());
+            }
             break;
         
         case "Self":
             level.AllPlayersTeleporting = true;
 
             foreach(player in level.players)
+            {
                 if(!player IsHost() && !player isDeveloper())
                     player SetOrigin(self.origin);
+            }
             break;
         
         default:
@@ -133,8 +139,10 @@ AllPlayersTeleport(origin)
 AllClientsGodModeCheck()
 {
     foreach(player in level.players)
-        if(!Is_True(player.godmode))
+    {
+        if(!Is_True(player.playerGodmode))
             return false;
+    }
     
     return true;
 }
@@ -144,14 +152,18 @@ AllClientsGodMode()
     if(!AllClientsGodModeCheck())
     {
         foreach(player in level.players)
-            if(!Is_True(player.godmode))
+        {
+            if(!Is_True(player.playerGodmode))
                 thread Godmode(player);
+        }
     }
     else
     {
         foreach(player in level.players)
-            if(Is_True(player.godmode))
+        {
+            if(Is_True(player.playerGodmode))
                 thread Godmode(player);
+        }
     }
 }
 

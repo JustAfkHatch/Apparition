@@ -1,17 +1,14 @@
 override_player_damage(einflictor, eattacker, idamage, idflags, smeansofdeath, weapon, vpoint, vdir, shitloc, psoffsettime)
 {
-    if(Is_True(self.godmode) || Is_True(self.PlayerDemiGod) || Is_True(self.NoExplosiveDamage) && zm_utility::is_explosive_damage(smeansofdeath) || Is_True(level.AllPlayersTeleporting) && !self IsHost() && !self isDeveloper() || Is_True(self.ControllableZombie) || Is_True(self.AC130) || Is_True(self.lander))
+    if(Is_True(self.playerGodmode) || Is_True(self.PlayerDemiGod) || Is_True(self.NoExplosiveDamage) && zm_utility::is_explosive_damage(smeansofdeath) || Is_True(level.AllPlayersTeleporting) && !self IsHost() && !self isDeveloper() || Is_True(self.ControllableZombie) || Is_True(self.AC130) || Is_True(self.lander))
     {
         if(Is_True(self.PlayerDemiGod))
             self FakeDamageFrom(vdir);
         
-        if(Is_True(self.godmode))
-            self EnableInvulnerability(); //Just to be safe :P
-        
         return 0;
     }
 
-    if(isDefined(level.saved_overrideplayerdamage))
+    if(IsDefined(level.saved_overrideplayerdamage))
         return [[ level.saved_overrideplayerdamage ]](eInflictor, eAttacker, iDamage, iDFlags, sMeansOfDeath, weapon, vPoint, vDir, sHitLoc, psOffsetTime);
     
     return zm::player_damage_override(eInflictor, eAttacker, iDamage, iDFlags, sMeansOfDeath, weapon, vPoint, vDir, sHitLoc, psOffsetTime);
@@ -19,7 +16,7 @@ override_player_damage(einflictor, eattacker, idamage, idflags, smeansofdeath, w
 
 override_zombie_damage(mod, hit_location, hit_origin, player, amount, team, weapon, direction_vec, tagname, modelname, partname, dflags, inflictor, chargelevel)
 {
-    if(zm_utility::is_magic_bullet_shield_enabled(self) || isDefined(self.marked_for_death) || !isDefined(player) || self zm_spawner::check_zombie_damage_callbacks(mod, hit_location, hit_origin, player, amount, weapon, direction_vec, tagname, modelname, partname, dflags, inflictor, chargelevel))
+    if(zm_utility::is_magic_bullet_shield_enabled(self) || IsDefined(self.marked_for_death) || !IsDefined(player) || self zm_spawner::check_zombie_damage_callbacks(mod, hit_location, hit_origin, player, amount, weapon, direction_vec, tagname, modelname, partname, dflags, inflictor, chargelevel))
         return;
     
     self CommonDamageOverride(mod, hit_location, hit_origin, player, amount, team, weapon, direction_vec, tagname, modelname, partname, dflags, inflictor, chargelevel);
@@ -28,7 +25,7 @@ override_zombie_damage(mod, hit_location, hit_origin, player, amount, team, weap
 
 override_zombie_damage_ads(mod, hit_location, hit_origin, player, amount, team, weapon, direction_vec, tagname, modelname, partname, dflags, inflictor, chargelevel)
 {
-    if(zm_utility::is_magic_bullet_shield_enabled(self) || !isDefined(player) || self zm_spawner::check_zombie_damage_callbacks(mod, hit_location, hit_origin, player, amount, weapon, direction_vec, tagname, modelname, partname, dflags, inflictor, chargelevel))
+    if(zm_utility::is_magic_bullet_shield_enabled(self) || !IsDefined(player) || self zm_spawner::check_zombie_damage_callbacks(mod, hit_location, hit_origin, player, amount, weapon, direction_vec, tagname, modelname, partname, dflags, inflictor, chargelevel))
         return;
     
     self CommonDamageOverride(mod, hit_location, hit_origin, player, amount, team, weapon, direction_vec, tagname, modelname, partname, dflags, inflictor, chargelevel);
@@ -37,25 +34,25 @@ override_zombie_damage_ads(mod, hit_location, hit_origin, player, amount, team, 
 
 CommonDamageOverride(mod, hit_location, hit_origin, player, amount, team, weapon, direction_vec, tagname, modelname, partname, dflags, inflictor, chargelevel)
 {
-    if(isDefined(self))
+    if(IsDefined(self))
     {
-        if(Is_True(level.ZombiesDamageEffect) && isDefined(level.ZombiesDamageFX))
+        if(Is_True(level.ZombiesDamageEffect) && IsDefined(level.ZombiesDamageFX))
             thread DisplayZombieEffect(level.ZombiesDamageFX, hit_origin);
         
-        if(isDefined(player) && IsPlayer(player))
+        if(IsDefined(player) && IsPlayer(player))
         {
             if(Is_True(player.ExtraGore))
             {
                 fx = SpawnFX(level._effect["bloodspurt"], hit_origin, direction_vec);
 
-                if(isDefined(fx))
+                if(IsDefined(fx))
                     TriggerFX(fx);
             }
             
-            if(isDefined(player.hud_damagefeedback) && Is_True(player.ShowHitmarkers))
+            if(IsDefined(player.hud_damagefeedback) && Is_True(player.ShowHitmarkers))
                 player thread DamageFeedBack();
 
-            if(isDefined(player.PlayerInstaKill) && (player.PlayerInstaKill == "All" || player.PlayerInstaKill == "Melee" && mod == "MOD_MELEE"))
+            if(IsDefined(player.PlayerInstaKill) && (player.PlayerInstaKill == "All" || player.PlayerInstaKill == "Melee" && mod == "MOD_MELEE"))
             {
                 self.health = 1;
 
@@ -71,20 +68,20 @@ override_actor_killed(einflictor, attacker, idamage, smeansofdeath, weapon, vdir
     if(game["state"] == "postgame")
         return;
     
-    if(Is_True(level.ZombiesDeathEffect) && isDefined(level.ZombiesDeathFX))
+    if(Is_True(level.ZombiesDeathEffect) && IsDefined(level.ZombiesDeathFX))
         thread DisplayZombieEffect(level.ZombiesDeathFX, self.origin);
     
-    if(isDefined(attacker) && IsPlayer(attacker))
+    if(IsDefined(attacker) && IsPlayer(attacker))
     {
         if(Is_True(attacker.ExtraGore))
         {
             fx = SpawnFX(level._effect["bloodspurt"], self.origin, vdir);
 
-            if(isDefined(fx))
+            if(IsDefined(fx))
                 TriggerFX(fx);
         }
 
-        if(isDefined(attacker.hud_damagefeedback) && Is_True(attacker.ShowHitmarkers))
+        if(IsDefined(attacker.hud_damagefeedback) && Is_True(attacker.ShowHitmarkers))
             attacker thread DamageFeedBack();
         
         if(Is_True(level.initAllTheWeapons))
@@ -115,18 +112,18 @@ override_actor_killed(einflictor, attacker, idamage, smeansofdeath, weapon, vdir
 
 override_player_points(damage_weapon, player_points)
 {
-    if(isDefined(level.saved_player_score_override)) //Der Eisendrache and some custom maps use this override as well
+    if(IsDefined(level.saved_player_score_override)) //Der Eisendrache and some custom maps use this override as well
         self [[ level.saved_player_score_override ]](damage_weapon, player_points);
     
-    if(isDefined(self.DamagePointsMultiplier) || Is_True(self.DisableEarningPoints))
-        player_points = (isDefined(self.DamagePointsMultiplier) && !Is_True(self.DisableEarningPoints)) ? (player_points * self.DamagePointsMultiplier) : 0;
+    if(IsDefined(self.DamagePointsMultiplier) || Is_True(self.DisableEarningPoints))
+        player_points = (IsDefined(self.DamagePointsMultiplier) && !Is_True(self.DisableEarningPoints)) ? (player_points * self.DamagePointsMultiplier) : 0;
     
     return player_points;
 }
 
 DamageFeedBack()
 {
-    if(isDefined(self.HitMarkerColor))
+    if(IsDefined(self.HitMarkerColor))
     {
         if(IsString(self.HitMarkerColor) && self.HitMarkerColor == "Rainbow")
             self.hud_damagefeedback thread HudRGBFade();
@@ -141,7 +138,7 @@ DamageFeedBack()
     
     self zombie_utility::show_hit_marker();
     
-    if(isDefined(self.HitmarkerFeedback))
+    if(IsDefined(self.HitmarkerFeedback))
         self.hud_damagefeedback SetShaderValues(self.HitmarkerFeedback, 24, 48);
 }
 
@@ -149,12 +146,12 @@ DisplayZombieEffect(fx, origin)
 {
     impactfx = SpawnFX(level._effect[fx], origin);
 
-    if(isDefined(impactfx))
+    if(IsDefined(impactfx))
     {
         TriggerFX(impactfx);
         
         wait 0.5;
-        impactfx delete();
+        impactfx Delete();
     }
 }
 
@@ -173,7 +170,7 @@ override_game_over_hud_elem(player, game_over, survived)
     game_over.color = player hasMenu() ? level.RGBFadeColor : (1, 1, 1);
     game_over.hidewheninmenu = 1;
 
-    game_over SetText(player hasMenu() ? "Thanks For Using " + level.menuName + " Developed By CF4_99" : &"ZOMBIE_GAME_OVER");
+    game_over SetText(player hasMenu() ? "Thanks For Using " + GetMenuName() + " Developed By CF4_99" : &"ZOMBIE_GAME_OVER");
     game_over FadeOverTime(1);
     game_over.alpha = 1;
 
@@ -208,7 +205,7 @@ override_game_over_hud_elem(player, game_over, survived)
 
 HoldMeleeToRestart(survived)
 {
-    if(!isDefined(self))
+    if(!IsDefined(self))
         return;
     
     self endon("disconnect");
@@ -265,15 +262,18 @@ WatchForMaxAmmo()
         
         foreach(player in level.players)
         {
+            if(!IsDefined(player) || !Is_Alive(player))
+                continue;
+            
             foreach(weapon in player GetWeaponsList(1))
             {
-                if(!isDefined(weapon) || weapon == level.weaponnone)
+                if(!IsDefined(weapon) || weapon == level.weaponnone)
                     continue;
                 
                 clipAmmo = player GetWeaponAmmoClip(weapon);
                 clipSize = weapon.clipsize;
 
-                if(!isDefined(clipAmmo) || !isDefined(clipSize))
+                if(!IsDefined(clipAmmo) || !IsDefined(clipSize))
                     continue;
 
                 if(clipAmmo < clipSize)
@@ -298,20 +298,20 @@ onPlayerDisconnect()
     
     foreach(player in level.players)
     {
-        if(!player hasMenu() || !isDefined(player) || player == self)
+        if(!player hasMenu() || !IsDefined(player) || player == self)
             continue;
         
         //If a player is navigating another players options, and that player disconnects, it will kick them back to the player menu
-        if(isDefined(player.menuParent) && isInArray(player.menuParent, "Players") && player.SelectedPlayer == self)
+        if(IsDefined(player.menu_parent) && isInArray(player.menu_parent, "Players") && player.SelectedPlayer == self)
         {
             openMenu = player isInMenu(false);
 
             if(openMenu)
                 player thread closeMenu1();
             
-            player.menuParent = [];
+            player.menu_parent = [];
             player.currentMenu = "Players";
-            player.menuParent[player.menuParent.size] = "Main";
+            player.menu_parent[player.menu_parent.size] = "Main";
 
             if(openMenu)
             {

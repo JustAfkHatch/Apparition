@@ -76,7 +76,7 @@ PopulateWeaponry(menu, player)
             weapon = player GetCurrentWeapon();
             attachments = [];
 
-            if(isDefined(weapon) && weapon != level.weaponnone)
+            if(IsDefined(weapon) && weapon != level.weaponnone)
             {
                 for(a = 0; a < 44; a++)
                 {
@@ -106,18 +106,18 @@ PopulateWeaponry(menu, player)
             
             self addMenu("AAT");
                 
-                if(isDefined(keys) && keys.size)
+                if(IsDefined(keys) && keys.size)
                 {
                     for(a = 0; a < keys.size; a++)
                     {
-                        if(isDefined(keys[a]) && level.aat[keys[a]].name != "none")
-                            self addOptBool((isDefined(player.aat[player aat::get_nonalternate_weapon(player GetCurrentWeapon())]) && player.aat[player aat::get_nonalternate_weapon(player GetCurrentWeapon())] == keys[a]), CleanString(level.aat[keys[a]].name), ::GiveWeaponAAT, keys[a], player);
+                        if(IsDefined(keys[a]) && level.aat[keys[a]].name != "none")
+                            self addOptBool((IsDefined(player.aat[player aat::get_nonalternate_weapon(player GetCurrentWeapon())]) && player.aat[player aat::get_nonalternate_weapon(player GetCurrentWeapon())] == keys[a]), CleanString(level.aat[keys[a]].name), ::GiveWeaponAAT, keys[a], player);
                     }
                 }
             break;
         
         case "Equipment Menu":
-            if(isDefined(level.zombie_include_equipment))
+            if(IsDefined(level.zombie_include_equipment))
                 include_equipment = GetArrayKeys(level.zombie_include_equipment);
 
             equipment = ArrayCombine(level.zombie_lethal_grenade_list, level.zombie_tactical_grenade_list, 0, 1);
@@ -125,15 +125,19 @@ PopulateWeaponry(menu, player)
 
             self addMenu("Equipment");
 
-                if(isDefined(keys) && keys.size || isDefined(include_equipment) && include_equipment.size)
+                if(IsDefined(keys) && keys.size || IsDefined(include_equipment) && include_equipment.size)
                 {
                     foreach(index, weapon in GetArrayKeys(level.zombie_weapons))
+                    {
                         if(isInArray(equipment, weapon))
                             self addOptBool(player HasWeapon(weapon), weapon.displayname, ::GivePlayerEquipment, weapon, player);
+                    }
 
-                    if(isDefined(include_equipment) && include_equipment.size)
+                    if(IsDefined(include_equipment) && include_equipment.size)
+                    {
                         foreach(weapon in include_equipment)
                             self addOptBool(player HasWeapon(weapon), weapon.displayname, ::GivePlayerEquipment, weapon, player);
+                    }
                 }
             break;
     }
@@ -143,7 +147,7 @@ TakeCurrentWeapon(player)
 {
     weapon = player GetCurrentWeapon();
 
-    if(!isDefined(weapon) || weapon == level.weaponnone || weapon == level.weaponbasemelee || IsSubStr(weapon.name, "_knife"))
+    if(!IsDefined(weapon) || weapon == level.weaponnone || weapon == level.weaponbasemelee || IsSubStr(weapon.name, "_knife"))
         return;
     
     player TakeWeapon(weapon);
@@ -153,7 +157,7 @@ TakePlayerWeapons(player)
 {
     foreach(weapon in player GetWeaponsList(1))
     {
-        if(!isDefined(weapon) || weapon == level.weaponnone || weapon == level.weaponbasemelee || IsSubStr(weapon.name, "_knife"))
+        if(!IsDefined(weapon) || weapon == level.weaponnone || weapon == level.weaponbasemelee || IsSubStr(weapon.name, "_knife"))
             continue;
         
         player TakeWeapon(weapon);
@@ -166,7 +170,7 @@ DropCurrentWeapon(type, player)
     clip = player GetWeaponAmmoClip(player GetCurrentWeapon());
     stock = player GetWeaponAmmoStock(player GetCurrentWeapon());
 
-    if(isDefined(player.aat[player aat::get_nonalternate_weapon(weapon)]))
+    if(IsDefined(player.aat[player aat::get_nonalternate_weapon(weapon)]))
         aat = player.aat[player aat::get_nonalternate_weapon(weapon)];
 
     player DropItem(weapon);
@@ -175,10 +179,10 @@ DropCurrentWeapon(type, player)
     {
         player zm_weapons::weapon_give(weapon, false, false, true);
 
-        if(isDefined(weapon.savedCamo))
+        if(IsDefined(weapon.savedCamo))
             SetPlayerCamo(weapon.savedCamo, player);
         
-        if(isDefined(aat))
+        if(IsDefined(aat))
             player aat::acquire(weapon, aat);
         
         player SetWeaponAmmoClip(player GetCurrentWeapon(), clip);
@@ -195,12 +199,12 @@ PackCurrentWeapon(player, buildKit = true)
 
     originalWeapon = player GetCurrentWeapon();
 
-    if(!isDefined(originalWeapon) || originalWeapon == level.weaponnone)
+    if(!IsDefined(originalWeapon) || originalWeapon == level.weaponnone)
         return self iPrintlnBold("^1ERROR: ^7Invalid Weapon");
 
     newWeapon = !zm_weapons::is_weapon_upgraded(player GetCurrentWeapon()) ? zm_weapons::get_upgrade_weapon(player GetCurrentWeapon()) : zm_weapons::get_base_weapon(player GetCurrentWeapon());
 
-    if(!isDefined(newWeapon))
+    if(!IsDefined(newWeapon))
         return;
 
     base_weapon = newWeapon;
@@ -215,9 +219,9 @@ PackCurrentWeapon(player, buildKit = true)
     if(zm_weapons::is_weapon_included(base_weapon))
         force_attachments = zm_weapons::get_force_attachments(base_weapon.rootweapon);
 
-    camo = (!upgraded && isDefined(originalWeapon.savedCamo) && originalWeapon.savedCamo != level.pack_a_punch_camo_index) ? originalWeapon.savedCamo : upgraded ? level.pack_a_punch_camo_index : undefined;
+    camo = (!upgraded && IsDefined(originalWeapon.savedCamo) && originalWeapon.savedCamo != level.pack_a_punch_camo_index) ? originalWeapon.savedCamo : upgraded ? level.pack_a_punch_camo_index : undefined;
 
-    if(isDefined(force_attachments) && force_attachments.size)
+    if(IsDefined(force_attachments) && force_attachments.size)
     {
         if(upgraded)
         {
@@ -248,7 +252,7 @@ PackCurrentWeapon(player, buildKit = true)
         }
     }
 
-    if(!isDefined(newWeapon))
+    if(!IsDefined(newWeapon))
         return;
 
     newWeapon.savedCamo = camo;
@@ -263,7 +267,7 @@ VerkoPackCurrentWeapon(type, player)
 {
     currentWeapon = player GetCurrentWeapon();
 
-    if(!isDefined(currentWeapon) || currentWeapon == level.weaponnone)
+    if(!IsDefined(currentWeapon) || currentWeapon == level.weaponnone)
         return self iPrintlnBold("^1ERROR: ^7Not A Valid Weapon");
     
     if(isInArray(level.var_21b77150, currentWeapon.name))
@@ -352,7 +356,7 @@ GivePlayerAttachment(attachment, player, override = false)
     weapon = player GetCurrentWeapon();
     attachments = weapon.attachments;
 
-    if(isDefined(player.aat[player aat::get_nonalternate_weapon(weapon)]))
+    if(IsDefined(player.aat[player aat::get_nonalternate_weapon(weapon)]))
         aat = player.aat[player aat::get_nonalternate_weapon(weapon)];
     
     if(isInArray(attachments, attachment)) //If the weapon has the attachment, it will be removed
@@ -367,9 +371,11 @@ GivePlayerAttachment(attachment, player, override = false)
             {
                 invalid = GetInvalidAttachments(attachments, attachment);
 
-                if(isDefined(invalid) && invalid.size)
+                if(IsDefined(invalid) && invalid.size)
+                {
                     for(a = 0; a < invalid.size; a++)
                         attachments = ArrayRemove(attachments, invalid[a]);
+                }
             }
             else
                 return self iPrintlnBold("^1ERROR: ^7Invalid Attachment Combination");
@@ -382,7 +388,7 @@ GivePlayerAttachment(attachment, player, override = false)
     }
 
     newWeapon = GetWeapon(weapon.rootweapon.name, attachments);
-    camo = isDefined(weapon.savedCamo) ? weapon.savedCamo : 0;
+    camo = IsDefined(weapon.savedCamo) ? weapon.savedCamo : 0;
     weapon_options = player CalcWeaponOptions(camo, 0, 0);
     newWeapon.savedCamo = camo;
     
@@ -390,7 +396,7 @@ GivePlayerAttachment(attachment, player, override = false)
     player GiveWeapon(newWeapon, weapon_options);
     player SetSpawnWeapon(newWeapon, true);
 
-    if(isDefined(aat))
+    if(IsDefined(aat))
         player aat::acquire(newWeapon, aat);
 }
 
@@ -400,8 +406,10 @@ IsValidCombination(attachments, attachment)
     tokens = StrTok(valid, " ");
 
     for(a = 0; a < attachments.size; a++)
+    {
         if(!isInArray(tokens, attachments[a]))
             return false;
+    }
     
     return true;
 }
@@ -414,8 +422,10 @@ GetInvalidAttachments(attachments, attachment)
     invalid = [];
 
     for(a = 0; a < attachments.size; a++)
+    {
         if(!isInArray(tokens, attachments[a]))
             array::add(invalid, attachments[a], 0);
+    }
     
     return invalid;
 }
@@ -433,10 +443,10 @@ SaveCurrentLoadout(type, player)
     {
         weapon = player GetCurrentWeapon();
 
-        if(!isDefined(weapon) || weapon == level.weaponnone || weapon == level.weaponbasemelee || IsSubStr(weapon.name, "_knife"))
+        if(!IsDefined(weapon) || weapon == level.weaponnone || weapon == level.weaponbasemelee || IsSubStr(weapon.name, "_knife"))
             return self iPrintlnBold("^1ERROR: ^7Invalid Weapon");
 
-        if(isDefined(weapon.attachments) && weapon.attachments.size)
+        if(IsDefined(weapon.attachments) && weapon.attachments.size)
         {
             attachments = "";
 
@@ -448,16 +458,16 @@ SaveCurrentLoadout(type, player)
         
         SetDvar("Loadout_" + type + "_" + userID, zm_weapons::get_base_weapon(weapon).name);
         SetDvar("Loadout_" + type + "_Attachments_" + userID, attachments);
-        SetDvar("Loadout_" + type + "_Camo_" + userID, isDefined(weapon.savedCamo) ? weapon.savedCamo : 0);
+        SetDvar("Loadout_" + type + "_Camo_" + userID, IsDefined(weapon.savedCamo) ? weapon.savedCamo : 0);
         SetDvar("Loadout_" + type + "_Upgraded_" + userID, zm_weapons::is_weapon_upgraded(weapon));
-        SetDvar("Loadout_" + type + "_AAT_" + userID, isDefined(player.aat[player aat::get_nonalternate_weapon(weapon)]) ? player.aat[player aat::get_nonalternate_weapon(weapon)] : "none");
+        SetDvar("Loadout_" + type + "_AAT_" + userID, IsDefined(player.aat[player aat::get_nonalternate_weapon(weapon)]) ? player.aat[player aat::get_nonalternate_weapon(weapon)] : "none");
     }
     else
     {
         saveType = (type == "Primary Offhand") ? "primary_offhand" : "secondary_offhand";
         weapon = (type == "Primary Offhand") ? player zm_utility::get_player_lethal_grenade() : player zm_utility::get_player_tactical_grenade();
         
-        if(!isDefined(weapon) || weapon == level.weaponnone)
+        if(!IsDefined(weapon) || weapon == level.weaponnone)
             return self iPrintlnBold("^1ERROR: ^7Invalid Offhand");
         
         SetDvar("Loadout_" + saveType + "_" + userID, weapon.name);
@@ -471,7 +481,7 @@ ClearLoadout(player)
 {
     saved = GetDvarInt("Apparition_Loadout_" + userID);
 
-    if(!isDefined(saved) || !saved)
+    if(!IsDefined(saved) || !saved)
         return;
     
     userID = player GetXUID();
@@ -509,14 +519,14 @@ GivePlayerLoadout()
         {
             weapon = GetDvarString("Loadout_" + type + "_" + userID);
 
-            if(!isDefined(weapon) || weapon == "" || !isInArrayKeys(level.zombie_weapons, GetWeapon(weapon)))
+            if(!IsDefined(weapon) || weapon == "" || !isInArrayKeys(level.zombie_weapons, GetWeapon(weapon)))
                 continue;
             
             if(first)
             {
                 foreach(primary in self GetWeaponsListPrimaries())
                 {
-                    if(!isDefined(primary) || primary == level.weaponnone || primary == level.weaponbasemelee || IsSubStr(primary.name, "_knife"))
+                    if(!IsDefined(primary) || primary == level.weaponnone || primary == level.weaponbasemelee || IsSubStr(primary.name, "_knife"))
                         continue;
                     
                     self TakeWeapon(primary);
@@ -527,7 +537,7 @@ GivePlayerLoadout()
 
             newWeapon = GivePlayerWeapon(GetWeapon(weapon), self);
 
-            if(isDefined(newWeapon.attachments) && newWeapon.attachments.size) //Fix for build kit attachments conflicting saved attachments
+            if(IsDefined(newWeapon.attachments) && newWeapon.attachments.size) //Fix for build kit attachments conflicting saved attachments
             {
                 attachments = [];
                 baseWeapon = GetWeapon(newWeapon.rootweapon.name, attachments);
@@ -550,12 +560,12 @@ GivePlayerLoadout()
 
             weaponAAT = GetDvarString("Loadout_" + type + "_AAT_" + userID);
 
-            if(isDefined(weaponAAT) && weaponAAT != "" && weaponAAT != "none")
+            if(IsDefined(weaponAAT) && weaponAAT != "" && weaponAAT != "none")
                 GiveWeaponAAT(weaponAAT, self);
             
             weaponAttachments = GetDvarString("Loadout_" + type + "_Attachments_" + userID);
 
-            if(isDefined(weaponAttachments) && weaponAttachments != "" && weaponAttachments != "none")
+            if(IsDefined(weaponAttachments) && weaponAttachments != "" && weaponAttachments != "none")
             {
                 attachments = StrTok(weaponAttachments, ";");
 
@@ -573,7 +583,7 @@ GivePlayerLoadout()
         {
             weapon = GetDvarString("Loadout_" + type + "_" + userID);
 
-            if(!isDefined(weapon) || weapon == "" || weapon == level.weaponnone || !isInArrayKeys(level.zombie_weapons, GetWeapon(weapon)) && !isInArrayKeys(level.zombie_include_equipment, GetWeapon(weapon)))
+            if(!IsDefined(weapon) || weapon == "" || weapon == level.weaponnone || !isInArrayKeys(level.zombie_weapons, GetWeapon(weapon)) && !isInArrayKeys(level.zombie_include_equipment, GetWeapon(weapon)))
                 continue;
             
             if(self HasWeapon(GetWeapon(weapon)))
@@ -620,7 +630,7 @@ GiveWeaponAAT(aat, player)
 {
     player endon("disconnect");
     
-    if(!isDefined(player.aat[player aat::get_nonalternate_weapon(player GetCurrentWeapon())]) || player.aat[player aat::get_nonalternate_weapon(player GetCurrentWeapon())] != aat)
+    if(!IsDefined(player.aat[player aat::get_nonalternate_weapon(player GetCurrentWeapon())]) || player.aat[player aat::get_nonalternate_weapon(player GetCurrentWeapon())] != aat)
         player aat::acquire(player GetCurrentWeapon(), aat);
     else
     {
@@ -646,14 +656,18 @@ GivePlayerWeapon(weapon, player)
         if(!IsVerkoMap())
         {
             for(a = 0; a < weapons.size; a++)
+            {
                 if(zm_weapons::get_base_weapon(weapons[a]) == zm_weapons::get_base_weapon(weapon))
                     weapon = weapons[a];
+            }
         }
         else
         {
             for(a = 0; a < weapons.size; a++)
+            {
                 if(VerkoGetBaseWeapon(weapons[a]) == VerkoGetBaseWeapon(weapon))
                     weapon = weapons[a];
+            }
         }
 
         player TakeWeapon(weapon);
@@ -679,35 +693,41 @@ VerkoGetBaseWeapon(weapon)
     else if(isInArray(level.var_23af580e, weapon.name))
         currentArray = level.var_23af580e;
     
-    if(!isDefined(currentArray))
+    if(!IsDefined(currentArray))
         return weapon;
     
     for(a = 0; a < currentArray.size; a++)
+    {
         if(currentArray[a] == weapon.name)
             return GetWeapon(level.var_21b77150[a]);
+    }
 }
 
 HasWeapon1(weapon)
 {
-    if(!isDefined(weapon))
+    if(!IsDefined(weapon))
         return false;
     
     weapons = self GetWeaponsList(true);
 
-    if(!isDefined(weapons) || !weapons.size)
+    if(!IsDefined(weapons) || !weapons.size)
         return false;
 
     if(!IsVerkoMap())
     {
         for(a = 0; a < weapons.size; a++)
+        {
             if(zm_weapons::get_base_weapon(weapons[a]) == zm_weapons::get_base_weapon(weapon))
                 return true;
+        }
     }
     else
     {
         for(a = 0; a < weapons.size; a++)
+        {
             if(VerkoGetBaseWeapon(weapons[a]) == VerkoGetBaseWeapon(weapon))
                 return true;
+        }
     }
 
     return false;

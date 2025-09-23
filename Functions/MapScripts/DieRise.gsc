@@ -25,7 +25,7 @@ PopulateDieRiseScripts(menu)
             break;
         
         case "Die Rise Player Ranks":
-            if(!isDefined(self.DieRiseRankPlayer))
+            if(!IsDefined(self.DieRiseRankPlayer))
                 self.DieRiseRankPlayer = level.players[0];
 
             playerArray = [];
@@ -43,7 +43,7 @@ PopulateDieRiseScripts(menu)
 
 CollectElevatorKey(player)
 {
-    if(!Is_True(player.var_7e6e237) && isDefined(player.var_6f657589) && isDefined(player.var_6f657589.trigger))
+    if(!Is_True(player.var_7e6e237) && IsDefined(player.var_6f657589) && IsDefined(player.var_6f657589.trigger))
         player.var_6f657589.trigger notify("trigger_activated", player);
 }
 
@@ -56,7 +56,7 @@ SetPlayerBank(amount, player)
 
 SetClientDieRiseStat(stat_name, stat_value)
 {
-    if(!isDefined(self.var_37f38876) || !isDefined(self.var_37f38876[stat_name]))
+    if(!IsDefined(self.var_37f38876) || !IsDefined(self.var_37f38876[stat_name]))
         return;
 
     self.var_37f38876[stat_name].value = stat_value;
@@ -92,7 +92,7 @@ function_56809df9()
 
         foreach(stat in self.var_37f38876)
         {
-            if(!IsInt(stat) && stat.set === var_2f24aac7 && (isDefined(stat.var_f82847be) && stat.var_f82847be))
+            if(!IsInt(stat) && stat.set === var_2f24aac7 && (IsDefined(stat.var_f82847be) && stat.var_f82847be))
                 data = (((data + stat.name) + ".") + stat.value) + ",";
         }
 

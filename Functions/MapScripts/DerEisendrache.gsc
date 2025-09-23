@@ -35,11 +35,11 @@ PopulateDerEisendracheScripts(menu)
             //level.var_c62829c7 <- player bound to fire quest
 
             self addMenu("Fire");
-                self addOptBool(isDefined(level.var_714fae39), "Initiate Quest", ::InitFireBow);
+                self addOptBool(IsDefined(level.var_714fae39), "Initiate Quest", ::InitFireBow);
 
-                if(isDefined(level.var_714fae39))
+                if(IsDefined(level.var_714fae39))
                 {
-                    if(isDefined(level.var_c62829c7))
+                    if(IsDefined(level.var_c62829c7))
                     {
                         self addOptBool((level flag::get("rune_prison_obelisk") && !Is_True(level.MagmaRock)), "Shoot Magma Rock", ::MagmaRock);
                         self addOptBool(AllRunicCirclesCharged(), "Activate & Charge Runic Circles", ::RunicCircles);
@@ -59,11 +59,11 @@ PopulateDerEisendracheScripts(menu)
             trig = GetEnt("aq_es_weather_vane_trig", "targetname");
 
             self addMenu("Lightning");
-                self addOptBool(!isDefined(trig), "Initiate Quest", ::InitLightningBow);
+                self addOptBool(!IsDefined(trig), "Initiate Quest", ::InitLightningBow);
 
-                if(!isDefined(trig))
+                if(!IsDefined(trig))
                 {
-                    if(isDefined(level.var_f8d1dc16))
+                    if(IsDefined(level.var_f8d1dc16))
                     {
                         self addOptBool(AreBeaconsLit(), "Light Beacons", ::LightningBeacons);
                         self addOptBool(level flag::get("elemental_storm_wallrun"), "Wallrun Step", ::LightningWallrun);
@@ -87,12 +87,12 @@ PopulateDerEisendracheScripts(menu)
 
                 if(level clientfield::get("quest_state_demon") > 0)
                 {
-                    if(isDefined(level.var_6e68c0d8))
+                    if(IsDefined(level.var_6e68c0d8))
                     {
                         fossils = GetEntArray("aq_dg_fossil", "script_noteworthy");
 
                         self addOptBool(level flag::get("demon_gate_seal"), "Release Demon Urn", ::ReleaseDemonUrn);
-                        self addOptBool((!isDefined(fossils) || !fossils.size), "Fossil Heads", ::TriggerDemonFossils);
+                        self addOptBool((!IsDefined(fossils) || !fossils.size), "Fossil Heads", ::TriggerDemonFossils);
                         self addOptBool(level flag::get("demon_gate_crawlers"), "Feed Demon Urn", ::FeedDemonUrn);
                         self addOptBool(level flag::get("demon_gate_runes"), "Inscribe Demon Name", ::InscribeDemonName);
                         self addOptBool(level flag::get("demon_gate_repaired"), "Collect Reforged Arrow", ::CollectVoidArrow);
@@ -113,7 +113,7 @@ PopulateDerEisendracheScripts(menu)
                 
                 if(level flag::get("wolf_howl_paintings"))
                 {
-                    if(isDefined(level.var_52978d72))
+                    if(IsDefined(level.var_52978d72))
                     {
                         self addOptBool((level clientfield::get("quest_state_wolf") >= 2), "Collect Skull Shrine", ::CollectSkullShrine);
                         self addOptBool((level clientfield::get("quest_state_wolf") >= 3), "Attach Skull To Skeleton", ::WolfAttachSkull);
@@ -162,7 +162,7 @@ FeedDragon(player)
     
     for(b = 0; b < 8; b++)
     {
-        if(isDefined(self.var_98730ffa))
+        if(IsDefined(self.var_98730ffa))
             self.var_98730ffa++;
         else
             self.var_98730ffa = 0;
@@ -217,10 +217,10 @@ AreLandingPadsEnabled()
 
 GrabPadUniTriggers()
 {
-    if(!isDefined(level._unitriggers))
+    if(!IsDefined(level._unitriggers))
         return;
     
-    if(!isDefined(level._unitriggers.trigger_stubs))
+    if(!IsDefined(level._unitriggers.trigger_stubs))
         return;
     
     pads      = [];
@@ -228,11 +228,11 @@ GrabPadUniTriggers()
     
     for(a = 0; a < level._unitriggers.trigger_stubs.size; a++)
     {
-        if(isDefined(level._unitriggers.trigger_stubs[a]))
+        if(IsDefined(level._unitriggers.trigger_stubs[a]))
         {
             for(b = 0; b < padStruct.size; b++)
             {
-                if(isDefined(padStruct[b]) && level._unitriggers.trigger_stubs[a].origin == padStruct[b].origin + vectorScale((0, 0, 1), 30))
+                if(IsDefined(padStruct[b]) && level._unitriggers.trigger_stubs[a].origin == padStruct[b].origin + vectorScale((0, 0, 1), 30))
                     pads[pads.size] = level._unitriggers.trigger_stubs[a];
             }
         }
@@ -263,7 +263,7 @@ ClawHat()
 
     foreach(claw in level.var_23825200)
     {
-        if(!isDefined(claw) || isDefined(claw) && claw flag::get("mechz_claw_revealed"))
+        if(!IsDefined(claw) || IsDefined(claw) && claw flag::get("mechz_claw_revealed"))
             continue;
         
         MagicBullet(level.start_weapon, claw.origin, claw.origin + (0, 0, -5), self);
@@ -274,13 +274,13 @@ ClawHat()
     
     foreach(claw in level.var_23825200)
     {
-        if(!isDefined(claw))
+        if(!IsDefined(claw))
             continue;
         
         mechz = ServerSpawnMechz(claw.origin + (AnglesToForward(claw.angles) * 255));
         wait 0.1;
 
-        if(!isDefined(mechz))
+        if(!IsDefined(mechz))
             continue;
 
         MagicBullet(level.start_weapon, claw.origin, claw.origin + (0, 0, 5), self);
@@ -301,7 +301,7 @@ ClawHat()
 //Fire Bow Quest
 InitFireBow()
 {
-    if(isDefined(level.var_714fae39))
+    if(IsDefined(level.var_714fae39))
         return;
     
     if(Is_True(level.InitFireBow))
@@ -313,10 +313,10 @@ InitFireBow()
     curs = self getCursor();
     clock = GetEnt("aq_rp_clock_wall_trig", "targetname");
 
-    if(isDefined(clock))
+    if(IsDefined(clock))
         MagicBullet(GetWeapon("elemental_bow"), clock.origin, clock.origin + (0, 5, 0), self);
 
-    while(!isDefined(level.var_714fae39) || !level.var_714fae39)
+    while(!IsDefined(level.var_714fae39) || !level.var_714fae39)
         wait 0.1;
 
     self RefreshMenu(menu, curs);
@@ -330,7 +330,7 @@ MagmaRock()
     if(level flag::get("rune_prison_obelisk"))
         return self iPrintlnBold("^1ERROR: ^7This Step Has Already Been Completed");
     
-    if(!isDefined(level.var_c62829c7))
+    if(!IsDefined(level.var_c62829c7))
         return self iPrintlnBold("^1ERROR: ^7There Is No Player Bound To The Quest");
     
     level.MagmaRock = true;
@@ -343,7 +343,7 @@ MagmaRock()
 
     rock = GetEnt("aq_rp_obelisk_magma_trig", "targetname");
 
-    if(isDefined(rock))
+    if(IsDefined(rock))
         MagicBullet(GetWeapon("elemental_bow"), rock.origin, rock.origin + (0, 5, 0), level.var_c62829c7);
     
     while(!level flag::get("rune_prison_obelisk"))
@@ -371,7 +371,7 @@ RunicCircles()
     if(Is_True(level.ChargingCircles))
         return self iPrintlnBold("^1ERROR: ^7This Step Is Currently Being Completed");
     
-    if(!isDefined(level.var_c62829c7))
+    if(!IsDefined(level.var_c62829c7))
         return self iPrintlnBold("^1ERROR: ^7There Is No Player Bound To The Quest");
     
     level.ChargingCircles = true;
@@ -384,16 +384,16 @@ RunicCircles()
 
     circles = GetEntArray("aq_rp_runic_circle_volume", "script_noteworthy");
 
-    if(isDefined(circles))
+    if(IsDefined(circles))
     {
         for(a = 0; a < circles.size; a++)
         {
-            if(!isDefined(circles[a]) || circles[a] flag::get("runic_circle_activated"))
+            if(!IsDefined(circles[a]) || circles[a] flag::get("runic_circle_activated"))
                 continue;
             
             cirTarget = GetEnt(circles[a].target + "_trig", "targetname");
 
-            if(isDefined(cirTarget))
+            if(IsDefined(cirTarget))
                 MagicBullet(GetWeapon("elemental_bow"), cirTarget.origin, cirTarget.origin, level.var_c62829c7);
             
             wait 0.05;
@@ -416,7 +416,7 @@ RunicCircles()
 
 ChargeRunicCircle()
 {
-    if(!isDefined(self) || self flag::get("runic_circle_charged"))
+    if(!IsDefined(self) || self flag::get("runic_circle_charged"))
         return;
     
     while(!self flag::get("runic_circle_activated"))
@@ -433,11 +433,11 @@ AllRunicCirclesCharged()
 {
     circles = GetEntArray("aq_rp_runic_circle_volume", "script_noteworthy");
 
-    if(isDefined(circles) && circles.size)
+    if(IsDefined(circles) && circles.size)
     {
         for(a = 0; a < circles.size; a++)
         {
-            if(!isDefined(circles[a]))
+            if(!IsDefined(circles[a]))
                 continue;
             
             if(!circles[a] flag::get("runic_circle_activated") || !circles[a] flag::get("runic_circle_charged"))
@@ -459,7 +459,7 @@ ClockFireplaceStep()
     if(Is_True(level.ClockFireplaceStep))
         return self iPrintlnBold("^1ERROR: ^7This Step Is Currently Being Completed");
     
-    if(!isDefined(level.var_c62829c7))
+    if(!IsDefined(level.var_c62829c7))
         return self iPrintlnBold("^1ERROR: ^7There Is No Player Bound To The Quest");
 
     level.ClockFireplaceStep = true;
@@ -470,7 +470,7 @@ ClockFireplaceStep()
     clock = struct::get("aq_rp_clock_use_struct", "targetname");
     clock.var_67b5dd94 notify("trigger", level.var_c62829c7);
 
-    while(!isDefined(level.var_2e55cb98))
+    while(!IsDefined(level.var_2e55cb98))
         wait 1;
 
     level.var_c62829c7 FreezeControls(1);
@@ -480,14 +480,16 @@ ClockFireplaceStep()
     target = GetEnt(level.var_2e55cb98.var_336f1366.target, "targetname");
     firePlace = LocateFireplace(); //Need to find the fireplace before this part of the step is completed
 
-    if(isDefined(target))
+    if(IsDefined(target))
+    {
         for(a = 0; a < 2; a++) //Target must be hit twice
         {
             MagicBullet(GetWeapon("elemental_bow"), target.origin, target.origin + (0, 5, 0), level.var_c62829c7);
             wait 0.1;
         }
+    }
 
-    if(isDefined(firePlace))
+    if(IsDefined(firePlace))
         firePlace.var_67b5dd94 notify("trigger", level.var_c62829c7);
     
     level.var_c62829c7 FreezeControls(0);
@@ -506,16 +508,18 @@ LocateFireplace()
     //By this point in the quest, only one runic circle should still be defined.
     //But, we're still gonna scan through just to be sure.
 
-    if(isDefined(circles))
+    if(IsDefined(circles))
     {
         for(a = 0; a < circles.size; a++)
         {
-            if(!isDefined(circles[a]))
+            if(!IsDefined(circles[a]))
                 continue;
             
             for(b = 0; b < firePlaces.size; b++)
+            {
                 if(circles[a].script_label == firePlaces[b].script_noteworthy)
                     return firePlaces[b];
+            }
         }
     }
 }
@@ -524,10 +528,10 @@ IsClockFireplaceComplete()
 {
     magmaBall = GetEnt("aq_rp_magma_ball_tag", "targetname");
 
-    if(level flag::exists("rune_prison_golf") && level flag::get("rune_prison_golf") && (isDefined(magmaBall) && magmaBall flag::exists("magma_ball_move_done") && magmaBall flag::get("magma_ball_move_done") || !isDefined(magmaBall)))
+    if(level flag::exists("rune_prison_golf") && level flag::get("rune_prison_golf") && (IsDefined(magmaBall) && magmaBall flag::exists("magma_ball_move_done") && magmaBall flag::get("magma_ball_move_done") || !IsDefined(magmaBall)))
         return true;
 
-    if(!isDefined(magmaBall))
+    if(!IsDefined(magmaBall))
         return false;
     
     return false;
@@ -544,7 +548,7 @@ CollectRepairedFireArrows()
     if(Is_True(level.CollectRepairedFireArrows))
         return self iPrintlnBold("^1ERROR: ^7This Step Is Currently Being Completed");
     
-    if(!isDefined(level.var_c62829c7))
+    if(!IsDefined(level.var_c62829c7))
         return self iPrintlnBold("^1ERROR: ^7There Is No Player Bound To The Quest");
 
     level.CollectRepairedFireArrows = true;
@@ -554,12 +558,12 @@ CollectRepairedFireArrows()
     
     MagmaBall = struct::get("quest_reforge_rune_prison", "targetname");
 
-    if(isDefined(MagmaBall))
+    if(IsDefined(MagmaBall))
         MagmaBall.var_67b5dd94 notify("trigger", level.var_c62829c7);
 
     wait 9;
 
-    if(isDefined(MagmaBall))
+    if(IsDefined(MagmaBall))
         MagmaBall.var_67b5dd94 notify("trigger", level.var_c62829c7);
     
     while(!level flag::get("rune_prison_repaired"))
@@ -590,7 +594,7 @@ InitLightningBow()
 {
     trig = GetEnt("aq_es_weather_vane_trig", "targetname");
 
-    if(!isDefined(trig))
+    if(!IsDefined(trig))
         return;
 
     if(Is_True(level.InitLightningBow))
@@ -601,10 +605,10 @@ InitLightningBow()
     menu = self getCurrent();
     curs = self getCursor();
 
-    if(isDefined(trig))
+    if(IsDefined(trig))
         MagicBullet(GetWeapon("elemental_bow"), trig.origin, trig.origin + (0, 0, 5), self);
 
-    while(isDefined(trig))
+    while(IsDefined(trig))
         wait 0.1;
 
     self RefreshMenu(menu, curs);
@@ -618,7 +622,7 @@ LightningBeacons()
     if(Is_True(level.LightningBeacons))
         return self iPrintlnBold("^1ERROR: ^7This Step Is Currently Being Completed");
     
-    if(!isDefined(level.var_f8d1dc16))
+    if(!IsDefined(level.var_f8d1dc16))
         return self iPrintlnBold("^1ERROR: ^7There Is No Player Bound To The Quest");
     
     level.LightningBeacons = true;
@@ -630,7 +634,7 @@ LightningBeacons()
 
     for(a = 0; a < beacons.size; a++)
     {
-        if(!isDefined(beacons[a]))
+        if(!IsDefined(beacons[a]))
             continue;
         
         MagicBullet(GetWeapon("elemental_bow"), beacons[a].origin + (0, 0, 5), beacons[a].origin, level.var_f8d1dc16);
@@ -647,17 +651,17 @@ AreBeaconsLit()
 {
     beacons = GetEntArray("aq_es_beacon_trig", "script_noteworthy");
 
-    if(!isDefined(beacons))
+    if(!IsDefined(beacons))
         return false;
 
     for(a = 0; a < beacons.size; a++)
     {
-        if(!isDefined(beacons[a]))
+        if(!IsDefined(beacons[a]))
             continue;
         
         s_beacon = struct::get(beacons[a].target);
 
-        if(!isDefined(s_beacon) || !isDefined(s_beacon.var_41f52afd) || !s_beacon.var_41f52afd clientfield::get("beacon_fx"))
+        if(!IsDefined(s_beacon) || !IsDefined(s_beacon.var_41f52afd) || !s_beacon.var_41f52afd clientfield::get("beacon_fx"))
             return false;
     }
 
@@ -675,7 +679,7 @@ LightningWallrun()
     if(!AreBeaconsLit())
         return self iPrintlnBold("^1ERROR: ^7Beacons Must Be Lit First");
     
-    if(!isDefined(level.var_f8d1dc16))
+    if(!IsDefined(level.var_f8d1dc16))
         return self iPrintlnBold("^1ERROR: ^7There Is No Player Bound To The Quest");
     
     level.LightningWallrun = true;
@@ -686,7 +690,7 @@ LightningWallrun()
 
     for(a = 0; a < trigs.size; a++)
     {
-        if(!isDefined(trigs[a]) || isDefined(level.var_f8d1dc16.var_a4f04654) && level.var_f8d1dc16.var_a4f04654 >= 4)
+        if(!IsDefined(trigs[a]) || IsDefined(level.var_f8d1dc16.var_a4f04654) && level.var_f8d1dc16.var_a4f04654 >= 4)
             continue;
         
         trigs[a] notify("trigger", level.var_f8d1dc16);
@@ -709,7 +713,7 @@ LightningChargeBeacons()
     if(!level flag::get("elemental_storm_wallrun"))
         return self iPrintlnBold("^1ERROR: ^7Wallrun Step Must Be Completed First");
     
-    if(!isDefined(level.var_f8d1dc16))
+    if(!IsDefined(level.var_f8d1dc16))
         return self iPrintlnBold("^1ERROR: ^7There Is No Player Bound To The Quest");
     
     level.LightningChargeBeacons = true;
@@ -723,7 +727,7 @@ LightningChargeBeacons()
 
         for(a = 0; a < beacons.size; a++)
         {
-            if(!isDefined(beacons[a]))
+            if(!IsDefined(beacons[a]))
                 continue;
             
             while(!Is_True(beacons[a].b_activated))
@@ -743,7 +747,7 @@ LightningChargeBeacons()
 
     for(a = 0; a < bTrigs.size; a++)
     {
-        if(!isDefined(bTrigs[a]) || isDefined(bTrigs[a].b_charged) && bTrigs[a].b_charged)
+        if(!IsDefined(bTrigs[a]) || IsDefined(bTrigs[a].b_charged) && bTrigs[a].b_charged)
             continue;
         
         MagicBullet(GetWeapon("elemental_bow"), bTrigs[a].origin + (0, 0, 500), bTrigs[a].origin, level.var_f8d1dc16);
@@ -769,7 +773,7 @@ LightningMissileCharger()
 
         for(a = 0; a < charged.size; a++)
         {
-            if(!isDefined(charged[a]) || isInArray(used, a) || Is_True(chosen))
+            if(!IsDefined(charged[a]) || isInArray(used, a) || Is_True(chosen))
                 continue;
             
             chosen = true;
@@ -798,7 +802,7 @@ ChargeLightningArrows()
     if(!LightningBeaconsCharged())
         return self iPrintlnBold("^1ERROR: ^7Urns Must Filled & Beacons Need To Be Charged First");
     
-    if(!isDefined(level.var_f8d1dc16))
+    if(!IsDefined(level.var_f8d1dc16))
         return self iPrintlnBold("^1ERROR: ^7There Is No Player Bound To The Quest");
 
     level.ChargeLightningArrows = true;
@@ -807,12 +811,12 @@ ChargeLightningArrows()
     curs = self getCursor();
     storm = struct::get("quest_reforge_elemental_storm");
 
-    if(isDefined(storm))
+    if(IsDefined(storm))
         storm.var_67b5dd94 notify("trigger", level.var_f8d1dc16);
 
     wait 18;
 
-    if(isDefined(storm))
+    if(IsDefined(storm))
         storm.var_67b5dd94 notify("trigger", level.var_f8d1dc16);
 
     while(!level flag::get("elemental_storm_repaired"))
@@ -856,10 +860,10 @@ InitVoidBow()
     curs = self getCursor();
     symbol = GetEnt("aq_dg_gatehouse_symbol_trig", "targetname");
 
-    if(isDefined(symbol))
+    if(IsDefined(symbol))
         MagicBullet(GetWeapon("elemental_bow"), symbol.origin, symbol.origin + (0, 0, 5), self);
 
-    while(isDefined(symbol))
+    while(IsDefined(symbol))
         wait 0.1;
 
     self RefreshMenu(menu, curs);
@@ -873,7 +877,7 @@ ReleaseDemonUrn()
     if(Is_True(level.ReleaseDemonUrn))
         return self iPrintlnBold("^1ERROR: ^7This Step Is Currently Being Completed");
     
-    if(!isDefined(level.var_6e68c0d8))
+    if(!IsDefined(level.var_6e68c0d8))
         return self iPrintlnBold("^1ERROR: ^7There Is No Player Bound To The Quest");
     
     level.ReleaseDemonUrn = true;
@@ -904,7 +908,7 @@ TriggerDemonFossils()
     
     fossils = GetEntArray("aq_dg_fossil", "script_noteworthy");
 
-    if(!isDefined(fossils) || !fossils.size)
+    if(!IsDefined(fossils) || !fossils.size)
         return self iPrintlnBold("^1ERROR: ^7This Step Has Already Been Completed");
     
     if(Is_True(level.TriggerDemonFossils))
@@ -913,7 +917,7 @@ TriggerDemonFossils()
     if(Is_True(level.ReleaseDemonUrn))
         return self iPrintlnBold("^1ERROR: ^7Release Demon Urn Is Still Being Completed");
     
-    if(!isDefined(level.var_6e68c0d8))
+    if(!IsDefined(level.var_6e68c0d8))
         return self iPrintlnBold("^1ERROR: ^7There Is No Player Bound To The Quest");
     
     level.TriggerDemonFossils = true;
@@ -923,7 +927,7 @@ TriggerDemonFossils()
 
     for(a = 0; a < fossils.size; a++)
     {
-        if(!isDefined(fossils[a]))
+        if(!IsDefined(fossils[a]))
             continue;
         
         fossils[a].var_67b5dd94 notify("trigger", level.var_6e68c0d8);
@@ -934,7 +938,7 @@ TriggerDemonFossils()
     {
         fossils = GetEntArray("aq_dg_fossil", "script_noteworthy");
 
-        if(!isDefined(fossils) || !fossils.size)
+        if(!IsDefined(fossils) || !fossils.size)
             break;
         
         wait 0.1;
@@ -947,7 +951,7 @@ FeedDemonUrn()
 {
     fossils = GetEntArray("aq_dg_fossil", "script_noteworthy");
 
-    if(isDefined(fossils) && fossils.size || level clientfield::get("quest_state_demon") < 3)
+    if(IsDefined(fossils) && fossils.size || level clientfield::get("quest_state_demon") < 3)
         return self iPrintlnBold("^1ERROR: ^7All Fossil Heads Must Be Triggered First");
     
     if(level flag::get("demon_gate_crawlers"))
@@ -956,7 +960,7 @@ FeedDemonUrn()
     if(Is_True(level.FeedDemonUrn))
         return self iPrintlnBold("^1ERROR: ^7This Step Is Currently Being Completed");
     
-    if(!isDefined(level.var_6e68c0d8))
+    if(!IsDefined(level.var_6e68c0d8))
         return self iPrintlnBold("^1ERROR: ^7There Is No Player Bound To The Quest");
     
     level.FeedDemonUrn = true;
@@ -965,69 +969,40 @@ FeedDemonUrn()
     curs = self getCursor();
     urnTrig = GetEnt("aq_dg_trophy_room_trig", "targetname");
 
-    if(isDefined(urnTrig))
+    if(IsDefined(urnTrig))
         urnTrig notify("trigger", level.var_6e68c0d8);
 
     wait 0.1;
     urn = GetEnt("aq_dg_demonic_circle_volume", "targetname");
 
+    sacrificedZombies = [];
+    goalEnt = GetEnt("aq_dg_demonic_circle_volume", "targetname");
+
     while(urn.var_e1f456ae < 6)
     {
-        SpawnSacrificedZombie();
+        sacrificedZombie = SpawnSacrificedZombie(goalEnt);
+
+        if(IsDefined(sacrificedZombie))
+            sacrificedZombies[sacrificedZombies.size] = sacrificedZombie;
+        
         wait 1;
     }
 
     while(!level flag::get("demon_gate_crawlers"))
         wait 0.1;
     
-    if(isDefined(level.EESpawnedZM) && level.EESpawnedZM.size)
+    if(IsDefined(sacrificedZombies) && sacrificedZombies.size)
     {
-        for(a = 0; a < level.EESpawnedZM.size; a++)
+        for(a = 0; a < sacrificedZombies.size; a++)
         {
-            if(!isDefined(level.EESpawnedZM[a]) || !IsAlive(level.EESpawnedZM[a]))
+            if(!IsDefined(sacrificedZombies[a]) || !IsAlive(sacrificedZombies[a]))
                 continue;
             
-            level.EESpawnedZM[a] Hide();
-            level.EESpawnedZM[a] DoDamage(level.EESpawnedZM[a].health + 666, level.EESpawnedZM[a].origin);
+            sacrificedZombies[a] DoDamage(sacrificedZombies[a].health + 666, sacrificedZombies[a].origin);
         }
     }
     
     self RefreshMenu(menu, curs);
-}
-
-SpawnSacrificedZombie()
-{
-    if(!isDefined(level.EESpawnedZM))
-        level.EESpawnedZM = [];
-    
-    zombie = zombie_utility::spawn_zombie(level.zombie_spawners[0]);
-
-    if(isDefined(zombie))
-    {
-        zombie endon("death");
-
-        wait 0.1;
-        level.EESpawnedZM[level.EESpawnedZM.size] = zombie;
-        zombie zombie_utility::makezombiecrawler(true);
-
-        goalEnt = GetEnt("aq_dg_demonic_circle_volume", "targetname");
-        target = goalEnt.origin;
-
-        linker = Spawn("script_origin", zombie.origin);
-        linker.origin = zombie.origin;
-        linker.angles = zombie.angles;
-
-        zombie LinkTo(linker);
-        linker MoveTo(target, 0.01);
-
-        linker waittill("movedone");
-
-        zombie Unlink();
-        linker delete();
-
-        zombie LinkTo(goalEnt);
-        zombie.completed_emerging_into_playable_area = 1;
-    }
 }
 
 InscribeDemonName()
@@ -1041,7 +1016,7 @@ InscribeDemonName()
     if(Is_True(level.InscribeDemonName))
         return self iPrintlnBold("^1ERROR: ^7This Step Is Currently Being Completed");
     
-    if(!isDefined(level.var_6e68c0d8))
+    if(!IsDefined(level.var_6e68c0d8))
         return self iPrintlnBold("^1ERROR: ^7There Is No Player Bound To The Quest");
     
     menu = self getCurrent();
@@ -1052,7 +1027,7 @@ InscribeDemonName()
 
     for(a = 0; a < powerups.size; a++)
     {
-        if(!isDefined(powerups[a]) || !IsSubStr(powerups[a], "rune"))
+        if(!IsDefined(powerups[a]) || !IsSubStr(powerups[a], "rune"))
             continue;
         
         drop = level zm_powerups::specific_powerup_drop(powerups[a], level.var_6e68c0d8.origin);
@@ -1095,7 +1070,7 @@ CollectVoidArrow()
     if(Is_True(level.CollectVoidArrow))
         return self iPrintlnBold("^1ERROR: ^7This Step Is Currently Being Completed");
     
-    if(!isDefined(level.var_6e68c0d8))
+    if(!IsDefined(level.var_6e68c0d8))
         return self iPrintlnBold("^1ERROR: ^7There Is No Player Bound To The Quest");
     
     menu = self getCurrent();
@@ -1193,7 +1168,7 @@ CollectSkullShrine()
     if(Is_True(level.CollectSkullShrine))
         return self iPrintlnBold("^1ERROR: ^7This Step Is Currently Being Completed");
     
-    if(!isDefined(level.var_52978d72))
+    if(!IsDefined(level.var_52978d72))
         return self iPrintlnBold("^1ERROR: ^7There Is No Player Bound To The Quest");
     
     level.CollectSkullShrine = true;
@@ -1213,7 +1188,7 @@ CollectSkullShrine()
     {
         skull = GetEnt("wolf_skull_roll_down", "targetname");
 
-        if(!isDefined(skull))
+        if(!IsDefined(skull))
             break;
         
         wait 0.1;
@@ -1234,7 +1209,7 @@ WolfAttachSkull()
     if(Is_True(level.WolfAttachSkull))
         return self iPrintlnBold("^1ERROR: ^7This Step Is Currently Being Completed");
     
-    if(!isDefined(level.var_52978d72))
+    if(!IsDefined(level.var_52978d72))
         return self iPrintlnBold("^1ERROR: ^7There Is No Player Bound To The Quest");
     
     menu = self getCurrent();
@@ -1262,14 +1237,14 @@ CollectWolfSouls()
     if(Is_True(level.CollectWolfSouls))
         return self iPrintlnBold("^1ERROR: ^7This Step Is Currently Being Completed");
     
-    if(!isDefined(level.var_52978d72))
+    if(!IsDefined(level.var_52978d72))
         return self iPrintlnBold("^1ERROR: ^7There Is No Player Bound To The Quest");
     
     menu = self getCurrent();
     curs = self getCursor();
     
     level.CollectWolfSouls = true;
-    self iPrintlnBold("^1" + ToUpper(level.menuName) + ": ^7This Step Is Going To Take A Few Minutes To Complete");
+    self iPrintlnBold("^1" + ToUpper(GetMenuName()) + ": ^7This Step Is Going To Take A Few Minutes To Complete");
 
     while(!level flag::get("wolf_howl_escort"))
     {
@@ -1279,23 +1254,27 @@ CollectWolfSouls()
         */
         level notify("player_found_skadi");
 
-        if(!isDefined(level.var_e6d07014) && !level flag::get("wolf_howl_escort")) //This is a fail safe, in the case the quest step gets killed. It will allow the script to be ran again when the step is restarted
+        if(!IsDefined(level.var_e6d07014) && !level flag::get("wolf_howl_escort")) //This is a fail safe, in the case the quest step gets killed. It will allow the script to be ran again when the step is restarted
         {
             self iPrintlnBold("^1ERROR: ^7Failed To Escort & Collect Wolf Souls");
             break;
         }
         
-        if(isDefined(level.var_e6d07014.var_5c4d212e) && !level.var_e6d07014.var_5c4d212e flag::get("dig_spot_complete"))
+        if(IsDefined(level.var_e6d07014.var_5c4d212e) && !level.var_e6d07014.var_5c4d212e flag::get("dig_spot_complete"))
         {
+            sacrificedZombies = [];
             targetName = level.var_e6d07014.var_5c4d212e.targetName;
             targetToks = StrTok(targetName, "_");
 
             while(level.var_e6d07014.var_5c4d212e.var_252d000d < 10)
             {
-                zombie = SpawnWolfSacrificedZombie(level.var_e6d07014.var_5c4d212e);
+                zombie = SpawnSacrificedZombie(level.var_e6d07014.var_5c4d212e);
 
-                if(isDefined(zombie))
+                if(IsDefined(zombie))
+                {
+                    sacrificedZombies[sacrificedZombies.size] = zombie;
                     MagicBullet(GetWeapon("elemental_bow"), zombie.origin + (0, 0, 5), zombie.origin, level.var_52978d72);
+                }
                 
                 wait 0.05;
             }
@@ -1303,6 +1282,17 @@ CollectWolfSouls()
             wait 10;
             bonePile = GetEnt("aq_wh_bones_" + targetToks[(targetToks.size - 1)], "targetname");
             bonePile.var_67b5dd94 notify("trigger", level.var_52978d72);
+
+            if(IsDefined(sacrificedZombies) && sacrificedZombies.size)
+            {
+                for(a = 0; a < sacrificedZombies.size; a++)
+                {
+                    if(!IsDefined(sacrificedZombies[a]) || !IsAlive(sacrificedZombies[a]))
+                        continue;
+                    
+                    sacrificedZombies[a] DoDamage(sacrificedZombies[a].health + 666, sacrificedZombies[a].origin);
+                }
+            }
         }
 
         wait 1;
@@ -1310,42 +1300,6 @@ CollectWolfSouls()
 
     level.CollectWolfSouls = BoolVar(level.CollectWolfSouls);
     self RefreshMenu(menu, curs);
-}
-
-SpawnWolfSacrificedZombie(goalEnt)
-{
-    if(!isDefined(level.EEWolfSpawnedZM))
-        level.EEWolfSpawnedZM = [];
-    
-    zombie = zombie_utility::spawn_zombie(level.zombie_spawners[0]);
-
-    if(isDefined(zombie))
-    {
-        zombie endon("death");
-
-        wait 0.1;
-        level.EEWolfSpawnedZM[level.EEWolfSpawnedZM.size] = zombie;
-        zombie zombie_utility::makezombiecrawler(true);
-        
-        target = goalEnt.origin;
-
-        linker = Spawn("script_origin", zombie.origin);
-        linker.origin = zombie.origin;
-        linker.angles = zombie.angles;
-
-        zombie LinkTo(linker);
-        linker MoveTo(target, 0.01);
-
-        linker waittill("movedone");
-
-        zombie Unlink();
-        linker delete();
-
-        zombie LinkTo(goalEnt);
-        zombie.completed_emerging_into_playable_area = 1;
-    }
-
-    return zombie;
 }
 
 CollectReforgedArrows()
@@ -1359,7 +1313,7 @@ CollectReforgedArrows()
     if(Is_True(level.CollectReforgedArrows))
         return self iPrintlnBold("^1ERROR: ^7This Step Is Currently Being Completed");
     
-    if(!isDefined(level.var_52978d72))
+    if(!IsDefined(level.var_52978d72))
         return self iPrintlnBold("^1ERROR: ^7There Is No Player Bound To The Quest");
     
     level.CollectReforgedArrows = true;

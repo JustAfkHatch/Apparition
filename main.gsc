@@ -8,7 +8,7 @@
 
     Menu:                 Apparition
     Developer:            CF4_99
-    Version:              1.5.1.6
+    Version:              1.5.1.7
     Discord:              cf4_99
     YouTube:              https://www.youtube.com/c/CF499
     Project Start Date:   6/10/21
@@ -17,20 +17,27 @@
     Menu Source & Current Update: https://github.com/CF4x99/Apparition
     IF YOU USE ANY SCRIPTS FROM THIS PROJECT, OR MAKE AN EDIT, LEAVE CREDIT.
 
+    Apparition is open source as a learning opportunity. Please take advantage of that and actually learn from it.
+    You will learn nothing from just copying and pasting everything.
+
     PLEASE KEEP IN MIND THE MENU IS CLOSE TO THE CENTER TO MAKE SURE IT IS VISIBLE FOR ANY SCREEN RESOLUTION
     YOU CAN ALWAYS CHANGE IT IN 'menu_customization.gsc' WHERE ALL OF THE DEFAULT MENU VARIABLES ARE SET
     OR YOU CAN JUST USE THE MENU POSITION EDITOR WHILE IN GAME TO SET A CUSTOM POSITION THAT YOU LIKE
 
     NOTE:
-        I Can Without A Doubt Say Apparition Will Be Unmatched In Every Possible Way.
-        It Will Be The Most Stable, In-Depth, Detail Oriented, Organized, and Largest Mod Menu You Will Ever See.
-        I Have Spent Countless Hours Over The Years Getting Apparition To Where It Is, Which Includes On Other Games As Well(Newer and Older).
+        I can say without a doubt that Apparition will be unmatched in every way.
+        It’s the most stable, in-depth, detail-oriented, organized, and flat-out biggest mod menu you’ll ever see.
+        I’ve put countless hours into it over the years, across both newer and older games, to get it where it is today.
 
-        You Won't Find Anything That Will Be Comparable To Apparition, Not Even The Menus With "Devs" That Constantly Have To Rip Scripts From Apparition For Their Projects.
-        Apparition Will Remain On Top, Regardless Of Who Tries To Compete With It.
+        You won’t find anything even close to Apparition.
+        Not even the menus made by “devs” who keep pulling stuff from it for their own projects.
+        Apparition will stay on top no matter who tries to compete.
 
-        Since There Has Been Confusion and Accusations, Apparition(including the base) Belongs To Me(CF4_99) and Me Only. I have built it 100%, from the ground up.
-        I Am The Sole Developer Of Apparition, No One Else Helps With it, Or Provides Scripts.
+        Just to clear up any confusion:
+            Apparition, including the base, belongs to me (CF4_99) and only me.
+            I built it 100% from the ground up.
+            I’m the sole developer.
+
         The Credits Below Says Exactly What These People Offered Apparition, Nothing More, Nothing Less.
 
 
@@ -38,7 +45,7 @@
         - CF4_99 ~ Project Developer
         - Extinct ~ Ideas, Suggestions, Constructive Criticism, and His Spec-Nade
         - CraftyCritter ~ BO3 Compiler
-        - ItsFebiven ~ Some Ideas and Suggestions
+        - ItsFebiven ~ Ideas, Suggestions, and Nautaremake Style
         - Joel ~ Suggestions, Bug Reports, and Testing The Unique String Crash Protection
 
 
@@ -55,7 +62,7 @@
         I have created scripts to complete the EE's for the classic maps that have smaller EE's.
         As for the bigger maps that have bigger and more complex EE's, I have made scripts to make completing the EE's, a lot easier.
         The EE scripts will complete steps properly, not just set flags/variables tricking the game into thinking the step has been completed, when it actually hasn't(unlike other "developers")
-        This will prevent any issues with crashes/conflictions later on while continuing regular gameplay/playing through other parts of the EE.
+        This will prevent issues with any crashes or conflictions later on while continuing regular gameplay and playing through other parts of the EE.
 
         Where to find options that help completing EE's:
             Main Menu -> [map name] Scripts
@@ -142,14 +149,8 @@ autoexec __init__system__()
 
 __init__()
 {
-    callback::on_start_gametype(::init);
     callback::on_spawned(::onPlayerSpawned);
     callback::on_disconnect(::onPlayerDisconnect);
-}
-
-init()
-{
-    level DefineOnce();
 }
 
 onPlayerSpawned()
@@ -160,39 +161,37 @@ onPlayerSpawned()
         return;
     self.runningSpawned = true;
     
-    if(self IsHost() && !isDefined(self.playerSpawned))
+    if(self IsHost() && !IsDefined(self.playerSpawned))
     {
-        if(!Is_True(level.AntiEndGame))
-            self thread AntiEndGame();
-        
-        if(!Is_True(level.GSpawnProtection))
-            self thread GSpawnProtection();
+        self thread AntiEndGame();
+        self thread GSpawnProtection();
+        level thread RGBFade();
         
         level.player_out_of_playable_area_monitor = 0;
         level.player_out_of_playable_area_monitor_callback = ::player_out_of_playable_area_monitor;
 
-        if(isDefined(level.overrideplayerdamage))
+        if(IsDefined(level.overrideplayerdamage))
             level.saved_overrideplayerdamage = level.overrideplayerdamage;
 
         level.overrideplayerdamage = ::override_player_damage;
 
-        if(isDefined(level.global_damage_func))
+        if(IsDefined(level.global_damage_func))
             level.saved_global_damage_func = level.global_damage_func;
         
         level.global_damage_func = ::override_zombie_damage;
 
-        if(isDefined(level.global_damage_func_ads))
+        if(IsDefined(level.global_damage_func_ads))
             level.saved_global_damage_func_ads = level.global_damage_func_ads;
         
         level.global_damage_func_ads = ::override_zombie_damage_ads;
 
-        if(isDefined(level.callbackactorkilled))
+        if(IsDefined(level.callbackactorkilled))
             level.saved_callbackactorkilled = level.callbackactorkilled;
         
         level.callbackactorkilled = ::override_actor_killed;
         level.custom_game_over_hud_elem = ::override_game_over_hud_elem;
 
-        if(isDefined(level.player_score_override))
+        if(IsDefined(level.player_score_override))
             level.saved_player_score_override = level.player_score_override;
         
         level.player_score_override = ::override_player_points;
@@ -213,7 +212,7 @@ onPlayerSpawned()
     self.runningSpawned = BoolVar(self.runningSpawned);
 
     //Anything Above This Is Ran Every Time The Player Spawns
-    if(isDefined(self.playerSpawned))
+    if(IsDefined(self.playerSpawned))
         return;
     self.playerSpawned = true;
 
@@ -223,83 +222,68 @@ onPlayerSpawned()
 
         //If there is an unknown map detected(custom map) it will display this note to the host.
         if(ReturnMapName() == "Unknown" || IsSupportedCustomMap())
-            self DebugiPrint("^1" + ToUpper(level.menuName) + ": ^7On Custom Maps, Some Things Might Not Work As They Should");
+            self DebugiPrint("^1" + ToUpper(GetMenuName()) + ": ^7On Custom Maps, Some Things Might Not Work As They Should");
     }
     
     self playerSetup();
 }
 
-DefineOnce()
-{
-    if(isDefined(level.DefineOnce))
-        return;
-    level.DefineOnce = true;
-    
-    level.menuName    = "Apparition";
-    level.menuVersion = "1.5.1.6";
-    level.MenuStatus  = Array("Bot", "None", "Verified", "VIP", "Admin", "Co-Host", "Host", "Developer");
-    level.colorNames  = Array("Ciper Purple", "xbOnline Blue", "Skyblue", "Pink", "Green", "Brown", "Blue", "Red", "Orange", "Purple", "Cyan", "Yellow", "Black", "White");
-    level.colors      = Array(100, 0, 100, 57, 152, 254, 135, 206, 250, 255, 110, 255, 0, 255, 0, 101, 67, 33, 0, 0, 255, 255, 0, 0, 255, 128, 0, 100, 0, 255, 0, 255, 255, 255, 255, 0, 0, 0, 0, 255, 255, 255);
-    
-    level thread RGBFade();
-}
-
 DefineMenuArrays()
 {
-    if(isDefined(level.MenuArraysDefined))
-        return;
-    level.MenuArraysDefined = true;
-    
     level.BgGravity = GetDvarInt("bg_gravity");
     level.GSpeed = GetDvarString("g_speed");
-    level.roundIntermissionTime = isDefined(level.zombie_vars["zombie_between_round_time"]) ? level.zombie_vars["zombie_between_round_time"] : 10;
+    level.roundIntermissionTime = IsDefined(level.zombie_vars["zombie_between_round_time"]) ? level.zombie_vars["zombie_between_round_time"] : 10;
     
-    level.MenuModels = Array("defaultactor", "defaultvehicle");
+    level.menu_models = Array("defaultactor", "defaultvehicle");
     ents = GetEntArray("script_model", "classname");
 
     for(a = 0; a < ents.size; a++)
+    {
         if(ents[a].model != "tag_origin" && ents[a].model != "" && !IsSubStr(ents[a].model, "collision_"))
-            array::add(level.MenuModels, ents[a].model, 0);
+            array::add(level.menu_models, ents[a].model, 0);
+    }
     
     tempEffects = [];
-    level.MenuEffects = [];
+    level.menuFX = [];
     fxs = GetArrayKeys(level._effect);
 
     for(a = 0; a < fxs.size; a++)
     {
-        if(!isDefined(fxs[a]))
+        if(!IsDefined(fxs[a]))
             continue;
         
-        if(IsSubStr(fxs[a], "step_") || IsSubStr(fxs[a], "fall_") || IsSubStr(fxs[a], "tesla_viewmodel") || isInArray(level.MenuEffects, fxs[a]) || isInArray(tempEffects, level._effect[fxs[a]]))
+        if(IsSubStr(fxs[a], "step_") || IsSubStr(fxs[a], "fall_") || IsSubStr(fxs[a], "tesla_viewmodel") || isInArray(level.menuFX, fxs[a]) || isInArray(tempEffects, level._effect[fxs[a]]))
             continue;
         
-        level.MenuEffects[level.MenuEffects.size] = fxs[a];
+        level.menuFX[level.menuFX.size] = fxs[a];
         tempEffects[tempEffects.size] = level._effect[fxs[a]];
     }
     
-    level.customBoxWeapons = [];
+    level.custom_boxWeapons = [];
     weapons = GetArrayKeys(level.zombie_weapons);
 
     for(a = 0; a < weapons.size; a++)
-        if(isDefined(weapons[a]) && isDefined(level.zombie_weapons[weapons[a]].is_in_box) && level.zombie_weapons[weapons[a]].is_in_box)
-            array::add(level.customBoxWeapons, weapons[a], 0);
+    {
+        if(IsDefined(weapons[a]) && Is_True(level.zombie_weapons[weapons[a]].is_in_box))
+            array::add(level.custom_boxWeapons, weapons[a], 0);
+    }
     
     trapTypes = Array("zombie_trap", "gas_access", "trap_electric", "trap_fire", "use_trap_chain");
-    level.MenuZombieTraps = [];
+    level.menu_traps = [];
 
     for(a = 0; a < trapTypes.size; a++)
     {
         traps = GetEntArray(trapTypes[a], "targetname");
 
-        if(isDefined(traps) && traps.size)
+        if(IsDefined(traps) && traps.size)
         {
             for(b = 0; b < traps.size; b++)
             {
                 //This will ensure that traps with more than one trigger, aren't added more than once.
-                if(level.MenuZombieTraps.size && isDefined(traps[b].prefabname) && isDefined(level.MenuZombieTraps[(level.MenuZombieTraps.size - 1)].prefabname) && level.MenuZombieTraps[(level.MenuZombieTraps.size - 1)].prefabname == traps[b].prefabname)
+                if(level.menu_traps.size && IsDefined(traps[b].prefabname) && IsDefined(level.menu_traps[(level.menu_traps.size - 1)].prefabname) && level.menu_traps[(level.menu_traps.size - 1)].prefabname == traps[b].prefabname)
                     continue;
                 
-                array::add(level.MenuZombieTraps, traps[b], 0);
+                array::add(level.menu_traps, traps[b], 0);
             }
         }
     }
@@ -314,17 +298,17 @@ DefineMenuArrays()
         {
             doors = GetEntArray(types[a], "targetname");
             
-            if(!isDefined(doors) || !doors.size)
+            if(!IsDefined(doors) || !doors.size)
                 continue;
             
             for(b = 0; b < doors.size; b++)
             {
-                if(!isDefined(doors[b]))
+                if(!IsDefined(doors[b]))
                     continue;
                 
                 for(c = 0; c < doors[b].doors.size; c++)
                 {
-                    if(!isDefined(doors[b].doors[c]) || !isInArray(validScriptStrings, doors[b].doors[c].script_string))
+                    if(!IsDefined(doors[b].doors[c]) || !isInArray(validScriptStrings, doors[b].doors[c].script_string))
                         continue;
                     
                     if(doors[b].doors[c].script_string == "slide_apart" || doors[b].doors[c].script_string == "move")
@@ -337,9 +321,9 @@ DefineMenuArrays()
     }
 
     foreach(DeathBarrier in GetEntArray("trigger_hurt", "classname"))
-        DeathBarrier delete();
+        DeathBarrier Delete();
 
-    level.savedJokerModel = level.chest_joker_model;
+    level.saved_jokerModel = level.chest_joker_model;
     
     SetDvar("wallRun_maxTimeMs_zm", 10000);
     SetDvar("playerEnergy_maxReserve_zm", 200);
@@ -350,41 +334,26 @@ DefineMenuArrays()
 
 playerSetup()
 {
-    if(isDefined(self.menuThreaded))
-        return;
-    self.menuThreaded = true;
-    
-    self endon("disconnect");
-    
-    self defineVariables();
-    self.hud_count = 0;
-
     if(self util::is_bot())
     {
-        self.verification = level.MenuStatus[0];
+        self.accessLevel = GetAccessLevels()[0];
         return;
     }
 
+    self.hud_count = 0;
+    self.menuUI = [];
+    
+    //Menu Design Variables
+    self LoadMenuVars();
+
     dvar = GetDvarInt("ApparitionV_" + self GetXUID());
-    self.verification = self isDeveloper() ? level.MenuStatus[(level.MenuStatus.size - 1)] : self IsHost() ? level.MenuStatus[(level.MenuStatus.size - 2)] : (isDefined(dvar) && dvar != "" && Int(dvar) != 0) ? level.MenuStatus[Int(dvar)] : level.MenuStatus[1];
+    self.accessLevel = self isDeveloper() ? GetAccessLevels()[(GetAccessLevels().size - 1)] : self IsHost() ? GetAccessLevels()[(GetAccessLevels().size - 2)] : (IsDefined(dvar) && dvar != "" && Int(dvar) != 0) ? GetAccessLevels()[Int(dvar)] : GetAccessLevels()[1];
     
     if(self hasMenu())
     {
         self thread MenuInstructionsDisplay();
         self thread menuMonitor();
     }
-}
- 
-defineVariables()
-{
-    if(isDefined(self.DefinedVariables))
-        return;
-    self.DefinedVariables = true;
-    
-    self.menuHud = [];
-    
-    //Menu Design Variables
-    self LoadMenuVars();
 }
 
 MenuInstructionsDisplay()
@@ -395,41 +364,41 @@ MenuInstructionsDisplay()
         return;
     self.MenuInstructionsDisplay = true;
 
-    self.menuInstructions = [];
+    self.menuInstructionsUI = [];
     
     while(self hasMenu() && !Is_True(self.DisableMenuInstructions))
     {
-        if(self hasMenu() && (!Is_True(self.DisableMenuInstructions) && (!isDefined(self.menuInstructions["background"]) || !isDefined(self.menuInstructions["outline"]) || !isDefined(self.menuInstructions["string"]))))
+        if(self hasMenu() && (!Is_True(self.DisableMenuInstructions) && (!IsDefined(self.menuInstructionsUI["background"]) || !IsDefined(self.menuInstructionsUI["outline"]) || !IsDefined(self.menuInstructionsUI["string"]))))
         {
-            if(!isDefined(self.menuInstructions["background"]))
-                self.menuInstructions["background"] = self createRectangle("TOP_LEFT", "CENTER", -100, 230, 0, 15, (0, 0, 0), 2, 1, "white");
+            if(!IsDefined(self.menuInstructionsUI["background"]))
+                self.menuInstructionsUI["background"] = self createRectangle("TOP_LEFT", "CENTER", -100, 230, 0, 15, (0, 0, 0), 2, 1, "white");
             
-            if(!isDefined(self.menuInstructions["outline"]))
-                self.menuInstructions["outline"] = self createRectangle("TOP_LEFT", "CENTER", -101, 229, 0, 17, self.MainColor, 1, 1, "white");
+            if(!IsDefined(self.menuInstructionsUI["outline"]))
+                self.menuInstructionsUI["outline"] = self createRectangle("TOP_LEFT", "CENTER", -101, 229, 0, 17, self.MainTheme, 1, 1, "white");
             
-            if(!isDefined(self.menuInstructions["string"]))
-                self.menuInstructions["string"] = self createText("default", 1.1, 3, "", "LEFT", "CENTER", (self.menuInstructions["background"].x + 1), (self.menuInstructions["background"].y + 7), 1, (1, 1, 1));
+            if(!IsDefined(self.menuInstructionsUI["string"]))
+                self.menuInstructionsUI["string"] = self createText("default", 1.1, 3, "", "LEFT", "CENTER", (self.menuInstructionsUI["background"].x + 1), (self.menuInstructionsUI["background"].y + 7), 1, (1, 1, 1));
         }
 
-        if(isDefined(self.menuInstructions["string"]) && Is_True(self.DisableMenuInstructions) || !self hasMenu() || !Is_Alive(self) && !Is_True(self.refreshInstructions))
+        if(IsDefined(self.menuInstructionsUI["string"]) && Is_True(self.DisableMenuInstructions) || !self hasMenu() || !Is_Alive(self) && !Is_True(self.refreshInstructionsUI))
         {
-            if(Is_True(self.DisableMenuInstructions) || !self hasMenu() || !Is_Alive(self) && !Is_True(self.refreshInstructions))
+            if(Is_True(self.DisableMenuInstructions) || !self hasMenu() || !Is_Alive(self) && !Is_True(self.refreshInstructionsUI))
                 self DestroyInstructions();
             
-            self.menuInstructions = [];
+            self.menuInstructionsUI = [];
             
-            if(!Is_Alive(self) && !Is_True(self.refreshInstructions))
-                self.refreshInstructions = true; //Instructions Need To Be Refreshed To Make Sure They Are Archived Correctly To Be Shown While Dead
+            if(!Is_Alive(self) && !Is_True(self.refreshInstructionsUI))
+                self.refreshInstructionsUI = true; //Instructions Need To Be Refreshed To Make Sure They Are Archived Correctly To Be Shown While Dead
         }
 
-        if(Is_Alive(self) && Is_True(self.refreshInstructions))
-            self.refreshInstructions = BoolVar(self.refreshInstructions);
+        if(Is_Alive(self) && Is_True(self.refreshInstructionsUI))
+            self.refreshInstructionsUI = BoolVar(self.refreshInstructionsUI);
         
-        if(isDefined(self.menuInstructions["string"]))
+        if(IsDefined(self.menuInstructionsUI["string"]))
         {
             if(Is_Alive(self))
             {
-                if(!isDefined(self.MenuInstructionsString))
+                if(!IsDefined(self.instructionsString))
                 {
                     if(!self isInMenu(true))
                     {
@@ -438,7 +407,7 @@ MenuInstructionsDisplay()
                         foreach(index, btn in self.OpenControls)
                             str += (index < (self.OpenControls.size - 1)) ? "[{" + btn + "}] & " : "[{" + btn + "}]";
                         
-                        str +=": Open " + level.menuName;
+                        str +=": Open " + GetMenuName();
 
                         if(!Is_True(self.DisableQM))
                             str += "\n[{+speed_throw}] & [{+smoke}]: Open Quick Menu";
@@ -447,28 +416,28 @@ MenuInstructionsDisplay()
                         str = "[{+attack}]/[{+speed_throw}]/[{+actionslot 1}]/[{+actionslot 2}]: Scroll\n[{+actionslot 3}]/[{+actionslot 4}]: Slider Left/Right\n[{+activate}]: Select\n[{+melee}]: Go Back/Exit";
                 }
                 else
-                    str = self.MenuInstructionsString;
+                    str = self.instructionsString;
             }
             else
                 str = self isInMenu(true) ? "[{+attack}]/[{+speed_throw}]: Scroll\n[{+actionslot 3}]/[{+actionslot 4}]: Slider Left/Right\n[{+activate}]: Select\n[{+gostand}]: Exit" : "[{+speed_throw}] & [{+gostand}]: Open Quick Menu";
             
-            if(self.menuInstructions["string"].text != str)
-                self.menuInstructions["string"] SetTextString(str);
+            if(self.menuInstructionsUI["string"].text != str)
+                self.menuInstructionsUI["string"] SetTextString(str);
             
-            width = self.menuInstructions["string"] GetTextWidth3arc(self);
+            width = self.menuInstructionsUI["string"] GetTextWidth3arc(self);
             height = IsSubStr(str, "\n") ? (CorrectNL_BGHeight(str) - 5) : CorrectNL_BGHeight(str);
             
-            if(self.menuInstructions["background"].width != width || self.menuInstructions["background"].height != height)
+            if(self.menuInstructionsUI["background"].width != width || self.menuInstructionsUI["background"].height != height)
             {
-                self.menuInstructions["background"] SetShaderValues(undefined, width, height);
-                self.menuInstructions["outline"] SetShaderValues(undefined, (width + 2), (height + 2));
+                self.menuInstructionsUI["background"] SetShaderValues(undefined, width, height);
+                self.menuInstructionsUI["outline"] SetShaderValues(undefined, (width + 2), (height + 2));
             }
 
-            if(self.menuInstructions["background"].y != (230 - height))
+            if(self.menuInstructionsUI["background"].y != (230 - height))
             {
-                self.menuInstructions["background"].y = (230 - height);
-                self.menuInstructions["outline"].y = (229 - height);
-                self.menuInstructions["string"].y = (self.menuInstructions["background"].y + 6);
+                self.menuInstructionsUI["background"].y = (230 - height);
+                self.menuInstructionsUI["outline"].y = (229 - height);
+                self.menuInstructionsUI["string"].y = (self.menuInstructionsUI["background"].y + 6);
             }
         }
 
@@ -483,19 +452,19 @@ MenuInstructionsDisplay()
 
 DestroyInstructions()
 {
-    if(isDefined(self.menuInstructions["string"]))
-        self.menuInstructions["string"] DestroyHud();
+    if(IsDefined(self.menuInstructionsUI["string"]))
+        self.menuInstructionsUI["string"] DestroyHud();
 
-    if(isDefined(self.menuInstructions["background"]))
-        self.menuInstructions["background"] DestroyHud();
+    if(IsDefined(self.menuInstructionsUI["background"]))
+        self.menuInstructionsUI["background"] DestroyHud();
     
-    if(isDefined(self.menuInstructions["outline"]))
-        self.menuInstructions["outline"] DestroyHud();
+    if(IsDefined(self.menuInstructionsUI["outline"]))
+        self.menuInstructionsUI["outline"] DestroyHud();
     
-    self.menuInstructions = undefined;
+    self.menuInstructionsUI = undefined;
 }
 
 SetMenuInstructions(text)
 {
-    self.MenuInstructionsString = (!isDefined(text) || text == "") ? undefined : text;
+    self.instructionsString = (!IsDefined(text) || text == "") ? undefined : text;
 }

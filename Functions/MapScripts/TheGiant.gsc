@@ -7,8 +7,8 @@ PopulateTheGiantScripts(menu)
                 self addOptBool(level flag::get("power_on"), "Turn On Power", ::ActivatePower);
                 self addOpt("Link Teleporters", ::newMenu, "The Giant Teleporters");
                 self addOptBool(level flag::get("snow_ee_completed"), "Complete Sixth Perk", ::GiantCompleteSixthPerk);
-                self addOptBool((isDefined(level.HideAndSeekInit) || level flag::get("hide_and_seek")), "Start Hide & Seek", ::InitializeGiantHideAndSeek);
-                self addOptBool((isDefined(level.GiantHideAndSeekCompleted) || level flag::get("hide_and_seek") && !level flag::get("flytrap")), "Complete Hide & Seek", ::GiantCompleteHideAndSeek);
+                self addOptBool((IsDefined(level.HideAndSeekInit) || level flag::get("hide_and_seek")), "Start Hide & Seek", ::InitializeGiantHideAndSeek);
+                self addOptBool((IsDefined(level.GiantHideAndSeekCompleted) || level flag::get("hide_and_seek") && !level flag::get("flytrap")), "Complete Hide & Seek", ::GiantCompleteHideAndSeek);
             break;
 
         case "The Giant Teleporters":
@@ -137,7 +137,7 @@ GiantCompleteHideAndSeek()
         {
             trig = GetEnt("trig_" + ents[a], "targetname");
 
-            if(isDefined(trig))
+            if(IsDefined(trig))
                 trig notify("trigger");
 
             wait 0.15;

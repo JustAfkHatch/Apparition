@@ -22,8 +22,8 @@ PopulateMessageMenu(menu)
         
         case "Advertisements Messages":
             self addMenu("Advertisements");
-                self addOpt("Welcome", ::DisplayMessage, "Welcome To " + level.menuName);
-                self addOpt("Developer", ::DisplayMessage, level.menuName + " Was Developed By CF4_99");
+                self addOpt("Welcome", ::DisplayMessage, "Welcome To " + GetMenuName());
+                self addOpt("Developer", ::DisplayMessage, GetMenuName() + " Was Developed By CF4_99");
                 self addOpt("YouTube", ::DisplayMessage, "YouTube: CF4_99");
             break;
     }
@@ -36,7 +36,7 @@ MessageDisplay(type)
 
 DisplayMessage(message)
 {
-    if(!isDefined(self.MessageDisplay))
+    if(!IsDefined(self.MessageDisplay))
         self.MessageDisplay = "Notify";
     
     switch(self.MessageDisplay)
@@ -56,25 +56,25 @@ DisplayMessage(message)
 
 typeWriter(message)
 {
-    if(isDefined(level.LobbyTypeWriterMessage))
+    if(IsDefined(level.LobbyTypeWriterMessage))
         EnterMessageQueue(message);
     
-    while(isDefined(level.LobbyTypeWriterMessage))
+    while(IsDefined(level.LobbyTypeWriterMessage))
         wait 0.1;
     
     level.LobbyTypeWriterMessage = createServerText("objective", 1.7, 1, "", "TOP", "TOP", 0, 75, 1, level.RGBFadeColor);
-    level.LobbyTypeWriterMessage thread SetTextFX((isDefined(level.LobbyMessageQueue) && level.LobbyMessageQueue.size) ? level.LobbyMessageQueue[0] : message, 4);
+    level.LobbyTypeWriterMessage thread SetTextFX((IsDefined(level.LobbyMessageQueue) && level.LobbyMessageQueue.size) ? level.LobbyMessageQueue[0] : message, 4);
     level.LobbyTypeWriterMessage thread HudRGBFade();
 
-    if(isDefined(level.LobbyMessageQueue) && level.LobbyMessageQueue.size)
+    if(IsDefined(level.LobbyMessageQueue) && level.LobbyMessageQueue.size)
         level.LobbyMessageQueue = ArrayRemove(level.LobbyMessageQueue, level.LobbyMessageQueue[0]);
 }
 
 EnterMessageQueue(message)
 {
-    if(isDefined(level.LobbyTypeWriterMessage))
+    if(IsDefined(level.LobbyTypeWriterMessage))
     {
-        if(!isDefined(level.LobbyMessageQueue))
+        if(!IsDefined(level.LobbyMessageQueue))
             level.LobbyMessageQueue = [];
         
         level.LobbyMessageQueue[level.LobbyMessageQueue.size] = message;

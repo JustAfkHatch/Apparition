@@ -3,7 +3,7 @@ PopulateFunScripts(menu, player)
     switch(menu)
     {
         case "Fun Scripts":
-            if(!isDefined(player.DamagePointsMultiplier))
+            if(!IsDefined(player.DamagePointsMultiplier))
                 player.DamagePointsMultiplier = 1;
             
             self addMenu("Fun Scripts");
@@ -47,23 +47,23 @@ PopulateFunScripts(menu, player)
             break;
         
         case "Effects Man Options":
-            if(!isDefined(player.EffectManTag))
+            if(!IsDefined(player.EffectManTag))
                 player.EffectManTag = "j_head";
 
             self addMenu("Effects Man Options");
-                self addOptBool(!isDefined(player.EffectMan), "Disable", ::DisableEffectMan, player);
+                self addOptBool(!IsDefined(player.EffectMan), "Disable", ::DisableEffectMan, player);
                 self addOptSlider("Tag", ::SetEffectManTag, "j_head;j_neck;j_spine4;j_spinelower;j_mainroot;pelvis;j_ankle_ri;j_ankle_le", player);
                 self addOpt("");
 
-                for(a = 0; a < level.MenuEffects.size; a++)
-                    self addOptBool((isDefined(player.SavedFX) && player.SavedFX == level._effect[level.MenuEffects[a]]), CleanString(level.MenuEffects[a]), ::EffectMan, level._effect[level.MenuEffects[a]], player);
+                for(a = 0; a < level.menuFX.size; a++)
+                    self addOptBool((IsDefined(player.SavedFX) && player.SavedFX == level._effect[level.menuFX[a]]), CleanString(level.menuFX[a]), ::EffectMan, level._effect[level.menuFX[a]], player);
             break;
         
         case "Hit Markers":
-            if(!isDefined(player.HitmarkerFeedback))
-                player.HitmarkerFeedback = "damage_feedback_glow_orange";
+            if(!IsDefined(player.HitmarkerFeedback))
+                player.HitmarkerFeedback = "damage_feedback";
             
-            if(!isDefined(self.HitMarkerColor))
+            if(!IsDefined(self.HitMarkerColor))
                 self.HitMarkerColor = (1, 1, 1);
             
             self addMenu("Hit Markers");
@@ -71,8 +71,8 @@ PopulateFunScripts(menu, player)
                 self addOptSlider("Feedback", ::HitmarkerFeedback, "damage_feedback_glow_orange;damage_feedback;damage_feedback_flak;damage_feedback_tac;damage_feedback_armor", player);
                 self addOpt("");
 
-                for(a = 0; a < level.colorNames.size; a++)
-                    self addOptBoolPreview((IsVec(self.HitMarkerColor) && self.HitMarkerColor == divideColor(level.colors[(3 * a)], level.colors[((3 * a) + 1)], level.colors[((3 * a) + 2)])), "white", divideColor(level.colors[(3 * a)], level.colors[((3 * a) + 1)], level.colors[((3 * a) + 2)]), level.colorNames[a], ::HitMarkerColor, divideColor(level.colors[(3 * a)], level.colors[((3 * a) + 1)], level.colors[((3 * a) + 2)]), player);
+                for(a = 0; a < GetColorNames().size; a++)
+                    self addOptBoolPreview((IsVec(self.HitMarkerColor) && self.HitMarkerColor == divideColor(GetColorValues()[(3 * a)], GetColorValues()[((3 * a) + 1)], GetColorValues()[((3 * a) + 2)])), "white", divideColor(GetColorValues()[(3 * a)], GetColorValues()[((3 * a) + 1)], GetColorValues()[((3 * a) + 2)]), GetColorNames()[a], ::HitMarkerColor, divideColor(GetColorValues()[(3 * a)], GetColorValues()[((3 * a) + 1)], GetColorValues()[((3 * a) + 2)]), player);
                 
                 self addOptBoolPreview((IsString(self.HitMarkerColor) && self.HitMarkerColor == "Rainbow"), "white", "Rainbow", "Smooth Rainbow", ::HitMarkerColor, "Rainbow", player);
             break;
@@ -98,7 +98,7 @@ PopulateFunScripts(menu, player)
                 
                 for(a = 0; a < vendings.size; a++)
                 {
-                    if(!isDefined(vendings[a]))
+                    if(!IsDefined(vendings[a]))
                         continue;
                     
                     perkName = vendings[a].script_noteworthy;
@@ -114,10 +114,10 @@ PopulateFunScripts(menu, player)
             break;
         
         case "Force Field Options":
-            if(!isDefined(player.ForceFieldSize))
+            if(!IsDefined(player.ForceFieldSize))
                 player.ForceFieldSize = 250;
             
-            if(!isDefined(player.ForceFieldType))
+            if(!IsDefined(player.ForceFieldType))
                 player.ForceFieldType = "Invisible";
             
             self addMenu("Force Field Options");
@@ -184,7 +184,7 @@ AdventureTime(player)
     wait 3.5;
 
     player Unlink();
-    model delete();
+    model Delete();
 
     if(Is_True(player.AdventureTime))
         player.AdventureTime = BoolVar(player.AdventureTime);
@@ -198,14 +198,14 @@ ForceField(player)
     {
         player endon("disconnect");
 
-        if(!isDefined(player.ForceFieldEnts))
+        if(!IsDefined(player.ForceFieldEnts))
             player.ForceFieldEnts = [];
         
         if(!player.ForceFieldEnts.size)
         {
             color = Pow(2, RandomInt(3));
 
-            if(!isDefined(player.ForceFieldLinker))
+            if(!IsDefined(player.ForceFieldLinker))
                 player.ForceFieldLinker = SpawnScriptModel(player.origin);
             
             player.ForceFieldLinker thread ForceFieldLinker();
@@ -229,7 +229,7 @@ ForceField(player)
 
             for(a = 0; a < zombies.size; a++)
             {
-                if(!isDefined(zombies[a]) || !IsAlive(zombies[a]))
+                if(!IsDefined(zombies[a]) || !IsAlive(zombies[a]))
                     continue;
                 
                 kill = false;
@@ -250,15 +250,15 @@ ForceField(player)
             wait 0.01;
         }
 
-        if(isDefined(player.ForceFieldLinker))
-            player.ForceFieldLinker delete();
+        if(IsDefined(player.ForceFieldLinker))
+            player.ForceFieldLinker Delete();
         
-        if(isDefined(player.ForceFieldEnts) && player.ForceFieldEnts.size)
+        if(IsDefined(player.ForceFieldEnts) && player.ForceFieldEnts.size)
         {
             for(a = 0; a < player.ForceFieldEnts.size; a++)
             {
-                if(isDefined(player.ForceFieldEnts[a]))
-                    player.ForceFieldEnts[a] delete();
+                if(IsDefined(player.ForceFieldEnts[a]))
+                    player.ForceFieldEnts[a] Delete();
             }
 
             player.ForceFieldEnts = [];
@@ -268,10 +268,10 @@ ForceField(player)
 
 ForceFieldLinker()
 {
-    if(!isDefined(self))
+    if(!IsDefined(self))
         return;
     
-    while(isDefined(self))
+    while(IsDefined(self))
     {
         self RotateYaw(360, 1.5);
         wait 1.5;
@@ -293,11 +293,11 @@ ForceFieldType(type, player)
     
     player.ForceFieldType = type;
 
-    if(Is_True(player.ForceField) && isDefined(player.ForceFieldEnts) && player.ForceFieldEnts.size)
+    if(Is_True(player.ForceField) && IsDefined(player.ForceFieldEnts) && player.ForceFieldEnts.size)
     {
         for(a = 0; a < player.ForceFieldEnts.size; a++)
         {
-            if(isDefined(player.ForceFieldEnts[a]))
+            if(IsDefined(player.ForceFieldEnts[a]))
             {
                 player.ForceFieldEnts[a] SetModel((player.ForceFieldType == "Death Skulls") ? level.zombie_powerups["insta_kill"].model_name : "tag_origin");
                 
@@ -318,23 +318,23 @@ EffectMan(fx, player)
 
     player.EffectMan = true;
 
-    if(isDefined(player.fxent))
-        player.fxent delete();
+    if(IsDefined(player.fxent))
+        player.fxent Delete();
 
     wait 0.05;
     player.SavedFX = fx;
     player.SavedFXTag = player.EffectManTag;
 
-    while(isDefined(player.EffectMan))
+    while(IsDefined(player.EffectMan))
     {
         player.fxent = SpawnFX(player.SavedFX, player GetTagOrigin(player.SavedFXTag));
 
-        if(isDefined(player.fxent))
+        if(IsDefined(player.fxent))
             TriggerFX(player.fxent);
         wait 0.1;
 
-        if(isDefined(player.fxent))
-            player.fxent delete();
+        if(IsDefined(player.fxent))
+            player.fxent Delete();
 
         wait 0.2;
     }
@@ -345,7 +345,7 @@ SetEffectManTag(tag, player)
     player.EffectManTag = tag;
     player.EffectMan = undefined;
 
-    if(isDefined(player.SavedFX))
+    if(IsDefined(player.SavedFX))
         player thread EffectMan(player.SavedFX, player);
 }
 
@@ -354,8 +354,8 @@ DisableEffectMan(player)
     player notify("EndEffectMan");
     player.EffectMan = undefined;
 
-    if(isDefined(player.fxent))
-        player.fxent delete();
+    if(IsDefined(player.fxent))
+        player.fxent Delete();
 
     wait 0.05;
     player.SavedFX = undefined;
@@ -381,7 +381,7 @@ HitmarkerFeedback(feedback, player)
 {
     player.HitmarkerFeedback = feedback;
 
-    if(isDefined(player.hud_damagefeedback))
+    if(IsDefined(player.hud_damagefeedback))
         player.hud_damagefeedback SetShaderValues(player.HitmarkerFeedback, 24, 48);
 }
 
@@ -389,7 +389,7 @@ HitMarkerColor(color, player)
 {
     player.HitMarkerColor = color;
 
-    if(isDefined(player.hud_damagefeedback) && IsVec(color))
+    if(IsDefined(player.hud_damagefeedback) && IsVec(color))
         player.hud_damagefeedback.color = color;
 }
 
@@ -403,7 +403,7 @@ SpawnDeathSkull(action, player)
     switch(action)
     {
         case "Spawn":
-            if(!isDefined(player.DeathSkullEnts))
+            if(!IsDefined(player.DeathSkullEnts))
                 player.DeathSkullEnts = [];
 
             linkedSkulls = [];
@@ -425,12 +425,14 @@ SpawnDeathSkull(action, player)
             break;
         
         case "Delete All":
-            if(!isDefined(player.DeathSkullEnts) || !player.DeathSkullEnts.size)
+            if(!IsDefined(player.DeathSkullEnts) || !player.DeathSkullEnts.size)
                 return;
             
             for(a = 0; a < player.DeathSkullEnts.size; a++)
-                if(isDefined(player.DeathSkullEnts[a]))
-                    player.DeathSkullEnts[a] delete();
+            {
+                if(IsDefined(player.DeathSkullEnts[a]))
+                    player.DeathSkullEnts[a] Delete();
+            }
             
             player.DeathSkullEnts = [];
             break;
@@ -442,12 +444,12 @@ SpawnDeathSkull(action, player)
 
 DeathSkullLinker(skulls, player)
 {
-    if(!isDefined(self))
+    if(!IsDefined(self))
         return;
     
     self endon("death");
     
-    while(isDefined(self))
+    while(IsDefined(self))
     {
         self MoveZ(25, 5);
         for(a = 0; a < 20; a++)
@@ -476,9 +478,9 @@ DeathSkullLinker(skulls, player)
         Earthquake(0.75, 2, self.origin, 255);
         RadiusDamage(self.origin, 350, 999, 999, player);
 
-        if(isDefined(level._effect["raps_impact"]))
+        if(IsDefined(level._effect["raps_impact"]))
             PlayFX(level._effect["raps_impact"], self.origin);
-        else if(isDefined(level._effect["dog_gib"]))
+        else if(IsDefined(level._effect["dog_gib"]))
             PlayFX(level._effect["dog_gib"], self.origin);
         
         PlayFX(level._effect["grenade_samantha_steal"], self.origin);
@@ -506,7 +508,7 @@ PlayerMountCamera(tag, player)
     {
         tagOrigin = player GetTagOrigin(tag);
 
-        if(!isDefined(tagOrigin))
+        if(!IsDefined(tagOrigin))
             return self iPrintlnBold("^1ERROR: ^7Couldn't Find Tag On Player");
         
         if(Is_True(player.PlayerMountCamera))
@@ -527,8 +529,8 @@ PlayerMountCamera(tag, player)
     {
         player CameraActivate(false);
         
-        if(isDefined(player.camlinker))
-            player.camlinker delete();
+        if(IsDefined(player.camlinker))
+            player.camlinker Delete();
     }
 }
 
@@ -561,8 +563,8 @@ PlayerDropCamera(player)
     {
         player CameraActivate(false);
 
-        if(isDefined(player.camlinker))
-            player.camlinker delete();
+        if(IsDefined(player.camlinker))
+            player.camlinker Delete();
     }
 }
 
@@ -596,7 +598,7 @@ DeadOpsView(player)
             {
                 tracePosition = BulletTrace(player.origin, player.origin + (0, 0, 350), 0, player)["position"];
                 
-                if(isDefined(player.camlinker) && player.camlinker.origin != tracePosition)
+                if(IsDefined(player.camlinker) && player.camlinker.origin != tracePosition)
                     player.camlinker.origin = tracePosition;
             }
             
@@ -607,8 +609,8 @@ DeadOpsView(player)
     {
         player CameraActivate(false);
         
-        if(isDefined(player.camlinker))
-            player.camlinker delete();
+        if(IsDefined(player.camlinker))
+            player.camlinker Delete();
     }
 }
 
@@ -627,9 +629,9 @@ ZombieCounter(player)
         {
             if(!player isInMenu(true))
             {
-                if(!isDefined(player.ZombieCounterHud) || !player.ZombieCounterHud.size)
+                if(!IsDefined(player.ZombieCounterHud) || !player.ZombieCounterHud.size)
                 {
-                    if(!isDefined(player.ZombieCounterHud))
+                    if(!IsDefined(player.ZombieCounterHud))
                         player.ZombieCounterHud = [];
                     
                     player.ZombieCounterHud[0] = player createText("default", 1.4, 1, "Alive:", "LEFT", "CENTER", -407, -145, 1, level.RGBFadeColor);
@@ -639,8 +641,10 @@ ZombieCounter(player)
                     player.ZombieCounterHud[3] = player createText("default", 1.4, 1, 0, "LEFT", "CENTER", (player.ZombieCounterHud[1].x + (player.ZombieCounterHud[1] GetTextWidth() - 38)), player.ZombieCounterHud[1].y, 1, level.RGBFadeColor);
 
                     for(a = 0; a < player.ZombieCounterHud.size; a++)
-                        if(isDefined(player.ZombieCounterHud[a]))
+                    {
+                        if(IsDefined(player.ZombieCounterHud[a]))
                             player.ZombieCounterHud[a] thread HudRGBFade();
+                    }
                 }
                 else
                 {
@@ -650,7 +654,7 @@ ZombieCounter(player)
             }
             else
             {
-                if(isDefined(player.ZombieCounterHud) && player.ZombieCounterHud.size)
+                if(IsDefined(player.ZombieCounterHud) && player.ZombieCounterHud.size)
                 {
                     destroyAll(player.ZombieCounterHud);
                     player.ZombieCounterHud = [];
@@ -677,28 +681,28 @@ LightProtector(player)
     {
         player.LightProtect = SpawnScriptModel(player GetTagOrigin("j_head") + (0, 0, 45), "tag_origin");
 
-        if(isDefined(player.LightProtect))
+        if(IsDefined(player.LightProtect))
             PlayFXOnTag(level._effect["powerup_on"], player.LightProtect, "tag_origin");
 
-        while(Is_True(player.LightProtector) && isDefined(player.LightProtect))
+        while(Is_True(player.LightProtector) && IsDefined(player.LightProtect))
         {
             player.LightProtect MoveTo(player GetTagOrigin("j_head") + (0, 0, 45), 0.1);
             target = player GetLightProtectorTarget(500);
             
-            if(isDefined(target))
+            if(IsDefined(target))
                 player LightProtectorMoveToTarget(target);
             
             wait 0.1;
         }
 
         //In the case that the entity crash protection deletes the light protector, but the light protector variable is still true
-        if(Is_True(player.LightProtector) && !isDefined(player.LightProtect))
+        if(Is_True(player.LightProtector) && !IsDefined(player.LightProtect))
             LightProtector(player);
     }
     else
     {
-        if(isDefined(player.LightProtect))
-            player.LightProtect delete();
+        if(IsDefined(player.LightProtect))
+            player.LightProtect Delete();
         
         player notify("EndLightProtector");
     }
@@ -706,7 +710,7 @@ LightProtector(player)
 
 LightProtectorMoveToTarget(target)
 {
-    if(!isDefined(target) || !IsAlive(target) || !isDefined(self.LightProtect))
+    if(!IsDefined(target) || !IsAlive(target) || !IsDefined(self.LightProtect))
         return;
     
     self endon("disconnect");
@@ -716,7 +720,7 @@ LightProtectorMoveToTarget(target)
     {
         origin = target GetTagOrigin("j_head");
 
-        if(!isDefined(origin)) //If the tag origin for the target tag can't be found, this will test the given tags to see if one can be used
+        if(!IsDefined(origin)) //If the tag origin for the target tag can't be found, this will test the given tags to see if one can be used
         {
             tags = Array("j_ankle_ri", "j_ankle_le", "pelvis", "j_mainroot", "j_spinelower", "j_spine4", "j_neck", "tag_body");
 
@@ -724,7 +728,7 @@ LightProtectorMoveToTarget(target)
             {
                 test = target GetTagOrigin(tags[a]);
 
-                if(isDefined(test))
+                if(IsDefined(test))
                     origin = target GetTagOrigin(tags[a]);
             }
         }
@@ -739,13 +743,13 @@ LightProtectorMoveToTarget(target)
 
         newTarget = self GetLightProtectorTarget(500);
 
-        if(isDefined(newTarget))
+        if(IsDefined(newTarget))
         {
             self thread LightProtectorMoveToTarget(target);
             return;
         }
 
-        if(!isDefined(self.LightProtect))
+        if(!IsDefined(self.LightProtect))
             return;
         
         time = CalcDistance(1100, self.LightProtect.origin, self GetTagOrigin("j_head") + (0, 0, 45));
@@ -761,12 +765,12 @@ GetLightProtectorTarget(distance)
 
     for(a = 0; a < zombies.size; a++)
     {
-        if(isDefined(zombies[a]) && IsAlive(zombies[a]) && zombies[a] DamageConeTrace(self GetEye(), self) >= 0.1 && Distance(self.origin, zombies[a].origin) <= distance)
+        if(IsDefined(zombies[a]) && IsAlive(zombies[a]) && zombies[a] DamageConeTrace(self GetEye(), self) >= 0.1 && Distance(self.origin, zombies[a].origin) <= distance)
         {
-            if(!isDefined(enemy))
+            if(!IsDefined(enemy))
                 enemy = zombies[a];
 
-            if(isDefined(enemy) && enemy != zombies[a] && Closer(self.origin, zombies[a].origin, enemy.origin) && zombies[a] DamageConeTrace(self GetEye(), self) >= 0.1)
+            if(IsDefined(enemy) && enemy != zombies[a] && Closer(self.origin, zombies[a].origin, enemy.origin) && zombies[a] DamageConeTrace(self GetEye(), self) >= 0.1)
                 enemy = zombies[a];
         }
     }
@@ -836,10 +840,10 @@ ForgeMode(player)
 
         while(Is_True(player.ForgeMode))
         {
-            if(isDefined(grabEnt) && (IsPlayer(grabEnt) && !Is_Alive(grabEnt) || Is_True(grabEnt.is_zombie) && !IsAlive(grabEnt)))
+            if(IsDefined(grabEnt) && (IsPlayer(grabEnt) && !Is_Alive(grabEnt) || Is_True(grabEnt.is_zombie) && !IsAlive(grabEnt)))
                 grabEnt = undefined;
             
-            if(isDefined(grabEnt))
+            if(IsDefined(grabEnt))
             {
                 if(IsPlayer(grabEnt))
                     grabEnt SetOrigin((player GetEye() + VectorScale(AnglesToForward(player GetPlayerAngles()), 250)));
@@ -852,11 +856,11 @@ ForgeMode(player)
                     grabEnt = undefined;
             }
 
-            if(player AdsButtonPressed() && !isDefined(grabEnt))
+            if(player AdsButtonPressed() && !IsDefined(grabEnt))
             {
                 trace = BulletTrace(player GetWeaponMuzzlePoint(), player GetWeaponMuzzlePoint() + VectorScale(AnglesToForward(player GetPlayerAngles()), 1000000), 1, player);
 
-                if(isDefined(trace["entity"]) && trace["entity"].model != "tag_origin")
+                if(IsDefined(trace["entity"]) && trace["entity"].model != "tag_origin")
                     grabEnt = trace["entity"];
             }
 
@@ -893,7 +897,7 @@ SpecNade(player) //Credit to Extinct for his spec-nade
         {
             player waittill("grenade_fire", grenade, weapon);
             
-            if(zm_utility::is_placeable_mine(weapon) || player isPlayerLinked() || !isDefined(grenade))
+            if(zm_utility::is_placeable_mine(weapon) || player isPlayerLinked() || !IsDefined(grenade))
                 continue;
             
             player.nadelinker = SpawnScriptModel(grenade.origin - AnglesToForward(grenade.angles) * 50, "tag_origin");
@@ -909,7 +913,7 @@ SpecNade(player) //Credit to Extinct for his spec-nade
             grenade SpecNadeFollow(player.nadelinker);
 
             player CameraActivate(false);
-            player.nadelinker delete();
+            player.nadelinker Delete();
 
             if(Is_True(player.ignoreme))
                 player.ignoreme = false;
@@ -920,10 +924,10 @@ SpecNade(player) //Credit to Extinct for his spec-nade
     }
     else
     {
-        if(isDefined(player.nadelinker))
+        if(IsDefined(player.nadelinker))
         {
             player CameraActivate(false);
-            player.nadelinker delete();
+            player.nadelinker Delete();
             
             if(!Is_True(player.Invisibility))
                 player Show();
@@ -938,14 +942,14 @@ SpecNade(player) //Credit to Extinct for his spec-nade
 
 SpecNadeFollow(camera)
 {
-    if(!isDefined(camera))
+    if(!IsDefined(camera))
         return;
     
     self endon("death");
 
-    while(isDefined(self))
+    while(IsDefined(self))
     {
-        if(isDefined(camera))
+        if(IsDefined(camera))
             camera.origin = ((self.origin + (0, 0, 10)) - (AnglesToForward(camera.angles) * 50));
 
         wait 0.05;
@@ -965,7 +969,7 @@ NukeNades(player)
         {
             player waittill("grenade_fire", grenade, weapon);
             
-            if(zm_utility::is_placeable_mine(weapon) || !isDefined(grenade))
+            if(zm_utility::is_placeable_mine(weapon) || !IsDefined(grenade))
                 continue;
 
             grenade thread NukeNade();
@@ -977,15 +981,15 @@ NukeNades(player)
 
 NukeNade()
 {
-    if(!isDefined(self))
+    if(!IsDefined(self))
         return;
     
     nukeModel = SpawnScriptModel(self.origin, "p7_zm_power_up_nuke", self.angles);
 
-    if(isDefined(nukeModel))
+    if(IsDefined(nukeModel))
         nukeModel LinkTo(self);
 
-    while(isDefined(self))
+    while(IsDefined(self))
     {
         origin = self.origin;
         wait 0.05;
@@ -993,8 +997,8 @@ NukeNade()
     
     origin += (0, 0, 25);
 
-    if(isDefined(nukeModel))
-        nukeModel delete();
+    if(IsDefined(nukeModel))
+        nukeModel Delete();
     
     PlayFX(level._effect["grenade_samantha_steal"], origin);
     PlayFX(level._effect["poltergeist"], origin);
@@ -1004,7 +1008,7 @@ NukeNade()
     
     for(a = 0; a < zombies.size; a++)
     {
-        if(!isDefined(zombies[a]) || !IsAlive(zombies[a]) || Distance(origin, zombies[a].origin) > 500)
+        if(!IsDefined(zombies[a]) || !IsAlive(zombies[a]) || Distance(origin, zombies[a].origin) > 500)
             continue;
         
         zombies[a].ZombieFling = true;
@@ -1026,16 +1030,20 @@ CodJumper(player)
     {
         player.codboxes = [];
 
-        player iPrintlnBold("^1" + ToUpper(level.menuName) + ": ^7Shoot To Spawn Cod Jumper At Your Crosshairs");
+        player iPrintlnBold("^1" + ToUpper(GetMenuName()) + ": ^7Shoot To Spawn Cod Jumper At Your Crosshairs");
 
         while(Is_True(player.CodJumper))
         {
             player waittill("weapon_fired");
             
-            if(isDefined(player.codboxes) && player.codboxes.size)
+            if(IsDefined(player.codboxes) && player.codboxes.size)
+            {
                 for(a = 0; a < player.codboxes.size; a++)
-                    if(isDefined(player.codboxes[a]))
-                        player.codboxes[a] delete();
+                {
+                    if(IsDefined(player.codboxes[a]))
+                        player.codboxes[a] Delete();
+                }
+            }
             
             color = Pow(2, RandomInt(3));
             trace = BulletTrace(player GetWeaponMuzzlePoint(), player GetWeaponMuzzlePoint() + VectorScale(AnglesToForward(player GetPlayerAngles()), 1000000), 0, player);
@@ -1046,22 +1054,27 @@ CodJumper(player)
             if(surface != "none" && surface != "default")
             {
                 for(a = 0; a < 3; a++)
+                {
                     for(b = 0; b < 4; b++)
                     {
                         player.codboxes[player.codboxes.size] = SpawnScriptModel(GetGroundPos(origin + ((a * 20), (b * 10), 0)), "p7_zm_power_up_max_ammo", (0, 0, 0));
                         player.codboxes[(player.codboxes.size - 1)] clientfield::set("powerup_fx", Int(color));
-
                         player.codboxes[(player.codboxes.size - 1)] thread CodBoxHandler();
                     }
+                }
             }
         }
     }
     else
     {
-        if(isDefined(player.codboxes) && player.codboxes.size)
+        if(IsDefined(player.codboxes) && player.codboxes.size)
+        {
             foreach(box in player.codboxes)
-                if(isDefined(box))
-                    box delete();
+            {
+                if(IsDefined(box))
+                    box Delete();
+            }
+        }
         
         player notify("EndCodJumper");
     }
@@ -1069,7 +1082,7 @@ CodJumper(player)
 
 CodBoxHandler()
 {
-    while(isDefined(self))
+    while(IsDefined(self))
     {
         foreach(player in level.players)
         {
@@ -1111,7 +1124,6 @@ Jetpack(player)
                 
                 Earthquake(0.55, 0.05, player GetTagOrigin("back_low"), 25);
                 player SetVelocity((player GetVelocity() + (0, 0, 50)));
-
                 PlayFX(level._effect["character_fire_death_torso"], player GetTagOrigin("back_low"));
             }
 
@@ -1139,7 +1151,7 @@ HealthBar(player)
                 healthWidth = (player.health >= 200) ? 200 : player.health;
                 maxHealthWidth = (player.maxhealth >= 200) ? 200 : player.maxhealth;
 
-                if(!isDefined(player.HealthBarUI) || !player.HealthBarUI.size)
+                if(!IsDefined(player.HealthBarUI) || !player.HealthBarUI.size)
                 {
                     health = player.health;
                     player.HealthBarUI = [];
@@ -1167,7 +1179,7 @@ HealthBar(player)
             }
             else
             {
-                if(isDefined(player.HealthBarUI) && player.HealthBarUI.size)
+                if(IsDefined(player.HealthBarUI) && player.HealthBarUI.size)
                 {
                     destroyAll(player.HealthBarUI);
                     player.HealthBarUI = undefined;
@@ -1181,7 +1193,7 @@ HealthBar(player)
     }
     else
     {
-        if(isDefined(player.HealthBarUI) && player.HealthBarUI.size)
+        if(IsDefined(player.HealthBarUI) && player.HealthBarUI.size)
         {
             destroyAll(player.HealthBarUI);
             player.HealthBarUI = undefined;
@@ -1202,10 +1214,10 @@ ClusterGrenades(player)
         {
             player waittill("grenade_fire", grenade, weapon);
 
-            if(!isDefined(grenade) || !isDefined(weapon) || zm_utility::is_placeable_mine(weapon))
+            if(!IsDefined(grenade) || !IsDefined(weapon) || zm_utility::is_placeable_mine(weapon))
                 continue;
             
-            while(isDefined(grenade))
+            while(IsDefined(grenade))
             {
                 origin = grenade.origin;
                 wait 0.1;
@@ -1296,7 +1308,7 @@ ElectricFireCherry(player)
             }
 
             //Makes sure electric_cherry is used, which will mean 'electric_cherry_reload_fx' is registered as a client field
-            if(isDefined(level._effect["electric_cherry_explode"]))
+            if(IsDefined(level._effect["electric_cherry_explode"]))
                 CodeSetClientField(player, "electric_cherry_reload_fx", 1);
 
             player PlaySound("zmb_bgb_powerup_burnedout");
@@ -1307,10 +1319,10 @@ ElectricFireCherry(player)
 
             zombies = array::get_all_closest(player.origin, GetAITeamArray(level.zombie_team), undefined, undefined, 375);
 
-            if(!isDefined(zombies) || !zombies.size)
+            if(!IsDefined(zombies) || !zombies.size)
             {
                 //Makes sure electric_cherry is used, which will mean 'electric_cherry_reload_fx' is registered as a client field
-                if(isDefined(level._effect["electric_cherry_explode"]))
+                if(IsDefined(level._effect["electric_cherry_explode"]))
                     CodeSetClientField(player, "electric_cherry_reload_fx", 0);
 
                 continue;
@@ -1320,7 +1332,7 @@ ElectricFireCherry(player)
 
             for(a = 0; a < zombies.size; a++)
             {
-                if(!isDefined(zombies[a]) || !IsAlive(zombies[a]) || isInArray(targets, zombies[a]) || isDefined(n_zombie_limit) && targets.size >= n_zombie_limit)
+                if(!IsDefined(zombies[a]) || !IsAlive(zombies[a]) || isInArray(targets, zombies[a]) || IsDefined(n_zombie_limit) && targets.size >= n_zombie_limit)
                     continue;
                 
                 zombies[a].marked_for_death = 1;
@@ -1328,7 +1340,7 @@ ElectricFireCherry(player)
 
                 if(IsVehicle(zombies[a]))
                 {
-                    if(!(isDefined(zombies[a].head_gibbed) && zombies[a].head_gibbed))
+                    if(!(IsDefined(zombies[a].head_gibbed) && zombies[a].head_gibbed))
                         zombies[a] clientfield::set("tesla_shock_eyes_fx_veh", 1);
                     else
                         zombies[a] clientfield::set("tesla_death_fx_veh", 1);
@@ -1337,7 +1349,7 @@ ElectricFireCherry(player)
                 }
                 else
                 {
-                    if(!(isDefined(zombies[a].head_gibbed) && zombies[a].head_gibbed))
+                    if(!(IsDefined(zombies[a].head_gibbed) && zombies[a].head_gibbed))
                         zombies[a] clientfield::set("tesla_shock_eyes_fx", 1);
                     else
                         zombies[a] clientfield::set("tesla_death_fx", 1);
@@ -1348,13 +1360,13 @@ ElectricFireCherry(player)
                 targets[targets.size] = zombies[a];
             }
 
-            if(isDefined(targets) && targets.size)
+            if(IsDefined(targets) && targets.size)
             {
                 for(a = 0; a < targets.size; a++)
                 {
                     wait 0.1;
 
-                    if(!isDefined(targets[a]) || !IsAlive(targets[a]))
+                    if(!IsDefined(targets[a]) || !IsAlive(targets[a]))
                         continue;
                     
                     targets[a].ZombieFling = true;
@@ -1364,14 +1376,14 @@ ElectricFireCherry(player)
             }
 
             //Makes sure electric_cherry is used, which will mean 'electric_cherry_reload_fx' is registered as a client field
-            if(isDefined(level._effect["electric_cherry_explode"]))
+            if(IsDefined(level._effect["electric_cherry_explode"]))
                 CodeSetClientField(player, "electric_cherry_reload_fx", 0);
         }
     }
     else
     {
         //Makes sure electric_cherry is used, which will mean 'electric_cherry_reload_fx' is registered as a client field
-        if(isDefined(level._effect["electric_cherry_explode"]))
+        if(IsDefined(level._effect["electric_cherry_explode"]))
             CodeSetClientField(player, "electric_cherry_reload_fx", 0);
         
         player notify("EndElectricFireCherry");
@@ -1411,7 +1423,6 @@ check_for_reload_complete(weapon)
         {
             ArrayRemoveValue(self.wait_on_reload, weapon);
             self notify("weapon_reload_complete_" + weapon.name);
-
             break;
         }
     }
@@ -1433,7 +1444,6 @@ weapon_replaced_monitor(weapon)
         {
             self notify("player_lost_weapon_" + weapon.name);
             ArrayRemoveValue(self.wait_on_reload, weapon);
-
             break;
         }
     }
@@ -1462,8 +1472,8 @@ HumanCentipede(player)
                     if(player.HumanCentipedeClone >= 8)
                         player.HumanCentipedeClone = 0;
                     
-                    if(isDefined(player.HumanCentipedeArray[player.HumanCentipedeClone]))
-                        player.HumanCentipedeArray[player.HumanCentipedeClone] delete();
+                    if(IsDefined(player.HumanCentipedeArray[player.HumanCentipedeClone]))
+                        player.HumanCentipedeArray[player.HumanCentipedeClone] Delete();
                 }
             }
             else
@@ -1471,8 +1481,10 @@ HumanCentipede(player)
                 if(player.HumanCentipedeArray.size)
                 {
                     foreach(clone in player.HumanCentipedeArray)
-                        if(isDefined(clone))
-                            clone delete();
+                    {
+                        if(IsDefined(clone))
+                            clone Delete();
+                    }
                 }
             }
             
@@ -1482,8 +1494,10 @@ HumanCentipede(player)
     else
     {
         foreach(clone in player.HumanCentipedeArray)
-            if(isDefined(clone))
-                clone delete();
+        {
+            if(IsDefined(clone))
+                clone Delete();
+        }
     }
 }
 
@@ -1541,7 +1555,7 @@ RocketRiding(player)
                 
                 if(Distance(client.origin, trace["position"]) <= 225)
                 {
-                    if(!isDefined(rider))
+                    if(!IsDefined(rider))
                         rider = client;
                     else
                     {
@@ -1551,14 +1565,14 @@ RocketRiding(player)
                 }
             }
             
-            if(!isDefined(rider))
+            if(!IsDefined(rider))
                 rider = player;
             
             if(Is_True(rider.RidingRocket))
             {
                 rider notify("StopRidingRocket");
                 rider Unlink();
-                rider.RocketRidingLinker delete();
+                rider.RocketRidingLinker Delete();
                 rider.RidingRocket = BoolVar(rider.RidingRocket);
             }
             
@@ -1566,7 +1580,7 @@ RocketRiding(player)
             rider.RidingRocket = true;
             rider.RocketRidingLinker = SpawnScriptModel(missile.origin, "tag_origin");
 
-            if(isDefined(rider.RocketRidingLinker))
+            if(IsDefined(rider.RocketRidingLinker))
                 rider.RocketRidingLinker LinkTo(missile);
             
             rider SetOrigin(rider.RocketRidingLinker.origin);
@@ -1586,7 +1600,7 @@ WatchRocket(rocket)
     self endon("disconnect");
     self endon("StopRidingRocket");
     
-    while(isDefined(rocket) && Is_Alive(self))
+    while(IsDefined(rocket) && Is_Alive(self))
     {
         if(self MeleeButtonPressed())
             break;
@@ -1596,8 +1610,8 @@ WatchRocket(rocket)
     
     self Unlink();
 
-    if(isDefined(self.RocketRidingLinker))
-        self.RocketRidingLinker delete();
+    if(IsDefined(self.RocketRidingLinker))
+        self.RocketRidingLinker Delete();
     
     if(Is_True(self.RidingRocket))
         self.RidingRocket = BoolVar(self.RidingRocket);
@@ -1620,29 +1634,29 @@ GrapplingGun(player)
             origin = trace["position"];
             surface = trace["surfacetype"];
 
-            if(surface == "none" || surface == "default" || isDefined(player.grapplingent))
+            if(surface == "none" || surface == "default" || IsDefined(player.grapplingent))
                 continue;
             
             player.grapplingent = SpawnScriptModel(player.origin, "tag_origin");
 
-            if(!isDefined(player.grapplingent))
+            if(!IsDefined(player.grapplingent))
                 continue;
 
             player PlayerLinkTo(player.grapplingent);
             player.grapplingent MoveTo(origin, 1);
             player.grapplingent waittill("movedone");
 
-            if(!isDefined(player.grapplingent))
+            if(!IsDefined(player.grapplingent))
                 continue;
             
             player Unlink();
-            player.grapplingent delete();
+            player.grapplingent Delete();
         }
     }
     else
     {
-        if(isDefined(player.grapplingent))
-            player.grapplingent delete();
+        if(IsDefined(player.grapplingent))
+            player.grapplingent Delete();
         
         player notify("EndGrapplingGun");
     }
@@ -1669,10 +1683,10 @@ GravityGun(player)
         
         while(Is_True(player.GravityGun))
         {
-            if(isDefined(grabEnt) && (IsPlayer(grabEnt) && !Is_Alive(grabEnt) || Is_True(grabEnt.is_zombie) && !IsAlive(grabEnt)))
+            if(IsDefined(grabEnt) && (IsPlayer(grabEnt) && !Is_Alive(grabEnt) || Is_True(grabEnt.is_zombie) && !IsAlive(grabEnt)))
                 grabEnt = undefined;
             
-            if(isDefined(grabEnt))
+            if(IsDefined(grabEnt))
             {
                 if(IsPlayer(grabEnt))
                     grabEnt SetOrigin((player GetEye() + VectorScale(AnglesToForward(player GetPlayerAngles()), 250)));
@@ -1681,7 +1695,7 @@ GravityGun(player)
                 else
                     grabEnt.origin = (player GetEye() + VectorScale(AnglesToForward(player GetPlayerAngles()), 250));
                 
-                if(player AttackButtonPressed() && isDefined(grabEnt))
+                if(player AttackButtonPressed() && IsDefined(grabEnt))
                 {
                     shootEnt = SpawnScriptModel(grabEnt.origin, "tag_origin");
 
@@ -1702,11 +1716,11 @@ GravityGun(player)
                 }
             }
 
-            if(player AdsButtonPressed() && !isDefined(grabEnt))
+            if(player AdsButtonPressed() && !IsDefined(grabEnt))
             {
                 trace = BulletTrace(player GetWeaponMuzzlePoint(), player GetWeaponMuzzlePoint() + VectorScale(AnglesToForward(player GetPlayerAngles()), 1000000), 1, player);
 
-                if(isDefined(trace["entity"]) && !Is_True(trace["entity"].GravityGunLaunched) && trace["entity"].model != "tag_origin")
+                if(IsDefined(trace["entity"]) && !Is_True(trace["entity"].GravityGunLaunched) && trace["entity"].model != "tag_origin")
                     grabEnt = trace["entity"];
             }
 
@@ -1722,10 +1736,10 @@ GravityGunUnlinkAfter(time)
     
     wait time;
 
-    if(isDefined(self))
+    if(IsDefined(self))
         self Unlink();
 
-    if(isDefined(self) && Is_True(self.GravityGunLaunched))
+    if(IsDefined(self) && Is_True(self.GravityGunLaunched))
         self.GravityGunLaunched = BoolVar(self.GravityGunLaunched);
 }
 
@@ -1751,8 +1765,8 @@ DeleteGun(player)
             {
                 trace = BulletTrace(player GetWeaponMuzzlePoint(), player GetWeaponMuzzlePoint() + VectorScale(AnglesToForward(player GetPlayerAngles()), 1000000), 1, player);
 
-                if(isDefined(trace["entity"]) && !IsPlayer(trace["entity"]))
-                    trace["entity"] delete();
+                if(IsDefined(trace["entity"]) && !IsPlayer(trace["entity"]))
+                    trace["entity"] Delete();
             }
 
             wait 0.01;
@@ -1775,7 +1789,7 @@ RapidFire(player)
 
             weapon = player GetCurrentWeapon();
 
-            if(!isDefined(weapon) || weapon == level.weaponnone)
+            if(!IsDefined(weapon) || weapon == level.weaponnone)
                 continue;
 
             for(a = 0; a < 3; a++)
@@ -1812,17 +1826,17 @@ PowerUpMagnet(player)
     {
         powerups = zm_powerups::get_powerups(player.origin, 500);
 
-        if(isDefined(powerups) && powerups.size)
+        if(IsDefined(powerups) && powerups.size)
         {
             foreach(index, powerup in powerups)
             {
-                if(isDefined(powerup) && BulletTracePassed(player GetEye(), powerup.origin, 0, player) && !Is_True(powerup.movingtoplayer))
+                if(IsDefined(powerup) && BulletTracePassed(player GetEye(), powerup.origin, 0, player) && !Is_True(powerup.movingtoplayer))
                 {
                     powerup.movingtoplayer = true;
                     powerup MoveTo(player GetTagOrigin("j_mainroot"), CalcDistance(1100, powerup.origin, player GetTagOrigin("j_mainroot")));
                     wait 0.05;
 
-                    if(isDefined(powerup) && Is_True(powerup.movingtoplayer)) //making sure the powerup still exists
+                    if(IsDefined(powerup) && Is_True(powerup.movingtoplayer)) //making sure the powerup still exists
                         powerup.movingtoplayer = BoolVar(powerup.movingtoplayer);
                 }
             }

@@ -70,10 +70,12 @@ play_digger_start_vox(digger_name)
 do_mooncomp_vox(alias)
 {
     for(i = 0; i < GetPlayers().size; i++)
+    {
         if(GetPlayers()[i] zm_equipment::is_active(level.var_f486078e))
             GetPlayers()[i] PlaySoundToPlayer(alias + "_f", GetPlayers()[i]);
+    }
 
-    if(!isDefined(level.var_2ff0efb3))
+    if(!IsDefined(level.var_2ff0efb3))
         return;
 
     foreach(speaker in level.var_2ff0efb3)
@@ -128,10 +130,10 @@ play_timer_vox(digger_name)
 
 play_mooncomp_vox(alias, digger)
 {
-    if(!isDefined(alias) || !Is_True(level.on_the_moon))
+    if(!IsDefined(alias) || !Is_True(level.on_the_moon))
         return;
 
-    if(isDefined(digger))
+    if(IsDefined(digger))
     {
         switch(digger)
         {
@@ -155,7 +157,7 @@ play_mooncomp_vox(alias, digger)
     else
         num = "";
 
-    if(!isDefined(level.mooncomp_is_speaking))
+    if(!IsDefined(level.mooncomp_is_speaking))
         level.mooncomp_is_speaking = 0;
 
     if(level.mooncomp_is_speaking == 0)

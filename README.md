@@ -7,7 +7,7 @@
 
     Menu:                 Apparition
     Developer:            CF4_99
-    Version:              1.5.1.6
+    Version:              1.5.1.7
     Discord:              cf4_99
     YouTube:              https://www.youtube.com/c/CF499
     Project Start Date:   6/10/21
@@ -16,20 +16,27 @@
     Menu Source & Current Update: https://github.com/CF4x99/Apparition
     IF YOU USE ANY SCRIPTS FROM THIS PROJECT, OR MAKE AN EDIT, LEAVE CREDIT.
 
+    Apparition is open source as a learning opportunity. Please take advantage of that and actually learn from it.
+    You will learn nothing from just copying and pasting everything.
+
     PLEASE KEEP IN MIND THE MENU IS CLOSE TO THE CENTER TO MAKE SURE IT IS VISIBLE FOR ANY SCREEN RESOLUTION
     YOU CAN ALWAYS CHANGE IT IN 'menu_customization.gsc' WHERE ALL OF THE DEFAULT MENU VARIABLES ARE SET
     OR YOU CAN JUST USE THE MENU POSITION EDITOR WHILE IN GAME TO SET A CUSTOM POSITION THAT YOU LIKE
 
     NOTE:
-        I Can Without A Doubt Say Apparition Will Be Unmatched In Every Possible Way.
-        It Will Be The Most Stable, In-Depth, Detail Oriented, Organized, and Largest Mod Menu You Will Ever See.
-        I Have Spent Countless Hours Over The Years Getting Apparition To Where It Is, Which Includes On Other Games As Well(Newer and Older).
+        I can say without a doubt that Apparition will be unmatched in every way.
+        It’s the most stable, in-depth, detail-oriented, organized, and flat-out biggest mod menu you’ll ever see.
+        I’ve put countless hours into it over the years, across both newer and older games, to get it where it is today.
 
-        You Won't Find Anything That Will Be Comparable To Apparition, Not Even The Menus With "Devs" That Constantly Have To Rip Scripts From Apparition For Their Projects.
-        Apparition Will Remain On Top, Regardless Of Who Tries To Compete With It.
+        You won’t find anything even close to Apparition.
+        Not even the menus made by “devs” who keep pulling stuff from it for their own projects.
+        Apparition will stay on top no matter who tries to compete.
 
-        Since There Has Been Confusion and Accusations, Apparition(including the base) Belongs To Me(CF4_99) and Me Only. I have built it 100%, from the ground up.
-        I Am The Sole Developer Of Apparition, No One Else Helps With it, Or Provides Scripts.
+        Just to clear up any confusion:
+            Apparition, including the base, belongs to me (CF4_99) and only me.
+            I built it 100% from the ground up.
+            I’m the sole developer
+
         The Credits Below Says Exactly What These People Offered Apparition, Nothing More, Nothing Less.
 
 
@@ -74,6 +81,21 @@
 
 
 ## Changelog
+<details>
+    <summary>
+        Version 1.5.1.7
+    </summary>
+    
+    - Changed: secret stuff
+    - Changed: Default hitmarker shader to 'damage_feedback'
+
+    - Fixed: Profile Management -- Unlock All Challenges -- Dev error being thrown due to not being able to build a ddl path for invalid stats
+    - Fixed: Manu Base -- Trying to check an undefined slider value
+    - Fixed: Origins -- Completing the G-strike quest for a player will now refresh the menu when it's completed
+    - Fixed: Weaponry -- AAT option bools will now refresh automatically when you switch weapons
+    - Fixed: Verko Survival Maps -- Weaponry will now refresh automatically when you switch weapons -- mostly for pack 'a' punch bool
+</details>
+
 <details>
     <summary>
         Version 1.5.1.6

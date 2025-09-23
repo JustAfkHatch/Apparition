@@ -27,10 +27,10 @@ PopulateProfileManagement(menu, player)
         
         case "Custom Stats":
 
-            if(!isDefined(player.CustomStatsValue))
+            if(!IsDefined(player.CustomStatsValue))
                 player.CustomStatsValue = 0;
             
-            if(!isDefined(player.CustomStatsArray))
+            if(!IsDefined(player.CustomStatsArray))
                 player.CustomStatsArray = [];
             
             self addMenu("Custom Stats");
@@ -63,9 +63,11 @@ PopulateProfileManagement(menu, player)
                 self addOptBool(player IsAllBGBStatsEnabled(), "Enable All", ::AllBGBStats, player);
                 self addOpt("");
 
-                if(isDefined(MenuBGB) && MenuBGB.size)
+                if(IsDefined(MenuBGB) && MenuBGB.size)
+                {
                     for(a = 0; a < MenuBGB.size; a++)
                         self addOptBool(isInArray(player.CustomStatsArray, MenuBGB[a]), GobblegumName(MenuBGB[a]), ::AddToCustomStats, MenuBGB[a], player);
+                }
             break;
         
         case "Map Stats":
@@ -136,13 +138,16 @@ AllChallenges(type, player)
     player iPrintlnBold(type + " All Challenges ^2Started");
     player iPrintlnBold("You'll Be Notified When Complete");
 
-    for(a = 512; a < 642; a++)
+    for(a = 512; a < 643; a++)
     {
         stat = SpawnStruct();
         stat.value = Int(TableLookup("gamedata/stats/zm/statsmilestones3.csv", 0, a, 2));
         stat.type = TableLookup("gamedata/stats/zm/statsmilestones3.csv", 0, a, 3);
         stat.name = TableLookup("gamedata/stats/zm/statsmilestones3.csv", 0, a, 4);
         stat.split = TableLookup("gamedata/stats/zm/statsmilestones3.csv", 0, a, 13);
+
+        if(!IsDefined(stat.name) || stat.name == "lifetime_plevel" || !IsDefined(stat.value) || !IsDefined(stat.type))
+            continue;
 
         switch(stat.type)
         {
@@ -152,25 +157,28 @@ AllChallenges(type, player)
                 break;
 
             case "attachment":
-                foreach(attachment in StrTok(stat.split, " "))
+                if(IsDefined(stat.split) && stat.split.size)
                 {
-                    player SetDStat("attachments", attachment, "stats", stat.name, "StatValue", (type == "Unlock") ? stat.value : 0);
-                    player SetDStat("attachments", attachment, "stats", stat.name, "ChallengeValue", (type == "Unlock") ? stat.value : 0);
-
-                    for(b = 1; b < 8; b++)
+                    foreach(attachment in StrTok(stat.split, " "))
                     {
-                        player SetDStat("attachments", attachment, "stats", "challenge" + b, "StatValue", (type == "Unlock") ? stat.value : 0);
-                        player SetDStat("attachments", attachment, "stats", "challenge" + b, "ChallengeValue", (type == "Unlock") ? stat.value : 0);
+                        player SetDStat("attachments", attachment, "stats", stat.name, "StatValue", (type == "Unlock") ? stat.value : 0);
+                        player SetDStat("attachments", attachment, "stats", stat.name, "ChallengeValue", (type == "Unlock") ? stat.value : 0);
+
+                        for(b = 1; b < 7; b++)
+                        {
+                            player SetDStat("attachments", attachment, "stats", "challenge" + b, "StatValue", (type == "Unlock") ? stat.value : 0);
+                            player SetDStat("attachments", attachment, "stats", "challenge" + b, "ChallengeValue", (type == "Unlock") ? stat.value : 0);
+                        }
                     }
                 }
                 break;
 
             default:
-                if(isDefined(stat.split))
+                if(IsDefined(stat.split) && stat.split.size)
                 {
                     toks = StrTok(stat.split, " ");
 
-                    if(isDefined(toks) && toks.size)
+                    if(IsDefined(toks) && toks.size)
                     {
                         foreach(weapon in StrTok(stat.split, " "))
                             player AddWeaponStat(GetWeapon(weapon), stat.name, stat.value);
@@ -200,8 +208,10 @@ PlayerWeaponRanks(type, player)
     player endon("disconnect");
 
     for(a = 512; a < 548; a++)
+    {
         foreach(weapon in StrTok(TableLookup("gamedata/stats/zm/statsmilestones3.csv", 0, a, 13), " "))
             player SetDStat("ItemStats", GetBaseWeaponItemIndex(GetWeapon(weapon)), "xp", (type == "Max") ? 665535 : 0);
+    }
 
     wait 0.1;
     UploadStats(player);
@@ -302,7 +312,7 @@ CustomStatsValue(value, player)
 
 AddToCustomStats(stat, player)
 {
-    if(!isDefined(player.CustomStatsArray))
+    if(!IsDefined(player.CustomStatsArray))
         player.CustomStatsArray = [];
     
     if(isInArray(player.CustomStatsArray, stat))
@@ -313,7 +323,7 @@ AddToCustomStats(stat, player)
 
 SetCustomStats(player)
 {
-    if(!isDefined(player.CustomStatsArray) || !player.CustomStatsArray.size)
+    if(!IsDefined(player.CustomStatsArray) || !player.CustomStatsArray.size)
         return self iPrintlnBold("^1ERROR: ^7No Stats Have Selected");
     
     player endon("disconnect");
@@ -343,8 +353,10 @@ IsMapStat(stat, returnMap)
     mapNames = Array("zm_zod", "zm_factory", "zm_castle", "zm_island", "zm_stalingrad", "zm_genesis", "zm_prototype", "zm_asylum", "zm_sumpf", "zm_theater", "zm_cosmodrome", "zm_temple", "zm_moon", "zm_tomb");
 
     for(a = 0; a < mapNames.size; a++)
+    {
         if(IsSubStr(stat, mapNames[a]))
             return returnMap ? mapNames[a] : true;
+    }
     
     return returnMap ? undefined : false;
 }
@@ -357,8 +369,10 @@ RemoveMapFromStat(stat)
     mapStats = Array("score", "total_games_played", "total_rounds_survived", "highest_round_reached", "time_played_total", "total_downs");
 
     for(a = 0; a < mapStats.size; a++)
+    {
         if(IsSubStr(stat, mapStats[a]) || mapStats[a] == stat)
             return mapStats[a];
+    }
 }
 
 IsAllBGBStatsEnabled()
@@ -369,10 +383,14 @@ IsAllBGBStatsEnabled()
     for(a = 0; a < bgb.size; a++)
         array::add(MenuBGB, bgb[a], 0);
     
-    if(isDefined(MenuBGB) && MenuBGB.size)
+    if(IsDefined(MenuBGB) && MenuBGB.size)
+    {
         for(a = 0; a < MenuBGB.size; a++)
+        {
             if(!isInArray(self.CustomStatsArray, MenuBGB[a]))
                 return false;
+        }
+    }
     
     return true;
 }
@@ -385,19 +403,23 @@ AllBGBStats(player)
     for(a = 0; a < bgb.size; a++)
         array::add(MenuBGB, bgb[a], 0);
     
-    if(isDefined(MenuBGB) && MenuBGB.size)
+    if(IsDefined(MenuBGB) && MenuBGB.size)
     {
         if(!player IsAllBGBStatsEnabled())
         {
             for(a = 0; a < MenuBGB.size; a++)
+            {
                 if(!isInArray(player.CustomStatsArray, MenuBGB[a]))
                     self AddToCustomStats(MenuBGB[a], player);
+            }
         }
         else
         {
             for(a = 0; a < MenuBGB.size; a++)
+            {
                 if(isInArray(player.CustomStatsArray, MenuBGB[a]))
                     self AddToCustomStats(MenuBGB[a], player);
+            }
         }
     }
 }

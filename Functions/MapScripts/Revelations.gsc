@@ -23,16 +23,18 @@ PopulateRevelationsScripts(menu)
 
 RevelationsKeeperCraftable(craftable)
 {
-    if(!isDefined(craftable) || !level flag::exists("keeper_callbox_" + craftable + "_found") || level flag::get("keeper_callbox_" + craftable + "_found"))
+    if(!IsDefined(craftable) || !level flag::exists("keeper_callbox_" + craftable + "_found") || level flag::get("keeper_callbox_" + craftable + "_found"))
         return;
 
     partStruct = struct::get_array("companion_" + craftable + "_part", "targetname");
 
     foreach(part in partStruct)
-        if(isDefined(part) && IsString(part.var_fdb628a4) && part.var_fdb628a4 == "keeper_callbox_" + craftable)
+    {
+        if(IsDefined(part) && IsString(part.var_fdb628a4) && part.var_fdb628a4 == "keeper_callbox_" + craftable)
             cPart = part;
+    }
 
-    if(isDefined(cPart))
+    if(IsDefined(cPart))
         cPart notify("trigger_activated", self);
 }
 
@@ -52,7 +54,7 @@ TrapApothicon()
     if(!level flag::get("all_power_on"))
         return self iPrintlnBold("^1ERROR: ^7All Power Generators Must Be Corrupt First");
 
-    if(isDefined(level.TrappingApothicon))
+    if(IsDefined(level.TrappingApothicon))
         return self iPrintlnBold("^1ERROR: ^7This Step Is Currently Being Completed");
 
     level.TrappingApothicon = true;
@@ -62,7 +64,7 @@ TrapApothicon()
 
     if(!level flag::get("apothicon_near_trap"))
     {
-        self iPrintlnBold("^1" + ToUpper(level.menuName) + ": ^7Waiting For The Apothicon To Be Near The Trap");
+        self iPrintlnBold("^1" + ToUpper(GetMenuName()) + ": ^7Waiting For The Apothicon To Be Near The Trap");
 
         while(!level flag::get("apothicon_near_trap"))
             wait 0.01;

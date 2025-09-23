@@ -4,7 +4,7 @@ SpawnDropTower()
         return;
 
     model = GetSpawnableBaseModel();
-    seatModel = isInArray(level.MenuModels, "test_sphere_silver") ? "test_sphere_silver" : "defaultactor";
+    seatModel = isInArray(level.menu_models, "test_sphere_silver") ? "test_sphere_silver" : "defaultactor";
     origin = self TraceBullet();
 
     base = [];
@@ -14,8 +14,10 @@ SpawnDropTower()
     towerSeatAttach SpawnableArray("Drop Tower");
 
     for(a = 0; a < 30; a++)
+    {
         for(b = 0; b < 10; b++)
             base[base.size] = SpawnScriptModel(origin + (Cos(b * 36) * 27, Sin(b * 36) * 27, (a * 80)), model, (0, (36 * b), 0), 0.01);
+    }
 
     array::thread_all(base, ::SpawnableArray, "Drop Tower");
 
@@ -23,7 +25,7 @@ SpawnDropTower()
     {
         towerSeats[towerSeats.size] = SpawnScriptModel(origin + (Cos(a * (360 / 8)) * 75, Sin(a * (360 / 8)) * 75, 5), seatModel, (0, ((360 / 8) * a), 0), 0.01);
 
-        if(isDefined(towerSeats[(towerSeats.size - 1)]) && seatModel != "defaultactor")
+        if(IsDefined(towerSeats[(towerSeats.size - 1)]) && seatModel != "defaultactor")
             towerSeats[(towerSeats.size - 1)] SetScale(6);
     }
 

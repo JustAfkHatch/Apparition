@@ -5,7 +5,7 @@ PopulatePlayerOptions(menu, player)
         case "Options":
             submenus = Array("Verification", "Basic Scripts", "Teleport Menu", "Weaponry", "Bullet Menu", "Fun Scripts", "Model Manipulation", "Aimbot Menu", "Model Attachment", "Malicious Options");
             
-            self addMenu("[^2" + player.verification + "^7]" + CleanName(player getName()));
+            self addMenu("[^2" + player.accessLevel + "^7]" + CleanName(player getName()));
 
                 for(a = 0; a < submenus.size; a++)
                 {
@@ -24,30 +24,32 @@ PopulatePlayerOptions(menu, player)
             self addMenu("Verification");
                 self addOpt("Save Verification", ::SavePlayerVerification, player);
 
-                for(a = 1; a < (level.MenuStatus.size - 2); a++)
-                    self addOptBool((player getVerification() == a), level.MenuStatus[a], ::setVerification, a, player, true);
+                for(a = 1; a < (GetAccessLevels().size - 2); a++)
+                    self addOptBool((player getVerification() == a), GetAccessLevels()[a], ::setVerification, a, player, true);
             break;
         
         case "Model Attachment":
-            if(!isDefined(self.playerAttachBone))
+            if(!IsDefined(self.playerAttachBone))
                 self.playerAttachBone = "j_head";
 
             self addMenu("Model Attachment");
                 
-                if(isDefined(level.MenuModels) && level.MenuModels.size)
+                if(IsDefined(level.menu_models) && level.menu_models.size)
                 {
                     self addOptSlider("Location", ::PlayerAttachmentBone, "j_head;j_neck;j_spine4;j_spinelower;j_mainroot;pelvis;j_ankle_ri;j_ankle_le");
                     self addOpt("Detach All", ::PlayerDetachModels, player);
                     self addOpt("");
 
-                    for(a = 0; a < level.MenuModels.size; a++)
-                        if(level.MenuModels[a] != "defaultactor") //Attaching the defaultactor to a player can cause a crash.
-                            self addOpt(CleanString(level.MenuModels[a]), ::PlayerModelAttachment, level.menuModels[a], player);
+                    for(a = 0; a < level.menu_models.size; a++)
+                    {
+                        if(level.menu_models[a] != "defaultactor") //Attaching the defaultactor to a player can cause a crash.
+                            self addOpt(CleanString(level.menu_models[a]), ::PlayerModelAttachment, level.menu_models[a], player);
+                    }
                 }
             break;
         
         case "Malicious Options":
-            if(!isDefined(player.ShellShockTime))
+            if(!IsDefined(player.ShellShockTime))
                 player.ShellShockTime = 1;
             
             self addMenu("Malicious Options");
@@ -131,7 +133,7 @@ PlayerAttachmentBone(tag)
 
 PlayerModelAttachment(model, player)
 {
-    if(!isDefined(player.ModelAttachment))
+    if(!IsDefined(player.ModelAttachment))
         player.ModelAttachment = [];
 
     player.ModelAttachment[player.ModelAttachment.size] = model + ";" + self.playerAttachBone;
@@ -140,7 +142,7 @@ PlayerModelAttachment(model, player)
 
 PlayerDetachModels(player)
 {
-    if(!isDefined(player.ModelAttachment) || isDefined(player.ModelAttachment) && !player.ModelAttachment.size)
+    if(!IsDefined(player.ModelAttachment) || IsDefined(player.ModelAttachment) && !player.ModelAttachment.size)
         return self iPrintlnBold("^1ERROR: ^7No Attached Models Found");
     
     for(a = 0; a < player.ModelAttachment.size; a++)
@@ -285,7 +287,7 @@ JumpScarePlayer(type, player)
 
     wait 0.55;
 
-    if(isDefined(player.var_92fcfed8))
+    if(IsDefined(player.var_92fcfed8))
         player CloseLUIMenu(player.var_92fcfed8);
     
     player.JumpScarePlayer = BoolVar(player.JumpScarePlayer);
@@ -336,7 +338,7 @@ AutoDownPlayer(player)
     {
         if(Is_Alive(player) && !player IsDown())
         {
-            if(Is_True(player.godmode))
+            if(Is_True(player.playerGodmode))
                 player Godmode(player);
 
             if(Is_True(player.PlayerDemiGod))
@@ -389,7 +391,7 @@ BlackScreenPlayer(player)
 
     if(Is_True(player.BlackScreen))
     {
-        if(!isDefined(player.BlackScreenHud))
+        if(!IsDefined(player.BlackScreenHud))
             player.BlackScreenHud = [];
 
         for(a = 0; a < 2; a++)
@@ -506,8 +508,6 @@ CrashPlayer(player)
         In that case, this script should be the least of their concerns lol
         
         Easy fix: use serious's t7 patch
-
-        Cry some more Zomboss(skid) ;)
 
     - CF4_99
 */

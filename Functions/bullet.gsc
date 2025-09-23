@@ -13,10 +13,10 @@ PopulateBulletMenu(menu, player)
             break;
         
         case "Weapon Projectiles":
-            if(!isDefined(player.ProjectileMultiplier))
+            if(!IsDefined(player.ProjectileMultiplier))
                 player.ProjectileMultiplier = 1;
             
-            if(!isDefined(player.ProjectileSpreadMultiplier))
+            if(!IsDefined(player.ProjectileSpreadMultiplier))
                 player.ProjectileSpreadMultiplier = 10;
             
             self addMenu("Projectiles");
@@ -46,7 +46,7 @@ PopulateBulletMenu(menu, player)
             
             self addMenu("Normal Weapons");
 
-                if(isDefined(weaps) && weaps.size)
+                if(IsDefined(weaps) && weaps.size)
                 {
                     for(a = 0; a < weaps.size; a++)
                     {
@@ -71,7 +71,7 @@ PopulateBulletMenu(menu, player)
             
             self addMenu("Upgraded Weapons");
             
-                if(isDefined(weaps) && weaps.size)
+                if(IsDefined(weaps) && weaps.size)
                 {
                     for(a = 0; a < weaps.size; a++)
                     {
@@ -91,7 +91,7 @@ PopulateBulletMenu(menu, player)
         
         case "Equipment Bullets":
 
-            if(isDefined(level.zombie_include_equipment))
+            if(IsDefined(level.zombie_include_equipment))
                 include_equipment = GetArrayKeys(level.zombie_include_equipment);
             
             equipment = ArrayCombine(level.zombie_lethal_grenade_list, level.zombie_tactical_grenade_list, 0, 1);
@@ -99,7 +99,7 @@ PopulateBulletMenu(menu, player)
 
             self addMenu("Equipment");
 
-                if(isDefined(keys) && keys.size || isDefined(include_equipment) && include_equipment.size)
+                if(IsDefined(keys) && keys.size || IsDefined(include_equipment) && include_equipment.size)
                 {
                     foreach(weapon in GetArrayKeys(level.zombie_weapons))
                     {
@@ -111,7 +111,7 @@ PopulateBulletMenu(menu, player)
                     }
                     
 
-                    if(isDefined(include_equipment) && include_equipment.size)
+                    if(IsDefined(include_equipment) && include_equipment.size)
                     {
                         foreach(weapon in include_equipment)
                         {
@@ -127,23 +127,25 @@ PopulateBulletMenu(menu, player)
         case "Bullet Effects":
             self addMenu("Effects");
 
-                for(a = 0; a < level.MenuEffects.size; a++)
-                    self addOpt(CleanString(level.MenuEffects[a]), ::BulletProjectile, level.MenuEffects[a], "Effect", player);
+                for(a = 0; a < level.menuFX.size; a++)
+                    self addOpt(CleanString(level.menuFX[a]), ::BulletProjectile, level.menuFX[a], "Effect", player);
             break;
         
         case "Bullet Spawnables":
             self addMenu("Spawnables");
 
-                if(isDefined(level.MenuModels) && level.MenuModels.size)
-                    for(a = 0; a < level.MenuModels.size; a++)
-                        self addOpt(CleanString(level.MenuModels[a]), ::BulletProjectile, level.MenuModels[a], "Spawnable", player);
+                if(IsDefined(level.menu_models) && level.menu_models.size)
+                {
+                    for(a = 0; a < level.menu_models.size; a++)
+                        self addOpt(CleanString(level.menu_models[a]), ::BulletProjectile, level.menu_models[a], "Spawnable", player);
+                }
             break;
         
         case "Explosive Bullets":
-            if(!isDefined(player.ExplosiveBulletsRange))
+            if(!IsDefined(player.ExplosiveBulletsRange))
                 player.ExplosiveBulletsRange = 250;
             
-            if(!isDefined(player.ExplosiveBulletsDamage))
+            if(!IsDefined(player.ExplosiveBulletsDamage))
                 player.ExplosiveBulletsDamage = 100;
             
             self addMenu("Explosive Bullets");
@@ -179,7 +181,7 @@ BulletProjectile(projectile, type, player)
             case "Spawnable":
                 bspawn = SpawnScriptModel(player TraceBullet(), projectile);
 
-                if(isDefined(bspawn))
+                if(IsDefined(bspawn))
                 {
                     bspawn NotSolid();
                     bspawn thread deleteAfter(5);
@@ -221,9 +223,9 @@ ExplosiveBullets(player)
 
             if(Is_True(player.ExplosiveBulletEffect))
             {
-                if(isDefined(level._effect["raps_impact"]))
+                if(IsDefined(level._effect["raps_impact"]))
                     PlayFX(level._effect["raps_impact"], player TraceBullet());
-                else if(isDefined(level._effect["dog_gib"]))
+                else if(IsDefined(level._effect["dog_gib"]))
                     PlayFX(level._effect["dog_gib"], player TraceBullet());
             }
 

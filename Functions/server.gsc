@@ -24,11 +24,13 @@ PopulateServerModifications(menu)
                 self addOptSlider("Zombie Barriers", ::SetZombieBarrierState, "Break All;Repair All");
                 self addOpt("Spawn Bot", ::SpawnBot);
 
-                if(isDefined(level.zombie_include_craftables) && level.zombie_include_craftables.size && !isDefined(level.all_parts_required))
+                if(IsDefined(level.zombie_include_craftables) && level.zombie_include_craftables.size && !IsDefined(level.all_parts_required))
+                {
                     if(level.zombie_include_craftables.size > 1 || level.zombie_include_craftables.size && GetArrayKeys(level.zombie_include_craftables)[0] != "open_table")
                         self addOpt("Craftables", ::newMenu, "Zombie Craftables");
+                }
 
-                if(isDefined(level.MenuZombieTraps) && level.MenuZombieTraps.size)
+                if(IsDefined(level.menu_traps) && level.menu_traps.size)
                     self addOpt("Zombie Traps", ::newMenu, "Zombie Traps");
                 
                 self addOpt("Change Map", ::newMenu, "Change Map");
@@ -36,20 +38,20 @@ PopulateServerModifications(menu)
             break;
         
         case "Doheart Options":
-            if(!isDefined(level.DoheartStyle))
+            if(!IsDefined(level.DoheartStyle))
                 level.DoheartStyle = "Pulsing";
             
-            if(!isDefined(level.DoheartSavedText))
+            if(!IsDefined(level.DoheartSavedText))
                 level.DoheartSavedText = CleanName(bot::get_host_player() getName());
             
             self addMenu("Doheart Options");
                 self addOptBool(level.Doheart, "Doheart", ::Doheart);
-                self addOptSlider("Text", ::DoheartTextPass, CleanName(bot::get_host_player() getName()) + ";" + level.menuName + ";CF4_99;Custom");
+                self addOptSlider("Text", ::DoheartTextPass, CleanName(bot::get_host_player() getName()) + ";" + GetMenuName() + ";CF4_99;Custom");
                 self addOptSlider("Style", ::SetDoheartStyle, "Pulsing;Pulse Effect;Type Writer;Moving;Fade Effect");
             break;
         
         case "Lobby Timer Options":
-            if(!isDefined(level.LobbyTime))
+            if(!IsDefined(level.LobbyTime))
                 level.LobbyTime = 10;
             
             self addMenu("Lobby Timer Options");
@@ -96,7 +98,7 @@ PopulateServerModifications(menu)
             self addMenu(titleString);
                 self addOptBool(IsAllWeaponsInBox(upgraded), "Enable All", ::EnableAllWeaponsInBox, upgraded);
 
-                if(isDefined(weaps) && weaps.size)
+                if(IsDefined(weaps) && weaps.size)
                 {
                     for(a = 0; a < weaps.size; a++)
                     {
@@ -124,22 +126,24 @@ PopulateServerModifications(menu)
                     self addOptBool(IsWeaponInBox(GetWeapon("minigun")), "Death Machine", ::SetBoxWeaponState, GetWeapon("minigun"));
                     self addOptBool(IsWeaponInBox(GetWeapon("defaultweapon")), "Default Weapon", ::SetBoxWeaponState, GetWeapon("defaultweapon"));
 
-                    if(isDefined(keys) && keys.size)
+                    if(IsDefined(keys) && keys.size)
                     {
                         foreach(index, weapon in GetArrayKeys(level.zombie_weapons))
+                        {
                             if(isInArray(equipment, weapon))
                                 self addOptBool(IsWeaponInBox(weapon), weapon.displayname, ::SetBoxWeaponState, weapon);
+                        }
                     }
                 }
             break;
         
         case "Joker Model":
             self addMenu("Joker Model");
-                self addOptBool((level.chest_joker_model == level.savedJokerModel), "Reset", ::SetBoxJokerModel, level.savedJokerModel);
+                self addOptBool((level.chest_joker_model == level.saved_jokerModel), "Reset", ::SetBoxJokerModel, level.saved_jokerModel);
                 self addOpt("");
 
-                for(a = 0; a < level.MenuModels.size; a++)
-                    self addOptBool((level.chest_joker_model == level.MenuModels[a]), CleanString(level.MenuModels[a]), ::SetBoxJokerModel, level.MenuModels[a]);
+                for(a = 0; a < level.menu_models.size; a++)
+                    self addOptBool((level.chest_joker_model == level.menu_models[a]), CleanString(level.menu_models[a]), ::SetBoxJokerModel, level.menu_models[a]);
             break;
         
         case "Zombie Craftables":
@@ -165,13 +169,15 @@ PopulateServerModifications(menu)
         case "Zombie Traps":
             self addMenu("Zombie Traps");
 
-                if(isDefined(level.MenuZombieTraps) && level.MenuZombieTraps.size)
+                if(IsDefined(level.menu_traps) && level.menu_traps.size)
                 {
                     self addOpt("Activate All Traps", ::ActivateAllZombieTraps);
 
-                    for(a = 0; a < level.MenuZombieTraps.size; a++)
-                        if(isDefined(level.MenuZombieTraps[a]))
-                            self addOpt(isDefined(level.MenuZombieTraps[a].prefabname) ? CleanString(level.MenuZombieTraps[a].prefabname) : "Trap " + (a + 1), ::ActivateZombieTrap, a);
+                    for(a = 0; a < level.menu_traps.size; a++)
+                    {
+                        if(IsDefined(level.menu_traps[a]))
+                            self addOpt(IsDefined(level.menu_traps[a].prefabname) ? CleanString(level.menu_traps[a].prefabname) : "Trap " + (a + 1), ::ActivateZombieTrap, a);
+                    }
                 }
             break;
         
@@ -231,8 +237,10 @@ SetRound(round)
     }
 
     foreach(player in level.players)
+    {
         if(player.sessionstate == "spectator")
             player thread ServerRespawnPlayer(player);
+    }
 }
 
 AntiQuit()
@@ -248,8 +256,10 @@ AutoRevive()
     while(Is_True(level.AutoRevive))
     {
         foreach(player in level.players)
+        {
             if(player isDown())
                 player thread PlayerRevive(player);
+        }
 
         wait 0.1;
     }
@@ -262,8 +272,10 @@ AutoRespawn()
     while(Is_True(level.AutoRespawn))
     {
         foreach(player in level.players)
+        {
             if(player.sessionstate == "spectator")
                 player thread ServerRespawnPlayer(player);
+        }
 
         wait 0.1;
     }
@@ -296,13 +308,13 @@ Newsbar()
         level.NewsbarBG   = level createServerRectangle("CENTER", "CENTER", 0, -232, 5000, 18, (0, 0, 0), 1, 0.6, "white");
         level.NewsbarText = level createServerText("default", 1, 3, "", "CENTER", "CENTER", 0, -255, 1, (1, 1, 1));
         
-        strings = Array("Welcome To ^1" + level.menuName + " ^7Developed By ^1CF4_99", "Your Host Today Is ^1" + CleanName(bot::get_host_player() getName()), "[{+speed_throw}] & [{+melee}] To Open ^1" + level.menuName, "YouTube.Com/^1CF4_99", "^5Enjoy Your Stay!");
+        strings = Array("Welcome To ^1" + GetMenuName() + " ^7Developed By ^1CF4_99", "Your Host Today Is ^1" + CleanName(bot::get_host_player() getName()), "[{+speed_throw}] & [{+melee}] To Open ^1" + GetMenuName(), "YouTube.Com/^1CF4_99", "^5Enjoy Your Stay!");
         
         while(Is_True(level.Newsbar))
         {
             for(a = 0; a < strings.size; a++)
             {
-                if(isDefined(level.NewsbarText))
+                if(IsDefined(level.NewsbarText))
                 {
                     level.NewsbarText SetTextString(strings[a]);
                     level.NewsbarText hudMoveY(-232, 0.55);
@@ -310,13 +322,13 @@ Newsbar()
                     wait 5;
                 }
                 
-                if(isDefined(level.NewsbarText))
+                if(IsDefined(level.NewsbarText))
                 {
                     level.NewsbarText ChangeFontscaleOverTime1(1, 0.3);
                     wait 0.3;
                 }
                 
-                if(isDefined(level.NewsbarText))
+                if(IsDefined(level.NewsbarText))
                 {
                     level.NewsbarText thread hudMoveY(-255, 0.55);
                     wait 0.55;
@@ -326,10 +338,10 @@ Newsbar()
     }
     else
     {
-        if(isDefined(level.NewsbarBG))
+        if(IsDefined(level.NewsbarBG))
             level.NewsbarBG destroy();
         
-        if(isDefined(level.NewsbarText))
+        if(IsDefined(level.NewsbarText))
             level.NewsbarText destroy();
         
         level notify("EndNewsBar");
@@ -344,22 +356,22 @@ Doheart()
         level thread SetDoheartText(level.DoheartSavedText, true);
     else
     {
-        if(isDefined(level.DoheartText))
+        if(IsDefined(level.DoheartText))
             level.DoheartText destroy();
     }
 }
 
 SetDoheartText(text, refresh)
 {
-    if(level.DoheartSavedText == text && (!isDefined(refresh) || !refresh))
+    if(level.DoheartSavedText == text && (!IsDefined(refresh) || !refresh))
         return;
     
     level.DoheartSavedText = text;
 
-    if(!Is_True(level.Doheart) || !isDefined(text))
+    if(!Is_True(level.Doheart) || !IsDefined(text))
         return;
     
-    if(isDefined(level.DoheartText))
+    if(IsDefined(level.DoheartText))
         level.DoheartText destroy();
 
     level.DoheartText = level createServerText("objective", 2, 1, "", "CENTER", "CENTER", 0, -215, 1, (1, 1, 1));
@@ -406,7 +418,7 @@ SetDoheartStyle(style)
     
     level.DoheartStyle = style;
 
-    if(Is_True(level.Doheart) && isDefined(level.DoheartSavedText))
+    if(Is_True(level.Doheart) && IsDefined(level.DoheartSavedText))
         level thread SetDoheartText(level.DoheartSavedText, true);
 }
 
@@ -431,8 +443,10 @@ LobbyTimer()
         wait (level.LobbyTime * 60);
 
         foreach(player in level.players)
-            if(isDefined(player) && isDefined(player.LobbyTimer))
+        {
+            if(IsDefined(player) && IsDefined(player.LobbyTimer))
                 player CloseLUIMenu(player.LobbyTimer);
+        }
         
         if(Is_True(level.AntiEndGame))
             level AntiEndGame();
@@ -442,8 +456,10 @@ LobbyTimer()
     else
     {
         foreach(player in level.players)
-            if(isDefined(player.LobbyTimer))
+        {
+            if(IsDefined(player.LobbyTimer))
                 player CloseLUIMenu(player.LobbyTimer);
+        }
 
         level notify("EndLobbyTimer");
     }
@@ -457,8 +473,10 @@ SetLobbyTimer(time)
     level.LobbyTime = time;
 
     if(Is_True(level.LobbyTimer))
+    {
         for(a = 0; a < 2; a++)
             LobbyTimer();
+    }
 }
 
 SetBoxPrice(price)
@@ -539,7 +557,7 @@ TriggerFix()
 {
     self endon("EndBoxFixes");
     
-    while(isDefined(self))
+    while(IsDefined(self))
     {
         self.zbarrier waittill("closed");
         thread zm_unitrigger::register_static_unitrigger(self.unitrigger_stub, zm_magicbox::magicbox_unitrigger_think);
@@ -550,7 +568,7 @@ FirsaleFix()
 {
     self endon("EndBoxFixes");
     
-    while(isDefined(self))
+    while(IsDefined(self))
     {
         level waittill("fire_sale_off");
         self.was_temp = undefined;
@@ -560,8 +578,10 @@ FirsaleFix()
 AllBoxesActive()
 {
     foreach(chest in level.chests)
+    {
         if(Is_True(chest.hidden))
             return false;
+    }
     
     return true;
 }
@@ -585,13 +605,13 @@ SetBoxJokerModel(model)
 
 SetBoxWeaponState(weapon)
 {
-    if(!isDefined(level.customBoxWeapons))
+    if(!IsDefined(level.custom_boxWeapons))
         return;
     
-    if(isInArray(level.customBoxWeapons, weapon))
-        level.customBoxWeapons = ArrayRemove(level.customBoxWeapons, weapon);
+    if(isInArray(level.custom_boxWeapons, weapon))
+        level.custom_boxWeapons = ArrayRemove(level.custom_boxWeapons, weapon);
     else
-        level.customBoxWeapons[level.customBoxWeapons.size] = weapon;
+        level.custom_boxWeapons[level.custom_boxWeapons.size] = weapon;
     
     level.CustomRandomWeaponWeights = ::CustomBoxWeight;
 }
@@ -615,7 +635,7 @@ IsAllWeaponsInBox(upgraded = false)
         if(!IsWeaponInBox(GetWeapon("minigun")) || !IsWeaponInBox(GetWeapon("defaultweapon")))
             return false;
 
-        if(isDefined(equipmentCombined) && equipmentCombined.size)
+        if(IsDefined(equipmentCombined) && equipmentCombined.size)
         {
             for(a = 0; a < weaps.size; a++)
             {
@@ -634,16 +654,16 @@ EnableAllWeaponsInBox(upgraded = false)
 
     if(IsAllWeaponsInBox(upgraded))
     {
-        if(isInArray(level.customBoxWeapons, GetWeapon("minigun")))
-            level.customBoxWeapons = ArrayRemove(level.customBoxWeapons, GetWeapon("minigun"));
+        if(isInArray(level.custom_boxWeapons, GetWeapon("minigun")))
+            level.custom_boxWeapons = ArrayRemove(level.custom_boxWeapons, GetWeapon("minigun"));
         
-        if(isInArray(level.customBoxWeapons, GetWeapon("defaultweapon")))
-            level.customBoxWeapons = ArrayRemove(level.customBoxWeapons, GetWeapon("defaultweapon"));
+        if(isInArray(level.custom_boxWeapons, GetWeapon("defaultweapon")))
+            level.custom_boxWeapons = ArrayRemove(level.custom_boxWeapons, GetWeapon("defaultweapon"));
         
         for(a = 0; a < weaps.size; a++)
         {
-            if(isInArray(level.customBoxWeapons, weaps[a]))
-                level.customBoxWeapons = ArrayRemove(level.customBoxWeapons, weaps[a]);
+            if(isInArray(level.custom_boxWeapons, weaps[a]))
+                level.custom_boxWeapons = ArrayRemove(level.custom_boxWeapons, weaps[a]);
         }
     }
     else
@@ -653,7 +673,7 @@ EnableAllWeaponsInBox(upgraded = false)
         for(a = 0; a < weaps.size; a++)
         {
             if(IsInArray(weaponsVar, ToLower(CleanString(upgraded ? zm_utility::GetWeaponClassZM(zm_weapons::get_base_weapon(weaps[a])) : zm_utility::GetWeaponClassZM(weaps[a])))) && !weaps[a].isgrenadeweapon && !IsSubStr(weaps[a].name, "knife") && weaps[a].name != "none" && !IsWeaponInBox(weaps[a]))
-                level.customBoxWeapons[level.customBoxWeapons.size] = weaps[a];
+                level.custom_boxWeapons[level.custom_boxWeapons.size] = weaps[a];
         }
         
         if(!upgraded)
@@ -662,17 +682,17 @@ EnableAllWeaponsInBox(upgraded = false)
             keys = GetArrayKeys(equipment);
 
             if(!IsWeaponInBox(GetWeapon("minigun")))
-                level.customBoxWeapons[level.customBoxWeapons.size] = GetWeapon("minigun");
+                level.custom_boxWeapons[level.custom_boxWeapons.size] = GetWeapon("minigun");
             
             if(!IsWeaponInBox(GetWeapon("defaultweapon")))
-                level.customBoxWeapons[level.customBoxWeapons.size] = GetWeapon("defaultweapon");
+                level.custom_boxWeapons[level.custom_boxWeapons.size] = GetWeapon("defaultweapon");
 
-            if(isDefined(keys) && keys.size)
+            if(IsDefined(keys) && keys.size)
             {
                 for(a = 0; a < weaps.size; a++)
                 {
                     if(isInArray(equipment, weaps[a]) && !IsWeaponInBox(weaps[a]))
-                        level.customBoxWeapons[level.customBoxWeapons.size] = weaps[a];
+                        level.custom_boxWeapons[level.custom_boxWeapons.size] = weaps[a];
                 }
             }
         }
@@ -683,15 +703,15 @@ EnableAllWeaponsInBox(upgraded = false)
 
 IsWeaponInBox(weapon)
 {
-    if(!isDefined(level.customBoxWeapons))
+    if(!IsDefined(level.custom_boxWeapons))
         return false;
     
-    return isInArray(level.customBoxWeapons, weapon);
+    return isInArray(level.custom_boxWeapons, weapon);
 }
 
 CustomBoxWeight(keys)
 {
-    return array::randomize(level.customBoxWeapons);
+    return array::randomize(level.custom_boxWeapons);
 }
 
 OpenAllDoors()
@@ -711,38 +731,35 @@ OpenAllDoors()
         {
             doors = GetEntArray(types[a], "targetname");
 
-            if(isDefined(doors))
+            if(!IsDefined(doors))
+                continue;
+
+            for(b = 0; b < doors.size; b++)
             {
-                for(b = 0; b < doors.size; b++)
+                if(!IsDefined(doors[b]) || types[a] == "zombie_door" && doors[b] IsDoorOpen(types[a]))
+                    continue;
+                
+                if(types[a] == "zombie_debris")
+                    doors[b] notify("trigger", self, 1);
+                else
                 {
-                    if(isDefined(doors[b]))
+                    doors[b] notify("trigger");
+
+                    if(types[a] == "zombie_door")
                     {
-                        if(types[a] == "zombie_door" && doors[b] IsDoorOpen(types[a]))
-                            continue;
-                        
-                        if(types[a] == "zombie_debris")
-                            doors[b] notify("trigger", self, 1);
-                        else
+                        if(doors[b].script_noteworthy == "electric_door" || doors[b].script_noteworthy == "electric_buyable_door" || doors[b].script_noteworthy == "local_electric_door")
                         {
-                            doors[b] notify("trigger");
-
-                            if(types[a] == "zombie_door")
-                            {
-                                if(doors[b].script_noteworthy == "electric_door" || doors[b].script_noteworthy == "electric_buyable_door" || doors[b].script_noteworthy == "local_electric_door")
-                                {
-                                    if(doors[b].script_noteworthy == "local_electric_door")
-                                        doors[b] notify("local_power_on");
-                                    else
-                                        doors[b] notify("power_on");
-                                    
-                                    doors[b].power_on = true;
-                                }
-                            }
+                            if(doors[b].script_noteworthy == "local_electric_door")
+                                doors[b] notify("local_power_on");
+                            else
+                                doors[b] notify("power_on");
+                            
+                            doors[b].power_on = true;
                         }
-
-                        wait 0.05;
                     }
                 }
+
+                wait 0.05;
             }
         }
 
@@ -774,11 +791,17 @@ IsAllDoorsOpen()
     {
         doors = GetEntArray(types[a], "targetname");
 
-        if(isDefined(doors))
+        if(IsDefined(doors) && doors.size)
+        {
             for(b = 0; b < doors.size; b++)
-                if(isDefined(doors[b]))
+            {
+                if(IsDefined(doors[b]))
+                {
                     if(!doors[b] IsDoorOpen(types[a]))
                         return false;
+                }
+            }
+        }
     }
     
     return true;
@@ -793,13 +816,15 @@ IsDoorOpen(type)
     }
     else
     {
-        if(isDefined(self.script_flag))
+        if(IsDefined(self.script_flag))
         {
             tokens = StrTok(self.script_flag, ",");
 
             for(a = 0; a < tokens.size; a++)
+            {
                 if(!level flag::get(tokens[a]))
                     return false;
+            }
         }
     }
 
@@ -822,12 +847,12 @@ SetZombieBarrierState(state)
                 {
                     chunk = zm_utility::get_random_destroyed_chunk(windows[a], windows[a].barrier_chunks);
 
-                    if(!isDefined(chunk))
+                    if(!IsDefined(chunk))
                         break;
 
                     windows[a] thread zm_blockers::replace_chunk(windows[a], chunk, undefined, zm_powerups::is_carpenter_boards_upgraded(), 1);
 
-                    if(isDefined(windows[a].clip))
+                    if(IsDefined(windows[a].clip))
                     {
                         windows[a].clip TriggerEnable(1);
                         windows[a].clip DisconnectPaths();
@@ -851,7 +876,7 @@ SpawnBot()
 {
     bot = AddTestClient();
 
-    if(!isDefined(bot))
+    if(!IsDefined(bot))
         return self iPrintlnBold("^1ERROR: ^7Couldn't Spawn Bot");
 
     bot.pers["isBot"] = 1;
@@ -874,8 +899,10 @@ CollectAllCraftables()
             continue;
         
         foreach(part in level.zombie_include_craftables[key].a_piecestubs)
-            if(isDefined(part.pieceSpawn))
+        {
+            if(IsDefined(part.pieceSpawn))
                 self zm_craftables::player_take_piece(part.pieceSpawn);
+        }
     }
     
     wait 0.05;
@@ -888,8 +915,10 @@ CollectCraftableParts(craftable)
     curs = self getCursor();
 
     foreach(part in level.zombie_include_craftables[craftable].a_piecestubs)
-        if(isDefined(part.pieceSpawn))
+    {
+        if(IsDefined(part.pieceSpawn))
             self zm_craftables::player_take_piece(part.pieceSpawn);
+    }
     
     wait 0.05;
     self RefreshMenu(menu, curs);
@@ -900,7 +929,7 @@ CollectCraftablePart(part)
     menu = self getCurrent();
     curs = self getCursor();
 
-    if(isDefined(part.pieceSpawn))
+    if(IsDefined(part.pieceSpawn))
         self zm_craftables::player_take_piece(part.pieceSpawn);
     
     wait 0.05;
@@ -913,15 +942,17 @@ IsCraftableCollected(craftable)
         return true;
     
     foreach(part in level.zombie_include_craftables[craftable].a_piecestubs)
-        if(isDefined(part.pieceSpawn.model))
+    {
+        if(IsDefined(part.pieceSpawn.model))
             return false;
+    }
     
     return true;
 }
 
 IsPartCollected(part)
 {
-    if(isDefined(part.pieceSpawn.model))
+    if(IsDefined(part.pieceSpawn.model))
         return false;
     
     return true;
@@ -932,8 +963,10 @@ IsAllCraftablesCollected()
     craftables = GetArrayKeys(level.zombie_include_craftables);
 
     for(a = 0; a < craftables.size; a++)
-        if(isDefined(craftables[a]) && !IsSubStr(craftables[a], "ritual_") && craftables[a] != "open_table" && !IsCraftableCollected(craftables[a]))
+    {
+        if(IsDefined(craftables[a]) && !IsSubStr(craftables[a], "ritual_") && craftables[a] != "open_table" && !IsCraftableCollected(craftables[a]))
             return false;
+    }
     
     return true;
 }

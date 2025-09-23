@@ -3,7 +3,7 @@ PopulateMapChallenges(menu)
     switch(menu)
     {
         case "Map Challenges":
-            if(!isDefined(self.mapChallengesPlayer))
+            if(!IsDefined(self.mapChallengesPlayer))
                 self.mapChallengesPlayer = level.players[0];
 
             playerArray = [];
@@ -17,13 +17,13 @@ PopulateMapChallenges(menu)
 
                 mapChallenge = [];
 
-                if(isDefined(self.mapChallengesPlayer._challenges))
+                if(IsDefined(self.mapChallengesPlayer._challenges))
                 {
                     mapChallenge[0] = self.mapChallengesPlayer._challenges.challenge_1;
                     mapChallenge[1] = self.mapChallengesPlayer._challenges.challenge_2;
                     mapChallenge[2] = self.mapChallengesPlayer._challenges.challenge_3;
                 }
-                else if(isDefined(self.mapChallengesPlayer.s_challenges))
+                else if(IsDefined(self.mapChallengesPlayer.s_challenges))
                 {
                     mapChallenge[0] = self.mapChallengesPlayer.s_challenges.a_challenge_1;
                     mapChallenge[1] = self.mapChallengesPlayer.s_challenges.a_challenge_2;
@@ -33,7 +33,7 @@ PopulateMapChallenges(menu)
                     self addOpt("Map Challenges Not Supported");
 
 
-                if(isDefined(mapChallenge) && mapChallenge.size)
+                if(IsDefined(mapChallenge) && mapChallenge.size)
                 {
                     for(a = 0; a < mapChallenge.size; a++)
                         self addOptBool(self.mapChallengesPlayer flag::get("flag_player_completed_challenge_" + mapChallenge[a].n_index), ReturnMapChallengeIString(mapChallenge[a].str_notify), ::MapCompleteChallenge, mapChallenge[a], self.mapChallengesPlayer);
@@ -55,7 +55,7 @@ SetMapChallengesPlayer(playerName)
 
 MapCompleteChallenge(challenge, player)
 {
-    if(!isDefined(challenge) || player flag::get("flag_player_completed_challenge_" + challenge.n_index))
+    if(!IsDefined(challenge) || player flag::get("flag_player_completed_challenge_" + challenge.n_index))
         return;
 
     player endon("disconnect");
@@ -81,9 +81,9 @@ ReturnMapChallengeIString(challenge)
 
 ActivateZombieTrap(index)
 {
-    traps = level.MenuZombieTraps;
+    traps = level.menu_traps;
 
-    if(!isDefined(traps[index]))
+    if(!IsDefined(traps[index]))
         return;
 
     if(!level flag::get(traps[index].script_flag_wait))
@@ -93,11 +93,13 @@ ActivateZombieTrap(index)
     savedCost = traps[index].zombie_cost;
     traps[index].zombie_cost = 0; //This doesn't work on all maps. Too lazy to add support for the rest.
 
-    if(isDefined(traps[index]._trap_use_trigs))
+    if(IsDefined(traps[index]._trap_use_trigs))
     {
         for(a = 0; a < traps[index]._trap_use_trigs.size; a++)
-            if(isDefined(traps[index]._trap_use_trigs[a]))
+        {
+            if(IsDefined(traps[index]._trap_use_trigs[a]))
                 traps[index]._trap_use_trigs[a] notify("trigger", self);
+        }
     }
     else
         traps[index] notify("trigger", self);
@@ -108,9 +110,11 @@ ActivateZombieTrap(index)
 
 ActivateAllZombieTraps()
 {
-    if(isDefined(level.MenuZombieTraps) && level.MenuZombieTraps.size)
-        for(a = 0; a < level.MenuZombieTraps.size; a++)
+    if(IsDefined(level.menu_traps) && level.menu_traps.size)
+    {
+        for(a = 0; a < level.menu_traps.size; a++)
             self thread ActivateZombieTrap(a);
+    }
 }
 
 ActivatePower()
@@ -127,11 +131,18 @@ ActivatePower()
     {
         rightSwitch = GetEnt(switches[a], "targetname");
 
-        if(isDefined(rightSwitch))
+        if(IsDefined(rightSwitch))
             rightSwitch notify("trigger", self);
     }
 
     level flag::wait_till("power_on");
+
+    if(ReturnMapName() == "Gorod Krovi")
+    {
+        self TriggerSophia();
+        wait 1;
+    }
+
     self RefreshMenu(menu, curs);
 }
 
@@ -163,8 +174,10 @@ SamanthasHideAndSeekSong()
     for(a = 0; a < ballerinas.size; a++)
     {
         foreach(index, ballerina in ballerinas)
-            if(isDefined(ballerinas[index].var_ac086ffb))
+        {
+            if(IsDefined(ballerinas[index].var_ac086ffb))
                 ballerinas[index].var_ac086ffb notify("damage", 100, self, (0, 0, 0), (0, 0, 0), "MOD_BULLET", "tag_origin", "", "", level.start_weapon);
+        }
 
         wait 0.1;
     }
@@ -179,4 +192,36 @@ SamanthasHideAndSeekSong()
         level.StartedSamanthaSong = BoolVar(level.StartedSamanthaSong);
     
     self RefreshMenu(menu, curs);
+}
+
+SpawnSacrificedZombie(goalEnt)
+{
+    zombie = zombie_utility::spawn_zombie(level.zombie_spawners[0]);
+
+    if(IsDefined(zombie))
+    {
+        zombie endon("death");
+
+        wait 0.1;
+        zombie zombie_utility::makezombiecrawler(true);
+        target = goalEnt.origin;
+
+        linker = Spawn("script_origin", zombie.origin);
+        linker.origin = zombie.origin;
+        linker.angles = zombie.angles;
+
+        zombie LinkTo(linker);
+        linker MoveTo(target, 0.01);
+
+        linker waittill("movedone");
+
+        zombie Unlink();
+        linker Delete();
+
+        zombie LinkTo(goalEnt);
+        zombie.completed_emerging_into_playable_area = 1;
+        zombie Hide();
+    }
+
+    return zombie;
 }

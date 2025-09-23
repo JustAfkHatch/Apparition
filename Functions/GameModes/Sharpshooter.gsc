@@ -45,14 +45,14 @@ initSharpshooter(type)
         
         thread UnlimitedAmmo("Reload", player);
 
-        if(!isDefined(player.perks_active) || player.perks_active.size != MenuPerks.size)
+        if(!IsDefined(player.perks_active) || player.perks_active.size != MenuPerks.size)
             thread PlayerAllPerks(player);
         
         if(!Is_True(player._retain_perks))
             thread PlayerRetainPerks(player);
         
         //remove everyones verification
-        player.verification = level.MenuStatus[1];
+        player.accessLevel = GetAccessLevels()[1];
         
         if(player isInMenu(true))
             player thread closeMenu1();
@@ -77,7 +77,7 @@ initSharpshooter(type)
         {
             TakePlayerWeapons(player);
             
-            if(!isDefined(player.weaponIndexUI))
+            if(!IsDefined(player.weaponIndexUI))
                 player.weaponIndexUI = player LUI_createText("Weapon: " + (level.indexSharpshooter + 1) + "/" + weaponArray.size, 2, 0, 25, 255, (1, 1, 1));
             
             player.timerSharpshooter = player OpenLUIMenu("HudElementTimer", true);
@@ -97,18 +97,21 @@ initSharpshooter(type)
 
         foreach(player in level.players)
         {
-            if(isDefined(player.timerSharpshooter))
+            if(IsDefined(player.timerSharpshooter))
                 player CloseLUIMenu(player.timerSharpshooter);
             
-            if(isDefined(player.weaponIndexUI))
+            if(IsDefined(player.weaponIndexUI))
                 player SetLUIMenuData(player.weaponIndexUI, "text", "Weapon: " + (level.indexSharpshooter + 1) + "/" + weaponArray.size);
         }
     }
 
     wait 1;
+    
     foreach(player in level.players)
+    {
         if(Is_Alive(player))
             PlayerDeath("Kill", player);
+    }
 }
 
 GameOverHandle()
@@ -117,10 +120,10 @@ GameOverHandle()
 
     foreach(player in level.players)
     {
-        if(isDefined(player.timerSharpshooter))
+        if(IsDefined(player.timerSharpshooter))
             player CloseLUIMenu(player.timerSharpshooter);
         
-        if(isDefined(player.weaponIndexUI))
+        if(IsDefined(player.weaponIndexUI))
             player CloseLUIMenu(player.weaponIndexUI);
     }
 }

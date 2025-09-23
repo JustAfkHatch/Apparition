@@ -9,3 +9,7 @@ PopulateGorodKroviScripts(menu)
             break;
     }
 }
+
+TriggerSophia()
+{
+}

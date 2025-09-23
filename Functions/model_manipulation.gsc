@@ -8,8 +8,8 @@ PopulateModelManipulation(menu, player)
                 self addOpt("Reset", ::ResetPlayerModel, player);
                 self addOpt("");
 
-                for(a = 0; a < level.MenuModels.size; a++)
-                    self addOpt(CleanString(level.MenuModels[a]), ::SetPlayerModel, level.MenuModels[a], player);
+                for(a = 0; a < level.menu_models.size; a++)
+                    self addOpt(CleanString(level.menu_models[a]), ::SetPlayerModel, level.menu_models[a], player);
             break;
     }
 }
@@ -19,8 +19,8 @@ ResetPlayerModel(player)
     if(Is_True(player.ModelManipulation))
         player.ModelManipulation = BoolVar(player.ModelManipulation);
 
-    if(isDefined(player.spawnedPlayerModel))
-        player.spawnedPlayerModel delete();
+    if(IsDefined(player.spawnedPlayerModel))
+        player.spawnedPlayerModel Delete();
     
     player Show();
 }
@@ -35,8 +35,8 @@ SetPlayerModel(model, player)
     wait 0.1;
     player.ModelManipulation = true;
 
-    if(isDefined(player.spawnedPlayerModel))
-        player.spawnedPlayerModel delete();
+    if(IsDefined(player.spawnedPlayerModel))
+        player.spawnedPlayerModel Delete();
     
     wait 0.1;
 
@@ -48,7 +48,7 @@ SetPlayerModel(model, player)
     {
         player Hide();
         
-        if(isDefined(player.spawnedPlayerModel))
+        if(IsDefined(player.spawnedPlayerModel))
         {
             player.spawnedPlayerModel MoveTo(player.origin, 0.1);
             player.spawnedPlayerModel RotateTo(player.angles, 0.1);

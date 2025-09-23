@@ -14,7 +14,7 @@ PopulateOriginsScripts(menu)
                 self addOpt("Staff Puzzles", ::newMenu, "Origins Puzzles");
                 self addOpt("G-Strike Quest", ::newMenu, "Origins G-Strike Quest");
                 self addOptBool(level flag::get("crypt_opened"), "Open Crypt", ::OpenOriginsCrypt);
-                self addOptBool(isDefined(level.a_e_slow_areas), "Mud Slowdown", ::MudSlowdown);
+                self addOptBool(IsDefined(level.a_e_slow_areas), "Mud Slowdown", ::MudSlowdown);
                 self addOptBool(level.DisableTankCooldown, "Disable Tank Cooldown", ::DisableTankCooldown);
                 self addOptIncSlider("Tank Speed [Default = 8]", ::OriginsTankSpeed, 1, 8, 25, 1);
             break;
@@ -68,7 +68,7 @@ PopulateOriginsScripts(menu)
 
             self addMenu("Soul Boxes");
 
-                if(isDefined(boxes) && boxes.size)
+                if(IsDefined(boxes) && boxes.size)
                 {
                     self addOpt("Fill All", ::FillAllSoulBoxes);
                     self addOpt("");
@@ -79,7 +79,7 @@ PopulateOriginsScripts(menu)
             break;
 
         case "Origins Challenges":
-            if(!isDefined(self.originsPlayer))
+            if(!IsDefined(self.originsPlayer))
                 self.originsPlayer = level.players[0];
 
             playerArray = [];
@@ -137,7 +137,7 @@ PopulateOriginsScripts(menu)
             self addMenu("G-Strike Quest");
                 
                 foreach(player in level.players)
-                    self addOptBool((isDefined(player.sq_one_inch_punch_stage) && player.sq_one_inch_punch_stage >= 6), CleanName(player getName()), ::OriginsGStrikeQuest, player);
+                    self addOptBool((IsDefined(player.sq_one_inch_punch_stage) && player.sq_one_inch_punch_stage >= 6), CleanName(player getName()), ::OriginsGStrikeQuest, player);
             break;
     }
 }
@@ -177,8 +177,10 @@ OriginsSetWeather(weather)
     level util::set_lighting_state(weather == "Rain");
 
     foreach(player in level.players)
+    {
         if(zombie_utility::is_player_valid(player, 0, 1))
             player clientfield::set_to_player("player_weather_visionset", level.weather_vision);
+    }
 }
 
 EnableAllOriginsGens()
@@ -195,8 +197,10 @@ EnableAllOriginsGens()
 AllOriginsGensActive()
 {
     foreach(index, generator in struct::get_array("s_generator", "targetname"))
+    {
         if(!generator flag::get("player_controlled"))
             return false;
+    }
 
     return true;
 }
@@ -224,7 +228,7 @@ SetGeneratorState(generator)
         level clientfield::set("zone_capture_hud_generator_" + struct.script_int, 1);
         level clientfield::set("zone_capture_monolith_crystal_" + struct.script_int, 0);
 
-        if(!isDefined(struct.perk_fx_func) || [[ struct.perk_fx_func ]]())
+        if(!IsDefined(struct.perk_fx_func) || [[ struct.perk_fx_func ]]())
             level clientfield::set("zone_capture_perk_machine_smoke_fx_" + struct.script_int, 1);
 
         struct flag::set("player_controlled");
@@ -265,11 +269,11 @@ SetGeneratorState(generator)
 
 kill_all_capture_zombies()
 {
-    while(isDefined(self.capture_zombies) && self.capture_zombies.size > 0)
+    while(IsDefined(self.capture_zombies) && self.capture_zombies.size > 0)
     {
         foreach(zombie in self.capture_zombies)
         {
-            if(isDefined(zombie) && IsAlive(zombie))
+            if(IsDefined(zombie) && IsAlive(zombie))
             {
                 PlayFX(level._effect["tesla_elec_kill"], zombie.origin);
                 zombie DoDamage(zombie.health + 100, zombie.origin);
@@ -299,15 +303,17 @@ get_captured_zone_count()
     n_player_controlled_zones = 0;
 
     foreach(generator in level.zone_capture.zones)
+    {
         if(generator flag::get("player_controlled"))
             n_player_controlled_zones++;
+    }
 
     return n_player_controlled_zones;
 }
 
 enable_perk_machines_in_zone()
 {
-    if(isDefined(self.perk_machines) && IsArray(self.perk_machines))
+    if(IsDefined(self.perk_machines) && IsArray(self.perk_machines))
     {
         a_keys = GetArrayKeys(self.perk_machines);
 
@@ -323,13 +329,13 @@ enable_perk_machines_in_zone()
 
 enable_random_perk_machines_in_zone()
 {
-    if(isDefined(self.perk_machines_random) && IsArray(self.perk_machines_random))
+    if(IsDefined(self.perk_machines_random) && IsArray(self.perk_machines_random))
     {
         foreach(random_perk_machine in self.perk_machines_random)
         {
             random_perk_machine.is_locked = 0;
 
-            if(isDefined(random_perk_machine.current_perk_random_machine) && random_perk_machine.current_perk_random_machine)
+            if(IsDefined(random_perk_machine.current_perk_random_machine) && random_perk_machine.current_perk_random_machine)
             {
                 random_perk_machine set_perk_random_machine_state("idle");
                 continue;
@@ -369,7 +375,7 @@ function_c3b54f6d()
 
 disable_perk_machines_in_zone()
 {
-    if(isDefined(self.perk_machines) && IsArray(self.perk_machines))
+    if(IsDefined(self.perk_machines) && IsArray(self.perk_machines))
     {
         a_keys = GetArrayKeys(self.perk_machines);
 
@@ -386,13 +392,13 @@ disable_perk_machines_in_zone()
 
 disable_random_perk_machines_in_zone()
 {
-    if(isDefined(self.perk_machines_random) && IsArray(self.perk_machines_random))
+    if(IsDefined(self.perk_machines_random) && IsArray(self.perk_machines_random))
     {
         foreach(random_perk_machine in self.perk_machines_random)
         {
             random_perk_machine.is_locked = 1;
 
-            if(isDefined(random_perk_machine.current_perk_random_machine) && random_perk_machine.current_perk_random_machine)
+            if(IsDefined(random_perk_machine.current_perk_random_machine) && random_perk_machine.current_perk_random_machine)
             {
                 random_perk_machine set_perk_random_machine_state("initial");
                 continue;
@@ -430,7 +436,7 @@ AreAllGateWaysOpen()
 
     foreach(gateway in gateways)
     {
-        if(!isDefined(gateway))
+        if(!IsDefined(gateway))
             continue;
         
         if(!GetGatewayState(gateway))
@@ -447,7 +453,7 @@ OpenAllGateways()
 
     foreach(gateway in gateways)
     {
-        if(!isDefined(gateway))
+        if(!IsDefined(gateway))
             continue;
 
         if(GetGateWayState(gateway) != state)
@@ -463,14 +469,14 @@ SetGatewayState(gateway)
     {
         level flag::set("enable_teleporter_" + gateway.script_int);
 
-        if(isDefined(target) && isDefined(target.script_flag))
+        if(IsDefined(target) && IsDefined(target.script_flag))
             level flag::set(target.script_flag);
     }
     else
     {
         level flag::clear("enable_teleporter_" + gateway.script_int);
 
-        if(isDefined(target) && isDefined(target.script_flag))
+        if(IsDefined(target) && IsDefined(target.script_flag))
             level flag::clear(target.script_flag);
     }
 }
@@ -530,7 +536,7 @@ GivePlayerHelmet(player)
     level clientfield::set("player" + player GetEntityNumber() + "wearableItem", 1);
     player PlaySoundToPlayer("zmb_squest_golden_anything", player);
 
-    if(!isDefined(player.var_8e065802))
+    if(!IsDefined(player.var_8e065802))
         player.var_8e065802 = SpawnStruct();
 
     player.var_8e065802.model = "c_t7_zm_dlchd_origins_golden_helmet";
@@ -546,12 +552,12 @@ FillAllSoulBoxes()
 {
     boxes = GetEntArray("foot_box", "script_noteworthy");
 
-    if(!isDefined(boxes) || !boxes.size)
+    if(!IsDefined(boxes) || !boxes.size)
         return;
     
     foreach(box in boxes)
     {
-        if(!isDefined(box) || Is_True(box.fillingBox) || box.n_souls_absorbed >= 30)
+        if(!IsDefined(box) || Is_True(box.fillingBox) || box.n_souls_absorbed >= 30)
             continue;
         
         thread FillSoulBox(box);
@@ -560,7 +566,7 @@ FillAllSoulBoxes()
 
 FillSoulBox(box)
 {
-    if(!isDefined(box))
+    if(!IsDefined(box))
         return;
 
     if(Is_True(box.fillingBox) || box.n_souls_absorbed >= 30)
@@ -571,9 +577,9 @@ FillSoulBox(box)
     curs = self getCursor();
     menu = self getCurrent();
 
-    while(isDefined(box))
+    while(IsDefined(box))
     {
-        if(isDefined(box) && box.n_souls_absorbed < 30)
+        if(IsDefined(box) && box.n_souls_absorbed < 30)
             box notify("soul_absorbed", self);
 
         wait 0.01;
@@ -662,7 +668,7 @@ reward_players_in_capture_zone()
 
 challenge_exists(str_name)
 {
-    return isDefined(level._challenges.a_stats[str_name]);
+    return IsDefined(level._challenges.a_stats[str_name]);
 }
 
 increment_stat(str_stat, n_increment = 1)
@@ -729,8 +735,10 @@ check_stat_complete(s_stat)
         else
         {
             foreach(player in GetPlayers())
-                if(isDefined(player.characterindex) && level._challenges.a_players[player.characterindex].n_completed + level._challenges.s_team.n_completed == level._challenges.a_stats.size)
+            {
+                if(IsDefined(player.characterindex) && level._challenges.a_players[player.characterindex].n_completed + level._challenges.s_team.n_completed == level._challenges.a_stats.size)
                     player notify("all_challenges_complete");
+            }
         }
 
         util::wait_network_frame();
@@ -769,14 +777,14 @@ CompleteIceTiles()
 
     while(!level flag::get("ice_puzzle_1_complete"))
     {
-        if(isDefined(level.unsolved_tiles) && level.unsolved_tiles.size)
+        if(IsDefined(level.unsolved_tiles) && level.unsolved_tiles.size)
         {
-            if(!isDefined(ice_gem))
+            if(!IsDefined(ice_gem))
                 break;
 
             foreach(tile in level.unsolved_tiles)
             {
-                if(!isDefined(tile) || ice_gem.value != tile.value || !tile.showing_tile_side)
+                if(!IsDefined(tile) || ice_gem.value != tile.value || !tile.showing_tile_side)
                     continue;
 
                 tile notify("damage", 1, self, (0, 0, 0), tile.origin, undefined, undefined, undefined, undefined, GetWeapon("staff_water"));
@@ -809,11 +817,11 @@ CompleteIceTombstones()
 
     while(!level flag::get("ice_puzzle_2_complete"))
     {
-        if(isDefined(tombstones) && tombstones.size)
+        if(IsDefined(tombstones) && tombstones.size)
         {
             foreach(tombstone in tombstones)
             {
-                if(!isDefined(tombstone) || !isDefined(tombstone.e_model))
+                if(!IsDefined(tombstone) || !IsDefined(tombstone.e_model))
                     continue;
 
                 if(tombstone.e_model.model != "p7_zm_ori_note_rock_01_anim")
@@ -853,12 +861,12 @@ CompleteWindRings()
     menu = self getCurrent();
     level.WindRings = true;
 
-    if(!isDefined(level.a_ceiling_rings))
+    if(!IsDefined(level.a_ceiling_rings))
         level.a_ceiling_rings = GetEntArray("ceiling_ring", "script_noteworthy");
 
     while(!level flag::get("air_puzzle_1_complete"))
     {
-        if(isDefined(level.a_ceiling_rings) && level.a_ceiling_rings.size)
+        if(IsDefined(level.a_ceiling_rings) && level.a_ceiling_rings.size)
         {
             foreach(ring in level.a_ceiling_rings)
             {
@@ -909,11 +917,10 @@ CompleteWindSmoke()
 
     foreach(smoke in smokes)
     {
-        if(!isDefined(smoke) || !isDefined(smoke.detector_brush))
+        if(!IsDefined(smoke) || !IsDefined(smoke.detector_brush))
             continue;
 
-        v_to_dest = VectorNormalize(s_dest.origin - smoke.origin);
-        smoke.detector_brush notify("damage", 1, self, v_to_dest, undefined, undefined, undefined, undefined, undefined, GetWeapon("staff_air"));
+        smoke.detector_brush notify("damage", 1, self, VectorNormalize(s_dest.origin - smoke.origin), undefined, undefined, undefined, undefined, undefined, GetWeapon("staff_air"));
     }
 
     while(!level flag::get("air_puzzle_2_complete"))
@@ -945,12 +952,12 @@ ComepleteFireCauldrons()
     level.FireCauldrons = true;
     curs = self getCursor();
     menu = self getCurrent();
-    self iPrintlnBold("^1" + ToUpper(level.menuName) + ": ^7A Player Must Stay In The Crazy Place While This Step Is Being Completed");
+    self iPrintlnBold("^1" + ToUpper(GetMenuName()) + ": ^7A Player Must Stay In The Crazy Place While This Step Is Being Completed");
 
-    if(!isDefined(level.sacrifice_volumes))
+    if(!IsDefined(level.sacrifice_volumes))
         level.sacrifice_volumes = GetEntArray("fire_sacrifice_volume", "targetname");
 
-    if(isDefined(level.sacrifice_volumes) && level.sacrifice_volumes.size)
+    if(IsDefined(level.sacrifice_volumes) && level.sacrifice_volumes.size)
     {
         foreach(vols in level.sacrifice_volumes)
         {
@@ -990,15 +997,17 @@ ComepleteFireCauldrons()
 is_chamber_occupied()
 {
     foreach(e_player in GetPlayers())
+    {
         if(is_point_in_chamber(e_player.origin))
             return 1;
+    }
 
     return 0;
 }
 
 is_point_in_chamber(v_origin)
 {
-    if(!isDefined(level.s_chamber_center))
+    if(!IsDefined(level.s_chamber_center))
     {
         level.s_chamber_center = struct::get("chamber_center", "targetname");
         level.s_chamber_center.radius_sq = (level.s_chamber_center.script_float * level.s_chamber_center.script_float);
@@ -1024,13 +1033,13 @@ CompleteFireTorches()
 
     torches = GetEntArray("fire_torch_ternary", "script_noteworthy");
 
-    if(isDefined(torches) && torches.size)
+    if(IsDefined(torches) && torches.size)
     {
         foreach(torch in torches)
         {
             target = struct::get(torch.target, "targetname");
 
-            if(!isDefined(target) || !target.b_correct_torch)
+            if(!IsDefined(target) || !target.b_correct_torch)
                 continue;
 
             self notify("projectile_impact", GetWeapon("staff_fire"), target.origin, 100, GetWeapon("staff_fire"));
@@ -1070,7 +1079,7 @@ CompleteLightningSong()
     level.LightningSong = true;
     curs = self getCursor();
     menu = self getCurrent();
-    self iPrintlnBold("^1" + ToUpper(level.menuName) + ": ^7A Player Must Stay In The Crazy Place While This Step Is Being Completed");
+    self iPrintlnBold("^1" + ToUpper(GetMenuName()) + ": ^7A Player Must Stay In The Crazy Place While This Step Is Being Completed");
 
     order = Array(11, 7, 3, 7, 4, 2, 9, 5, 3); //The order is always the same
 
@@ -1121,7 +1130,7 @@ CompleteLightningDials()
         if(relay.position == 2)
             continue;
 
-        while(!isDefined(relay.connections[relay.position]) || relay.connections[relay.position] == "")
+        while(!IsDefined(relay.connections[relay.position]) || relay.connections[relay.position] == "")
         {
             relay.trigger_stub notify("trigger", self);
             wait 0.1;
@@ -1156,16 +1165,16 @@ OriginsDamageOrb(type)
 
     foreach(gem in gems)
     {
-        if(!isDefined(gem) || gem.targetname != "crypt_gem_" + gemType)
+        if(!IsDefined(gem) || gem.targetname != "crypt_gem_" + gemType)
             continue;
         
         targetGem = gem;
     }
 
-    if(isDefined(targetGem)) //based on the code, if the gem still exists, then we aren't ready for this step yet.
+    if(IsDefined(targetGem)) //based on the code, if the gem still exists, then we aren't ready for this step yet.
         return self iPrintlnBold("^1ERROR: ^7This Step Can't Be Completed Yet");
 
-    if(!isDefined(level.damageOrb))
+    if(!IsDefined(level.damageOrb))
         level.damageOrb = [];
     
     if(Is_True(level.damageOrb[type]))
@@ -1182,7 +1191,7 @@ OriginsDamageOrb(type)
 
     foreach(ent in GetEntArray("script_model", "classname"))
     {
-        if(!isDefined(ent) || ent.model != struct::get(type + "_orb_exit_path", "targetname").model)
+        if(!IsDefined(ent) || ent.model != struct::get(type + "_orb_exit_path", "targetname").model)
             continue;
         
         ent notify("damage", 99, self, (0, 0, 0), ent.origin, undefined, undefined, undefined, undefined, GetWeapon("staff_" + fixType));
@@ -1231,7 +1240,7 @@ Align115Rings(type)
 
     foreach(ring in GetEntArray("crypt_puzzle_disc", "script_noteworthy"))
     {
-        if(ring.position == num || !isDefined(ring.target))
+        if(ring.position == num || !IsDefined(ring.target))
             continue;
 
         ring.position = num;
@@ -1241,13 +1250,13 @@ Align115Rings(type)
         wait 0.75;
         ring.n_bryce_cake = ((ring.n_bryce_cake + 1) % 2);
 
-        if(isDefined(ring.var_b1c02d8a))
+        if(IsDefined(ring.var_b1c02d8a))
             ring.var_b1c02d8a clientfield::set("bryce_cake", ring.n_bryce_cake);
 
         wait 0.25;
         ring.n_bryce_cake = ((ring.n_bryce_cake + 1) % 2);
 
-        if(isDefined(ring.var_b1c02d8a))
+        if(IsDefined(ring.var_b1c02d8a))
             ring.var_b1c02d8a clientfield::set("bryce_cake", ring.n_bryce_cake);
 
         ring PlaySound("zmb_crypt_disc_stop");
@@ -1298,16 +1307,16 @@ OpenOriginsCrypt()
     trig_position.has_vinyl = true;
     wait 0.5;
 
-    if(isDefined(trig_position.trigger))
+    if(IsDefined(trig_position.trigger))
         trig_position.trigger notify("trigger", self);
     
     wait 6;
     level.b_open_all_gramophone_doors = undefined;
 
-    while(isDefined(a_door_main[1]))
+    while(IsDefined(a_door_main[1]))
         wait 0.1;
 
-    if(isDefined(trig_position.trigger))
+    if(IsDefined(trig_position.trigger))
         trig_position.trigger notify("trigger", self);
 
     while(!level flag::get("crypt_opened"))
@@ -1325,10 +1334,10 @@ OriginsGStrikeQuest(player)
 {
     player endon("disconnect");
 
-    if(!isDefined(level.n_tablets_remaining) || level.n_tablets_remaining <= 0)
+    if(!IsDefined(level.n_tablets_remaining) || level.n_tablets_remaining <= 0)
         return self iPrintlnBold("^1ERROR: ^7This Step Has Already Been Completed");
 
-    if(!isDefined(player.sq_one_inch_punch_stage))
+    if(!IsDefined(player.sq_one_inch_punch_stage))
         return self iPrintlnBold("^1ERROR: ^7This Quest Can't Be Completed");
     
     if(player.sq_one_inch_punch_stage >= 6)
@@ -1338,6 +1347,8 @@ OriginsGStrikeQuest(player)
         return self iPrintlnBold("^1ERROR: ^7This Quest Is Currently Being Completed");
 
     player.completingGStrike = true;
+    menu = self getCurrent();
+    curs = self getCursor();
 
     t_bunker = GetEnt("trigger_oneinchpunch_bunker_table", "targetname");
     t_birdbath = GetEnt("trigger_oneinchpunch_church_birdbath", "targetname");
@@ -1370,7 +1381,7 @@ OriginsGStrikeQuest(player)
         {
             zombie = SpawnSacrificedZombie(churchVolume);
             
-            if(isDefined(zombie))
+            if(IsDefined(zombie))
             {
                 spawnedZombies[spawnedZombies.size] = zombie;
                 zombie DoDamage(zombie.health + 666, zombie.origin, player, player, undefined, "MOD_MELEE");
@@ -1381,7 +1392,7 @@ OriginsGStrikeQuest(player)
         {
             for(a = 0; a < spawnedZombies.size; a++)
             {
-                if(!isDefined(spawnedZombies[a]) || !IsAlive(spawnedZombies[a]))
+                if(!IsDefined(spawnedZombies[a]) || !IsAlive(spawnedZombies[a]))
                     continue;
                 
                 spawnedZombies[a] DoDamage(spawnedZombies[a].health + 666, spawnedZombies[a].origin);
@@ -1415,7 +1426,7 @@ OriginsGStrikeQuest(player)
         {
             zombie = SpawnSacrificedZombie(churchVolume);
             
-            if(isDefined(zombie))
+            if(IsDefined(zombie))
             {
                 spawnedZombies[spawnedZombies.size] = zombie;
                 zombie DoDamage(zombie.health + 666, zombie.origin, player, player, undefined, "MOD_MELEE");
@@ -1426,7 +1437,7 @@ OriginsGStrikeQuest(player)
         {
             for(a = 0; a < spawnedZombies.size; a++)
             {
-                if(!isDefined(spawnedZombies[a]) || !IsAlive(spawnedZombies[a]))
+                if(!IsDefined(spawnedZombies[a]) || !IsAlive(spawnedZombies[a]))
                     continue;
                 
                 spawnedZombies[a] DoDamage(spawnedZombies[a].health + 666, spawnedZombies[a].origin);
@@ -1448,38 +1459,7 @@ OriginsGStrikeQuest(player)
     }
 
     player.completingGStrike = BoolVar(player.completingGStrike);
-}
-
-SpawnSacrificedZombie(goalEnt)
-{
-    zombie = zombie_utility::spawn_zombie(level.zombie_spawners[0]);
-
-    if(isDefined(zombie))
-    {
-        zombie endon("death");
-
-        wait 0.1;
-        zombie zombie_utility::makezombiecrawler(true);
-        target = goalEnt.origin;
-
-        linker = Spawn("script_origin", zombie.origin);
-        linker.origin = zombie.origin;
-        linker.angles = zombie.angles;
-
-        zombie LinkTo(linker);
-        linker MoveTo(target, 0.01);
-
-        linker waittill("movedone");
-
-        zombie Unlink();
-        linker delete();
-
-        zombie LinkTo(goalEnt);
-        zombie.completed_emerging_into_playable_area = 1;
-        zombie Hide();
-    }
-
-    return zombie;
+    self RefreshMenu(menu, curs);
 }
 
 
@@ -1489,14 +1469,14 @@ SpawnSacrificedZombie(goalEnt)
 //Miscellaneous
 MudSlowdown()
 {
-    level.a_e_slow_areas = isDefined(level.a_e_slow_areas) ? undefined : GetEntArray("player_slow_area", "targetname");
+    level.a_e_slow_areas = IsDefined(level.a_e_slow_areas) ? undefined : GetEntArray("player_slow_area", "targetname");
 }
 
 DisableTankCooldown()
 {
     level.DisableTankCooldown = BoolVar(level.DisableTankCooldown);
 
-    while(isDefined(level.DisableTankCooldown))
+    while(IsDefined(level.DisableTankCooldown))
     {
         level flag::wait_till("tank_moving");
         level.vh_tank.n_cooldown_timer = 2; //2 seconds is the minimum cooldown time(if it's anything less than 2, then it gets reset to 2)

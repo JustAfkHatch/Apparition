@@ -3,10 +3,10 @@ PopulateForgeOptions(menu)
     switch(menu)
     {
         case "Forge Options":
-            if(!isDefined(self.forgeModelDistance))
+            if(!IsDefined(self.forgeModelDistance))
                 self.forgeModelDistance = 200;
             
-            if(!isDefined(self.forgeModelScale))
+            if(!IsDefined(self.forgeModelScale))
                 self.forgeModelScale = 1;
             
             self addMenu("Forge Options");
@@ -27,8 +27,8 @@ PopulateForgeOptions(menu)
         case "Spawn Script Model":
             self addMenu("Spawn");
 
-                for(a = 0; a < level.MenuModels.size; a++)
-                    self addOpt(CleanString(level.MenuModels[a]), ::ForgeSpawnModel, level.MenuModels[a]);
+                for(a = 0; a < level.menu_models.size; a++)
+                    self addOpt(CleanString(level.menu_models[a]), ::ForgeSpawnModel, level.menu_models[a]);
             break;
         
         case "Rotate Script Model":
@@ -43,18 +43,18 @@ PopulateForgeOptions(menu)
 
 ForgeSpawnModel(model)
 {
-    if(isDefined(self.ForgeShootModel))
+    if(IsDefined(self.ForgeShootModel))
         self ForgeShootModel();
     
-    if(!isDefined(self.forgeSpawnedArray))
+    if(!IsDefined(self.forgeSpawnedArray))
         self.forgeSpawnedArray = [];
     
-    if(isDefined(self.forgemodel))
-        self.forgemodel delete();
+    if(IsDefined(self.forgemodel))
+        self.forgemodel Delete();
     
     self.forgemodel = SpawnScriptModel(self GetEye() + VectorScale(AnglesToForward(self GetPlayerAngles()), self.forgeModelDistance), model, (0, 0, 0));
 
-    if(isDefined(self.forgemodel))
+    if(IsDefined(self.forgemodel))
         self.forgemodel SetScale(self.forgeModelScale);
     
     self thread ForgeCarryModel();
@@ -67,7 +67,7 @@ ForgeCarryModel()
     
     self endon("disconnect");
     
-    while(isDefined(self.forgemodel))
+    while(IsDefined(self.forgemodel))
     {
         self.forgemodel MoveTo(Is_True(self.forgeignoreCollisions) ? self GetEye() + VectorScale(AnglesToForward(self GetPlayerAngles()), self.forgeModelDistance) : BulletTrace(self GetEye(), self GetEye() + VectorScale(AnglesToForward(self GetPlayerAngles()), self.forgeModelDistance), false, self.forgemodel)["position"], 0.1);
         wait 0.05;
@@ -78,41 +78,41 @@ ForgeModelScale(scale)
 {
     self.forgeModelScale = scale;
 
-    if(isDefined(self.forgemodel))
+    if(IsDefined(self.forgemodel))
         self.forgemodel SetScale(scale);
 }
 
 ForgePlaceModel()
 {
-    if(!isDefined(self.forgemodel))
+    if(!IsDefined(self.forgemodel))
         return;
     
-    if(!isDefined(self.forgeSpawnedArray))
+    if(!IsDefined(self.forgeSpawnedArray))
         self.forgeSpawnedArray = [];
     
     spawn = SpawnScriptModel(self.forgemodel.origin, self.forgemodel.model, self.forgemodel.angles);
 
-    if(isDefined(spawn))
+    if(IsDefined(spawn))
     {
         self.forgeSpawnedArray[self.forgeSpawnedArray.size] = spawn;
         spawn SetScale(self.forgeModelScale);
     }
     
     self notify("EndCarryModel");
-    self.forgemodel delete();
+    self.forgemodel Delete();
 }
 
 ForgeCopyModel()
 {
-    if(!isDefined(self.forgemodel))
+    if(!IsDefined(self.forgemodel))
         return;
     
-    if(!isDefined(self.forgeSpawnedArray))
+    if(!IsDefined(self.forgeSpawnedArray))
         self.forgeSpawnedArray = [];
     
     spawn = SpawnScriptModel(self.forgemodel.origin, self.forgemodel.model, self.forgemodel.angles);
 
-    if(!isDefined(spawn))
+    if(!IsDefined(spawn))
         return;
     
     self.forgeSpawnedArray[self.forgeSpawnedArray.size] = spawn;
@@ -121,7 +121,7 @@ ForgeCopyModel()
 
 ForgeRotateModel(int, type)
 {
-    if(!isDefined(self.forgemodel))
+    if(!IsDefined(self.forgemodel))
         return;
     
     switch(type)
@@ -149,24 +149,24 @@ ForgeRotateModel(int, type)
 
 ForgeDeleteModel()
 {
-    if(!isDefined(self.forgemodel))
+    if(!IsDefined(self.forgemodel))
         return;
     
     self notify("EndCarryModel");
-    self.forgemodel delete();
+    self.forgemodel Delete();
 }
 
 ForgeDropModel()
 {
-    if(!isDefined(self.forgemodel))
+    if(!IsDefined(self.forgemodel))
         return;
     
-    if(!isDefined(self.forgeSpawnedArray))
+    if(!IsDefined(self.forgeSpawnedArray))
         self.forgeSpawnedArray = [];
     
     spawn = SpawnScriptModel(self.forgemodel.origin, self.forgemodel.model, self.forgemodel.angles);
 
-    if(isDefined(spawn))
+    if(IsDefined(spawn))
     {
         spawn SetScale(self.forgeModelScale);
         self.forgeSpawnedArray[self.forgeSpawnedArray.size] = spawn;
@@ -174,7 +174,7 @@ ForgeDropModel()
     }
 
     self notify("EndCarryModel");
-    self.forgemodel delete();
+    self.forgemodel Delete();
 }
 
 ForgeModelDistance(num)
@@ -189,10 +189,10 @@ ForgeIgnoreCollisions()
 
 ForgeDeleteLastSpawn()
 {
-    if(!isDefined(self.forgeSpawnedArray) || isDefined(self.forgeSpawnedArray) && !self.forgeSpawnedArray.size || !isDefined(self.forgeSpawnedArray[(self.forgeSpawnedArray.size - 1)]))
+    if(!IsDefined(self.forgeSpawnedArray) || IsDefined(self.forgeSpawnedArray) && !self.forgeSpawnedArray.size || !IsDefined(self.forgeSpawnedArray[(self.forgeSpawnedArray.size - 1)]))
         return;
     
-    self.forgeSpawnedArray[(self.forgeSpawnedArray.size - 1)] delete();
+    self.forgeSpawnedArray[(self.forgeSpawnedArray.size - 1)] Delete();
 
     if(self.forgeSpawnedArray.size > 1)
     {
@@ -209,19 +209,21 @@ ForgeDeleteLastSpawn()
 
 ForgeDeleteAllSpawned()
 {
-    if(!isDefined(self.forgeSpawnedArray) || isDefined(self.forgeSpawnedArray) && !self.forgeSpawnedArray.size)
+    if(!IsDefined(self.forgeSpawnedArray) || IsDefined(self.forgeSpawnedArray) && !self.forgeSpawnedArray.size)
         return;
     
     for(a = 0; a < self.forgeSpawnedArray.size; a++)
-        if(isDefined(self.forgeSpawnedArray[a]))
-            self.forgeSpawnedArray[a] delete();
+    {
+        if(IsDefined(self.forgeSpawnedArray[a]))
+            self.forgeSpawnedArray[a] Delete();
+    }
     
     self.forgeSpawnedArray = undefined;
 }
 
 ForgeShootModel()
 {
-    if(!isDefined(self.forgemodel) && !Is_True(self.ForgeShootModel))
+    if(!IsDefined(self.forgemodel) && !Is_True(self.ForgeShootModel))
         return;
     
     self endon("disconnect");
@@ -240,7 +242,7 @@ ForgeShootModel()
 
             spawn = SpawnScriptModel(self GetWeaponMuzzlePoint() + VectorScale(AnglesToForward(self GetPlayerAngles()), 10), ent);
 
-            if(isDefined(spawn))
+            if(IsDefined(spawn))
             {
                 spawn SetScale(self.forgeModelScale);
                 spawn NotSolid();

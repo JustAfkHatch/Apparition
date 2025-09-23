@@ -10,7 +10,7 @@ PopulateTeleportMenu(menu, player)
             self addMenu("Teleport Menu");
                 self addOptBool(player.DisableTeleportEffect, "Disable Teleport Effect", ::DisableTeleportEffect, player);
                 
-                if(isDefined(MenuSpawnPoints) && MenuSpawnPoints.size)
+                if(IsDefined(MenuSpawnPoints) && MenuSpawnPoints.size)
                     self addOptIncSlider("Official Spawn Points", ::OfficialSpawnPoint, 0, 0, (MenuSpawnPoints.size - 1), 1, MenuSpawnPoints, player);
                 
                 if(ReturnMapName() != "Unknown")
@@ -33,15 +33,15 @@ PopulateTeleportMenu(menu, player)
         case "Entity Teleports":            
             self addMenu("Entity Teleports");
 
-                if(isDefined(level.chests[level.chest_index]))
+                if(IsDefined(level.chests[level.chest_index]))
                     self addOpt("Mystery Box", ::EntityTeleport, "Mystery Box", player);
                 
-                if(isDefined(level.bgb_machines) && level.bgb_machines.size)
+                if(IsDefined(level.bgb_machines) && level.bgb_machines.size)
                     self addOptIncSlider("BGB Machine", ::EntityTeleport, 0, 0, (level.bgb_machines.size - 1), 1, player, "BGB Machine");
 
                 perks = GetEntArray("zombie_vending", "targetname");
 
-                if(isDefined(perks) && perks.size)
+                if(IsDefined(perks) && perks.size)
                 {
                     foreach(perk in perks)
                     {
@@ -72,7 +72,7 @@ OfficialSpawnPoint(index, points, player)
 
 TeleportPlayer(origin, player, angles, name)
 {
-    if(!isDefined(origin))
+    if(!IsDefined(origin))
         return;
 
     if(IsPlayer(origin))
@@ -96,7 +96,7 @@ TeleportPlayer(origin, player, angles, name)
                 
                 index = RandomInt(level.players.size);
 
-                while(index == player GetEntityNumber() || !isDefined(level.players[index]) || !IsPlayer(level.players[index]))
+                while(index == player GetEntityNumber() || !IsDefined(level.players[index]) || !IsPlayer(level.players[index]))
                     index = RandomInt(level.players.size);
                 
                 newOrigin = level.players[index].origin;
@@ -104,15 +104,15 @@ TeleportPlayer(origin, player, angles, name)
         }
     }
     
-    if(!isDefined(newOrigin))
+    if(!IsDefined(newOrigin))
         newOrigin = origin;
     
-    if(isDefined(name) && ReturnMapName() == "Origins" && IsSubStr(name, "Robot Head") && !isDefined(player.teleport_initial_origin))
+    if(IsDefined(name) && ReturnMapName() == "Origins" && IsSubStr(name, "Robot Head") && !IsDefined(player.teleport_initial_origin))
         player.teleport_initial_origin = player.origin;
     
     player SetOrigin(newOrigin);
 
-    if(isDefined(angles))
+    if(IsDefined(angles))
         player SetPlayerAngles(angles);
 
     player PlayTeleportEffect();
@@ -130,7 +130,7 @@ EntityTeleport(entity, player, eEntity)
         
         perks = GetEntArray("zombie_vending", "targetname");
                     
-        if(isDefined(perks) && perks.size)
+        if(IsDefined(perks) && perks.size)
         {
             foreach(perk in perks)
             {
@@ -144,13 +144,13 @@ EntityTeleport(entity, player, eEntity)
             }
         }
     }
-    else if(IsInt(entity) && isDefined(eEntity) && eEntity == "BGB Machine")
+    else if(IsInt(entity) && IsDefined(eEntity) && eEntity == "BGB Machine")
     {
         ent = level.bgb_machines[entity];
         entAngleDir = AnglesToRight(ent.angles);
     }
 
-    if(!isDefined(ent) || !isDefined(entAngleDir))
+    if(!IsDefined(ent) || !IsDefined(entAngleDir))
         return;
     
     player SetOrigin(ent.origin + (entAngleDir * 70));
@@ -201,7 +201,7 @@ SaveAndLoad(player)
                     wait 0.05;
                 }
 
-                if(player ActionslotTwoButtonPressed() && isDefined(player.SavedOrigin))
+                if(player ActionslotTwoButtonPressed() && IsDefined(player.SavedOrigin))
                 {
                     player LoadSavedLocation(player);
                     wait 0.05;
@@ -221,7 +221,7 @@ SaveCurrentLocation(player)
 
 LoadSavedLocation(player)
 {
-    if(!isDefined(player.SavedOrigin))
+    if(!IsDefined(player.SavedOrigin))
     {
         if(player != self)
             self iPrintlnBold("^1ERROR: ^7Player Doesn't Have A Location Saved");

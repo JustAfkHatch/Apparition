@@ -3,22 +3,22 @@ PopulateAimbotMenu(menu, player)
     switch(menu)
     {
         case "Aimbot Menu":
-            if(!isDefined(player.AimbotType))
+            if(!IsDefined(player.AimbotType))
                 player.AimbotType = "Snap";
             
-            if(!isDefined(player.AimBoneTag))
+            if(!IsDefined(player.AimBoneTag))
                 player.AimBoneTag = "j_head";
             
-            if(!isDefined(player.AimbotKey))
+            if(!IsDefined(player.AimbotKey))
                 player.AimbotKey = "None";
             
-            if(!isDefined(player.AimbotVisibilityRequirement))
+            if(!IsDefined(player.AimbotVisibilityRequirement))
                 player.AimbotVisibilityRequirement = "None";
             
-            if(!isDefined(player.AimbotDistance))
+            if(!IsDefined(player.AimbotDistance))
                 player.AimbotDistance = 100;
             
-            if(!isDefined(player.SmoothSnaps))
+            if(!IsDefined(player.SmoothSnaps))
                 player.SmoothSnaps = 5;
             
             self addMenu("Aimbot Menu");
@@ -52,13 +52,13 @@ Aimbot(player)
         if(Is_True(player.Noclip) || Is_True(player.UFOMode) || Is_True(player.ControllableZombie) || Is_True(player.AC130) || Is_True(player.MenuOpenCheck) && player isInMenu(true))
             enemy = undefined;
 
-        if(isDefined(enemy) && Is_True(player.AimbotDistanceCheck) && Distance(player.origin, enemy.origin) > player.AimbotDistance)
+        if(IsDefined(enemy) && Is_True(player.AimbotDistanceCheck) && Distance(player.origin, enemy.origin) > player.AimbotDistance)
             enemy = undefined;
         
-        if(isDefined(enemy) && Is_True(player.PlayableAreaCheck) && !zm_behavior::inplayablearea(enemy))
+        if(IsDefined(enemy) && Is_True(player.PlayableAreaCheck) && !zm_behavior::inplayablearea(enemy))
             enemy = undefined;
         
-        if(isDefined(enemy) && player.AimbotVisibilityRequirement != "None")
+        if(IsDefined(enemy) && player.AimbotVisibilityRequirement != "None")
         {
             if(player.AimbotVisibilityRequirement == "Damageable" && enemy DamageConeTrace(player GetEye(), player) < 0.1)
                 enemy = undefined;
@@ -70,11 +70,11 @@ Aimbot(player)
         if(player.AimbotKey == "Aiming" && !player AdsButtonPressed() || player.AimbotKey == "Firing" && !player isFiring1())
             enemy = undefined;
 
-        if(isDefined(enemy))
+        if(IsDefined(enemy))
         {
             origin = enemy GetTagOrigin(player.AimBoneTag);
 
-            if(!isDefined(origin)) //If the tag origin for the target tag can't be found, this will test the given tags to see if one can be used
+            if(!IsDefined(origin)) //If the tag origin for the target tag can't be found, this will test the given tags to see if one can be used
             {
                 tags = Array("j_ankle_ri", "j_ankle_le", "pelvis", "j_mainroot", "j_spinelower", "j_spine4", "j_neck", "j_head", "tag_body");
 
@@ -82,12 +82,12 @@ Aimbot(player)
                 {
                     test = enemy GetTagOrigin(tags[a]);
 
-                    if(isDefined(test))
+                    if(IsDefined(test))
                         origin = enemy GetTagOrigin(tags[a]);
                 }
             }
 
-            if(isDefined(origin))
+            if(IsDefined(origin))
             {
                 if(player.AimbotType == "Snap")
                 {
@@ -98,7 +98,7 @@ Aimbot(player)
                 }
                 else if(player.AimbotType == "Smooth Snap")
                 {
-                    if(!isDefined(player.smoothTarget) || player.smoothTarget != enemy)
+                    if(!IsDefined(player.smoothTarget) || player.smoothTarget != enemy)
                     {
                         player.smoothTarget = enemy;
                         player.snapsRemaining = player.SmoothSnaps;
@@ -129,7 +129,7 @@ Aimbot(player)
             }
             else
             {
-                if(isDefined(player.smoothTarget))
+                if(IsDefined(player.smoothTarget))
                 {
                     player.smoothTarget = undefined;
                     player.snapsRemaining = undefined;
@@ -139,7 +139,7 @@ Aimbot(player)
         }
         else
         {
-            if(isDefined(player.smoothTarget))
+            if(IsDefined(player.smoothTarget))
             {
                 player.smoothTarget = undefined;
                 player.snapsRemaining = undefined;
@@ -163,19 +163,16 @@ GetClosestTarget()
 
     for(a = 0; a < zombies.size; a++)
     {
-        if(!isDefined(zombies[a]) || !IsAlive(zombies[a]) || Is_True(self.AimbotDistanceCheck) && Distance(self.origin, zombies[a].origin) > self.AimbotDistance || self.AimbotVisibilityRequirement == "Damageable" && zombies[a] DamageConeTrace(self GetEye(), self) < 0.1 || self.AimbotVisibilityRequirement == "Visible" && !self IsVisible(zombies[a]) || Is_True(self.PlayableAreaCheck) && !zm_behavior::inplayablearea(zombies[a]))
+        if(!IsDefined(zombies[a]) || !IsAlive(zombies[a]) || Is_True(self.AimbotDistanceCheck) && Distance(self.origin, zombies[a].origin) > self.AimbotDistance || self.AimbotVisibilityRequirement == "Damageable" && zombies[a] DamageConeTrace(self GetEye(), self) < 0.1 || self.AimbotVisibilityRequirement == "Visible" && !self IsVisible(zombies[a]) || Is_True(self.PlayableAreaCheck) && !zm_behavior::inplayablearea(zombies[a]))
             continue;
         
-        if(!isDefined(enemy))
+        if(!IsDefined(enemy))
             enemy = zombies[a];
         
-        if(isDefined(enemy) && enemy != zombies[a])
-        {
-            if(!Closer(self.origin, zombies[a].origin, enemy.origin) || self.AimbotVisibilityRequirement == "Damageable" && zombies[a] DamageConeTrace(self GetEye(), self) < 0.1 || self.AimbotVisibilityRequirement == "Visible" && !self IsVisible(zombies[a]) || Is_True(self.AimbotDistanceCheck) && Distance(self.origin, zombies[a].origin) > self.AimbotDistance)
-                continue;
-            
-            enemy = zombies[a];
-        }
+        if(enemy == zombies[a] || !Closer(self.origin, zombies[a].origin, enemy.origin) || self.AimbotVisibilityRequirement == "Damageable" && zombies[a] DamageConeTrace(self GetEye(), self) < 0.1 || self.AimbotVisibilityRequirement == "Visible" && !self IsVisible(zombies[a]) || Is_True(self.AimbotDistanceCheck) && Distance(self.origin, zombies[a].origin) > self.AimbotDistance)
+            continue;
+        
+        enemy = zombies[a];
     }
 
     return enemy;
@@ -197,14 +194,14 @@ FireGun(startPosition, targetPosition, takeAmmo = false)
 
     weapon = self GetCurrentWeapon();
 
-    if(!isDefined(weapon) || weapon.name == "none")
+    if(!IsDefined(weapon) || weapon.name == "none")
         return;
     
     if(!self GetWeaponAmmoClip(weapon) || self IsReloading() || self isOnLadder() || self IsMantling() || self IsSwitchingWeapons() || self IsMeleeing() || self IsSprinting())
         return;
     
-    startLocation = isDefined(startPosition) ? startPosition : self GetWeaponMuzzlePoint();
-    targetLocation = isDefined(targetPosition) ? targetPosition : self TraceBullet();
+    startLocation = IsDefined(startPosition) ? startPosition : self GetWeaponMuzzlePoint();
+    targetLocation = IsDefined(targetPosition) ? targetPosition : self TraceBullet();
     MagicBullet(weapon, startLocation, targetLocation, self);
     
     if(takeAmmo)
@@ -213,7 +210,7 @@ FireGun(startPosition, targetPosition, takeAmmo = false)
     self WeaponPlayEjectBrass();
     time = weapon.fireTime;
 
-    if(!isDefined(time) || time <= 0)
+    if(!IsDefined(time) || time <= 0)
         time = 0.1;
 
     wait (time / 2);

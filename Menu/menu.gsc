@@ -3,7 +3,7 @@ RunMenuOptions(menu)
     switch(menu)
     {
         case "Main":
-            self addMenu((self.MenuStyle == "Native") ? "Main Menu" : level.menuName);
+            self addMenu((self.MenuStyle == "Native") ? "Main Menu" : GetMenuName());
                 self addOpt("Basic Scripts", ::newMenu, "Basic Scripts");
                 self addOpt("Menu Customization", ::newMenu, "Menu Customization");
                 self addOpt("Message Menu", ::newMenu,"Message Menu");
@@ -56,7 +56,7 @@ RunMenuOptions(menu)
 
                 if(Is_Alive(self))
                 {
-                    self addOptBool(self.godmode, "God Mode", ::Godmode, self);
+                    self addOptBool(self.playerGodmode, "God Mode", ::Godmode, self);
                     self addOptBool(self.Noclip, "Noclip", ::Noclip1, self);
                     self addOptBool(self.NoclipBind1, "Bind Noclip To [{+frag}]", ::BindNoclip, self);
                     self addOptSlider("Unlimited Ammo", ::UnlimitedAmmo, "Continuous;Reload;Disable", self);
@@ -296,10 +296,10 @@ RunMenuOptions(menu)
 
                 foreach(player in level.players)
                 {
-                    if(!isDefined(player.verification)) //If A Player Doesn't Have A Verification Set, They Won't Show. Mainly Happens If They Are Still Connecting
-                        player.verification = level.MenuStatus[1];
+                    if(!IsDefined(player.accessLevel)) //If A Player Doesn't Have A Verification Set, They Won't Show. Mainly Happens If They Are Still Connecting
+                        player.accessLevel = GetAccessLevels()[1];
                     
-                    self addOpt("[^2" + player.verification + "^7]" + CleanName(player getName()), ::newMenu, "Options");
+                    self addOpt("[^2" + player.accessLevel + "^7]" + CleanName(player getName()), ::newMenu, "Options");
                 }
             break;
         
@@ -332,7 +332,7 @@ RunMenuOptions(menu)
                         
                         craftable = craftables[a];
                         
-                        if(isDefined(craftable))
+                        if(IsDefined(craftable))
                         {
                             if(!IsCraftableCollected(craftable))
                             {
@@ -345,7 +345,7 @@ RunMenuOptions(menu)
                                 if(IsPartCollected(part))
                                     continue;
                                 
-                                if(isDefined(part.pieceSpawn.model))
+                                if(IsDefined(part.pieceSpawn.model))
                                     self addOpt(CleanString(part.pieceSpawn.piecename), ::CollectCraftablePart, part);
                             }
                         }
@@ -353,7 +353,7 @@ RunMenuOptions(menu)
             }
             else
             {
-                if(!isDefined(self.SelectedPlayer))
+                if(!IsDefined(self.SelectedPlayer))
                     self.SelectedPlayer = self;
                 
                 self MenuOptionsPlayer(menu, self.SelectedPlayer);
@@ -365,7 +365,7 @@ RunMenuOptions(menu)
 
 MenuOptionsPlayer(menu, player)
 {
-    if(!isDefined(player) || !IsPlayer(player))
+    if(!IsDefined(player) || !IsPlayer(player))
         menu = "404";
     
     switch(menu)
@@ -507,9 +507,11 @@ MenuOptionsPlayer(menu, player)
 
                     self addMenu(ReturnMapName() + " Teleports");
                         
-                        if(isDefined(locations) && locations.size)
+                        if(IsDefined(locations) && locations.size)
+                        {
                             for(a = 0; a < locations.size; a += 2)
                                 self addOpt(locations[a], ::TeleportPlayer, locations[(a + 1)], player, undefined, locations[a]);
+                        }
                 }
 
                 if(error404)

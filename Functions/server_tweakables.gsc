@@ -36,7 +36,7 @@ PopulateServerTweakables(menu)
 
                 for(a = 0; a < powerups.size; a++)
                 {
-                    if(!isDefined(powerups[a]) || !isDefined(level.zombie_powerups[powerups[a]].func_should_drop_with_regular_powerups) || !IsFunctionPtr(level.zombie_powerups[powerups[a]].func_should_drop_with_regular_powerups))
+                    if(!IsDefined(powerups[a]) || !IsDefined(level.zombie_powerups[powerups[a]].func_should_drop_with_regular_powerups) || !IsFunctionPtr(level.zombie_powerups[powerups[a]].func_should_drop_with_regular_powerups))
                         continue;
                     
                     self addOptBool([[ level.zombie_powerups[powerups[a]].func_should_drop_with_regular_powerups ]](), ReturnPowerupName(powerups[a]), ::SetPowerUpState, powerups[a]);
@@ -47,7 +47,7 @@ PopulateServerTweakables(menu)
 
 SetPowerUpState(powerup)
 {
-    if(!isDefined(powerup) || !isDefined(level.zombie_powerups[powerup].func_should_drop_with_regular_powerups) || !IsFunctionPtr(level.zombie_powerups[powerup].func_should_drop_with_regular_powerups))
+    if(!IsDefined(powerup) || !IsDefined(level.zombie_powerups[powerup].func_should_drop_with_regular_powerups) || !IsFunctionPtr(level.zombie_powerups[powerup].func_should_drop_with_regular_powerups))
         return;
     
     if(GetActivePowerUpCount() < 2 && Is_True([[ level.zombie_powerups[powerup].func_should_drop_with_regular_powerups ]]()))
@@ -63,7 +63,7 @@ GetActivePowerUpCount()
 
     for(a = 0; a < powerups.size; a++)
     {
-        if(!isDefined(powerups[a]))
+        if(!IsDefined(powerups[a]))
             continue;
         
         if(Is_True([[ level.zombie_powerups[powerups[a]].func_should_drop_with_regular_powerups ]]()))
@@ -84,8 +84,10 @@ SetPlayerWeaponLimit(limit)
     level.additionalprimaryweapon_limit = limit;
 
     foreach(player in level.players)
-        if(isDefined(player.get_player_weapon_limit))
+    {
+        if(IsDefined(player.get_player_weapon_limit))
             player.get_player_weapon_limit = ::GetPlayerWeaponLimit;
+    }
 
     level.get_player_weapon_limit = ::GetPlayerWeaponLimit;
 }
@@ -133,13 +135,13 @@ ServerUpgradeWeaponWallbuys()
 
     if(Is_True(level.UpgradeWeaponWallbuys))
     {
-        if(isDefined(level.wallbuy_should_upgrade_weapon_override))
+        if(IsDefined(level.wallbuy_should_upgrade_weapon_override))
             level.saved_wallbuy_should_upgrade_weapon_override = level.wallbuy_should_upgrade_weapon_override;
         
         level.wallbuy_should_upgrade_weapon_override = ::wallbuy_should_upgrade_weapon_override;
     }
     else
-        level.wallbuy_should_upgrade_weapon_override = isDefined(level.saved_wallbuy_should_upgrade_weapon_override) ? level.saved_wallbuy_should_upgrade_weapon_override : undefined;
+        level.wallbuy_should_upgrade_weapon_override = IsDefined(level.saved_wallbuy_should_upgrade_weapon_override) ? level.saved_wallbuy_should_upgrade_weapon_override : undefined;
 }
 
 ServerMaxAmmoClips()
@@ -166,7 +168,7 @@ IncreasedDropRate()
     {
         while(Is_True(level.IncreasedDropRate))
         {
-            if(isDefined(level.powerup_drop_count) && level.powerup_drop_count > 0 || !isDefined(level.powerup_drop_count))
+            if(IsDefined(level.powerup_drop_count) && level.powerup_drop_count > 0 || !IsDefined(level.powerup_drop_count))
                 level.powerup_drop_count = 0;
 
             if(level.zombie_vars["zombie_drop_item"] != 1)
@@ -179,7 +181,7 @@ IncreasedDropRate()
 
             for(a = 0; a < zombies.size; a++)
             {
-                if(isDefined(zombies[a]) && (!isDefined(zombies[a].no_powerup) || zombies[a].no_powerup))
+                if(IsDefined(zombies[a]) && (!IsDefined(zombies[a].no_powerup) || zombies[a].no_powerup))
                     zombies[a].no_powerup = false;
             }
 
@@ -212,7 +214,7 @@ DisablePowerups()
     {
         powerups = zm_powerups::get_powerups(self.origin, 46340); //active powerups array is being weird and not returning all of the active powerups? -- distancesquared(origin, powerup.origin) < (radius * radius) -- 46340.50 is sqrt of int max
 
-        if(isDefined(powerups) && powerups.size)
+        if(IsDefined(powerups) && powerups.size)
         {
             foreach(index, powerup in powerups)
             {
@@ -227,7 +229,7 @@ DisablePowerups()
         {
             level waittill("powerup_dropped", powerup);
             
-            if(isDefined(powerup))
+            if(IsDefined(powerup))
             {
                 powerup notify("powerup_timedout");
                 powerup thread zm_powerups::powerup_delete();
@@ -271,7 +273,7 @@ PlayerShootToRevive()
             The second one is the case that you shot them directly
         */
 
-        if(!isDefined(traceEntity) || !IsPlayer(traceEntity))
+        if(!IsDefined(traceEntity) || !IsPlayer(traceEntity))
         {
             foreach(player in level.players)
             {
@@ -293,10 +295,10 @@ PlayerShootToRevive()
 
 PlayerShootRevive(player)
 {
-    if(!isDefined(player) || !IsPlayer(player))
+    if(!IsDefined(player) || !IsPlayer(player))
         return;
     
-    if(isDefined(self.hud_damagefeedback))
+    if(IsDefined(self.hud_damagefeedback))
         self zombie_utility::show_hit_marker();
 
     self PlayerRevive(player);
@@ -311,16 +313,20 @@ EditPackAPunchPrice(price)
 {
     vending_weapon_upgrade_trigger = level.pack_a_punch.triggers;
 
-    if(isDefined(vending_weapon_upgrade_trigger) && vending_weapon_upgrade_trigger.size >= 1)
+    if(IsDefined(vending_weapon_upgrade_trigger) && vending_weapon_upgrade_trigger.size >= 1)
+    {
         foreach(index, trigger in vending_weapon_upgrade_trigger)
             trigger.cost = price;
+    }
 }
 
 EditRepackAPunchPrice(price)
 {
     vending_weapon_upgrade_trigger = level.pack_a_punch.triggers;
 
-    if(isDefined(vending_weapon_upgrade_trigger) && vending_weapon_upgrade_trigger.size >= 1)
+    if(IsDefined(vending_weapon_upgrade_trigger) && vending_weapon_upgrade_trigger.size >= 1)
+    {
         foreach(index, trigger in vending_weapon_upgrade_trigger)
             trigger.aat_cost = price;
+    }
 }

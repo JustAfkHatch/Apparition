@@ -109,7 +109,7 @@ CollectKT4Parts(part)
                     }
                 }
 
-                if(isDefined(partTrigger))
+                if(IsDefined(partTrigger))
                     partTrigger notify("trigger", self);
 
                 wait 0.1;
@@ -165,7 +165,7 @@ ZNSGrabWaterBucket()
 
     foreach(bucket in var_c66f413a)
     {
-        if(isDefined(bucket) && isDefined(bucket.trigger))
+        if(IsDefined(bucket) && IsDefined(bucket.trigger))
         {
             bucket.trigger notify("trigger", self);
             break;
@@ -207,10 +207,10 @@ function_ef097ea(var_c6cad973 = 0, var_44bdb80e = 0, var_3f242b55 = 0, var_b8997
 
 function_89538fbb()
 {
-    if(isDefined(self.var_6fd3d65c) && self.var_6fd3d65c && (isDefined(self.var_b6a244f9) && self.var_b6a244f9))
+    if(IsDefined(self.var_6fd3d65c) && self.var_6fd3d65c && (IsDefined(self.var_b6a244f9) && self.var_b6a244f9))
         return 2;
 
-    if(isDefined(self.var_6fd3d65c) && self.var_6fd3d65c && (!(isDefined(self.var_b6a244f9) && self.var_b6a244f9)))
+    if(IsDefined(self.var_6fd3d65c) && self.var_6fd3d65c && (!(IsDefined(self.var_b6a244f9) && self.var_b6a244f9)))
         return 1;
 
     return 0;
@@ -254,26 +254,32 @@ function_16ae5bf5()
 
 function_53f26a4c()
 {
-    if(!isDefined(self.var_bb2fd41c))
+    if(!IsDefined(self.var_bb2fd41c))
         return;
 
     if(self.var_bb2fd41c == 3)
     {
         foreach(var_537f5e5a, var_5972e249 in level.var_769c0729)
-            if(isDefined(var_5972e249))
+        {
+            if(IsDefined(var_5972e249))
                 var_5972e249 SetHintStringForPlayer(self, &"ZOMBIE_ELECTRIC_SWITCH");
+        }
     }
     else if(self.var_bb2fd41c > 0)
     {
         foreach(var_3b4a0f61, var_5972e249 in level.var_769c0729)
-            if(isDefined(var_5972e249))
+        {
+            if(IsDefined(var_5972e249))
                 var_5972e249 SetHintStringForPlayer(self, &"ZM_ISLAND_POWER_SWITCH_NEEEDS_MORE_WATER");
+        }
     }
     else
     {
         foreach(var_b9e1758c, var_5972e249 in level.var_769c0729)
-            if(isDefined(var_5972e249))
+        {
+            if(IsDefined(var_5972e249))
                 var_5972e249 SetHintStringForPlayer(self, &"ZM_ISLAND_POWER_SWITCH_NEEEDS_WATER");
+        }
     }
 }
 
@@ -333,8 +339,10 @@ closest_player_targets_override()
     a_targets = GetPlayers();
 
     for(a = 0; a < a_targets.size; a++)
-        if(isDefined(a_targets[a].var_59bd3c5a))
+    {
+        if(IsDefined(a_targets[a].var_59bd3c5a))
             a_targets[a] = a_targets[a].var_59bd3c5a;
+    }
 
     return a_targets;
 }
@@ -352,7 +360,7 @@ zone_occupied_func(zone_name)
 
         for(j = 0; j < players.size; j++)
         {
-            if(isDefined(players[j].var_59bd3c5a))
+            if(IsDefined(players[j].var_59bd3c5a))
             {
                 if(players[j].var_59bd3c5a IsTouching(zone.volumes[i]) && players[j].var_59bd3c5a.sessionstate != "spectator")
                     return true;
@@ -387,8 +395,10 @@ ZNS_ActivatePower()
     }
 
     foreach(source in GetEntArray("water_source", "targetname"))
+    {
         if(source.script_int == 1)
             waterSource = source;
+    }
     
     trigs = GetEntArray("use_elec_switch", "targetname");
 
@@ -407,7 +417,7 @@ ZNS_ActivatePower()
     wait 3;
     web_trigger = GetEnt("penstock_web_trigger", "targetname");
 
-    if(isDefined(web_trigger))
+    if(IsDefined(web_trigger))
         web_trigger notify("web_torn");
     
     level flag::wait_till("defend_over");
@@ -437,11 +447,12 @@ ZNS_PaPQuest(step)
         case 1:
             if(Is_True(level.find_valve1))
                 return self iPrintlnBold("^1ERROR: ^7This Part Is Already Being Collected");
+            
             level.find_valve1 = true;
 
             foreach(cocoon in GetEntArray("cocoon_bunker", "targetname"))
             {
-                if(!isDefined(cocoon) || Is_True(cocoon.is_open))
+                if(!IsDefined(cocoon) || Is_True(cocoon.is_open))
                     continue;
                 
                 cocoon notify("damage", cocoon.health + 99, self, (0, 0, 0), (0, 0, 0), "MOD_MELEE");
@@ -458,6 +469,7 @@ ZNS_PaPQuest(step)
             
             if(Is_True(level.find_valve2))
                 return self iPrintlnBold("^1ERROR: ^7This Part Is Already Being Collected");
+            
             level.find_valve2 = true;
             
             self ZNS_TriggerPaPPieceModel("p7_zm_isl_pap_elements_wheel");
@@ -467,6 +479,7 @@ ZNS_PaPQuest(step)
         case 3:
             if(Is_True(level.find_valve3))
                 return self iPrintlnBold("^1ERROR: ^7This Part Is Already Being Collected");
+            
             level.find_valve3 = true;
             
             self ZNS_TriggerPaPPieceModel("p7_zm_isl_pap_elements_whistle");
@@ -487,7 +500,7 @@ ZNS_TriggerPaPPieceModel(model)
 {
     foreach(script_model in GetEntArray("script_model", "classname"))
     {
-        if(!isDefined(script_model) || script_model.model != model)
+        if(!IsDefined(script_model) || script_model.model != model)
             continue;
         
         script_model.trigger notify("trigger", self);

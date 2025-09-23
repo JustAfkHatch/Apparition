@@ -14,7 +14,7 @@ setVerification(a, player, msg)
                 return self iPrintlnBold("^1ERROR: ^7You Can't Change The Status Of The Developer");
             
             if(player getVerification() == a)
-                return self iPrintlnBold("^1ERROR: ^7Player's Verification Is Already Set To ^2" + level.MenuStatus[a]);
+                return self iPrintlnBold("^1ERROR: ^7Player's Verification Is Already Set To ^2" + GetAccessLevels()[a]);
             
             if(player == self)
                 return self iPrintlnBold("^1ERROR: ^7You Can't Change Your Own Status");
@@ -23,15 +23,16 @@ setVerification(a, player, msg)
         return;
     }
     
-    player.verification = level.MenuStatus[a];
-    player iPrintlnBold("Your Status Has Been Set To ^2" + player.verification);
+    player.accessLevel = GetAccessLevels()[a];
+    player iPrintlnBold("Your Status Has Been Set To ^2" + player.accessLevel);
     
     if(player isInMenu(true))
         player closeMenu1();
     
     player.currentMenu = undefined;
-    player.menuCurs = undefined;
-    player.menuParent = undefined;
+    player.menuCursor = undefined;
+    player.menu_parent = undefined;
+    player.menu_parentQM = undefined;
     
     player notify("endMenuMonitor");
 
@@ -53,18 +54,23 @@ SetVerificationAllPlayers(a, msg)
     foreach(player in level.players)
         self thread setVerification(a, player);
     
-    if(isDefined(msg) && msg)
-        self iPrintlnBold("All Players Verification Set To ^2" + level.MenuStatus[a]);
+    if(IsDefined(msg) && msg)
+        self iPrintlnBold("All Players Verification Set To ^2" + GetAccessLevels()[a]);
 }
 
 getVerification()
 {
-    if(!isDefined(self.verification))
+    if(self util::is_bot())
+        return 0;
+    
+    if(!IsDefined(self.accessLevel))
         return 1;
 
-    for(a = 0; a < level.MenuStatus.size; a++)
-        if(self.verification == level.MenuStatus[a])
+    for(a = 0; a < GetAccessLevels().size; a++)
+    {
+        if(self.accessLevel == GetAccessLevels()[a])
             return a;
+    }
 }
 
 hasMenu()
@@ -79,4 +85,9 @@ SavePlayerVerification(player)
     
     SetDvar("ApparitionV_" + player GetXUID(), player getVerification());
     self iPrintlnBold(CleanName(player getName()) + "'s Status Has Been ^2Saved");
+}
+
+GetAccessLevels()
+{
+    return Array("Bot", "None", "Verified", "VIP", "Admin", "Co-Host", "Host", "Developer");
 }

@@ -5,7 +5,7 @@ PopulateMenuCustomization(menu)
         case "Menu Customization":
             self addMenu("Menu Customization");
                 self addOpt("Menu Credits", ::MenuCredits);
-                self addOptSlider("Menu Style", ::MenuStyle, level.menuName + ";Zodiac;Nautaremake;AIO;Native;Quick Menu");
+                self addOptSlider("Menu Style", ::MenuStyle, GetMenuName() + ";Zodiac;Nautaremake;AIO;Native;Quick Menu");
                 self addOpt("Open Controls", ::newMenu, "Open Controls");
                 self addOpt("Design Preferences", ::newMenu, "Design Preferences");
                 self addOpt("Main Design Color", ::newMenu, "Main Design Color");
@@ -16,7 +16,7 @@ PopulateMenuCustomization(menu)
             break;
         
         case "Open Controls":
-            if(!isDefined(self.OpenControlIndex))
+            if(!IsDefined(self.OpenControlIndex))
                 self.OpenControlIndex = 1;
             
             buttons = Array("+actionslot 1", "+actionslot 2", "+actionslot 3", "+actionslot 4", "+melee", "+speed_throw", "+attack", "+breath_sprint", "+activate", "+frag", "+stance");
@@ -32,10 +32,10 @@ PopulateMenuCustomization(menu)
                 self addOpt("");
 
                 if(self.OpenControlIndex != 1)
-                    self addOptBool(!isDefined(self.OpenControls[(self.OpenControlIndex - 1)]), "None", ::SetOpenButtons, "None");
+                    self addOptBool(!IsDefined(self.OpenControls[(self.OpenControlIndex - 1)]), "None", ::SetOpenButtons, "None");
 
                 foreach(button in buttons)
-                    self addOptBool((isDefined(self.OpenControls[(self.OpenControlIndex - 1)]) && self.OpenControls[(self.OpenControlIndex - 1)] == button), "[{" + button + "}]", ::SetOpenButtons, button);
+                    self addOptBool((IsDefined(self.OpenControls[(self.OpenControlIndex - 1)]) && self.OpenControls[(self.OpenControlIndex - 1)] == button), "[{" + button + "}]", ::SetOpenButtons, button);
             break;
 
         case "Design Preferences":
@@ -55,8 +55,8 @@ PopulateMenuCustomization(menu)
         case "Main Design Color":
             self addMenu("Main Design Color");
                 
-                for(a = 0; a < level.colorNames.size; a++)
-                    self addOptBoolPreview((!Is_True(self.SmoothRainbowTheme) && self.MainColor == divideColor(level.colors[(3 * a)], level.colors[((3 * a) + 1)], level.colors[((3 * a) + 2)])), "white", divideColor(level.colors[(3 * a)], level.colors[((3 * a) + 1)], level.colors[((3 * a) + 2)]), level.colorNames[a], ::MenuTheme, divideColor(level.colors[(3 * a)], level.colors[((3 * a) + 1)], level.colors[((3 * a) + 2)]));
+                for(a = 0; a < GetColorNames().size; a++)
+                    self addOptBoolPreview((!Is_True(self.SmoothRainbowTheme) && self.MainTheme == divideColor(GetColorValues()[(3 * a)], GetColorValues()[((3 * a) + 1)], GetColorValues()[((3 * a) + 2)])), "white", divideColor(GetColorValues()[(3 * a)], GetColorValues()[((3 * a) + 1)], GetColorValues()[((3 * a) + 2)]), GetColorNames()[a], ::MenuTheme, divideColor(GetColorValues()[(3 * a)], GetColorValues()[((3 * a) + 1)], GetColorValues()[((3 * a) + 2)]));
                 
                 self addOptBoolPreview(self.SmoothRainbowTheme, "white", "Rainbow", "Smooth Rainbow", ::SmoothRainbowTheme);
             break;
@@ -64,8 +64,8 @@ PopulateMenuCustomization(menu)
         case "Title Color":
             self addMenu("Title Color");
                 
-                for(a = 0; a < level.colorNames.size; a++)
-                    self addOptBoolPreview((IsVec(self.TitleColor) && self.TitleColor == divideColor(level.colors[(3 * a)], level.colors[((3 * a) + 1)], level.colors[((3 * a) + 2)])), "white", divideColor(level.colors[(3 * a)], level.colors[((3 * a) + 1)], level.colors[((3 * a) + 2)]), level.colorNames[a], ::SetTitleColor, divideColor(level.colors[(3 * a)], level.colors[((3 * a) + 1)], level.colors[((3 * a) + 2)]));
+                for(a = 0; a < GetColorNames().size; a++)
+                    self addOptBoolPreview((IsVec(self.TitleColor) && self.TitleColor == divideColor(GetColorValues()[(3 * a)], GetColorValues()[((3 * a) + 1)], GetColorValues()[((3 * a) + 2)])), "white", divideColor(GetColorValues()[(3 * a)], GetColorValues()[((3 * a) + 1)], GetColorValues()[((3 * a) + 2)]), GetColorNames()[a], ::SetTitleColor, divideColor(GetColorValues()[(3 * a)], GetColorValues()[((3 * a) + 1)], GetColorValues()[((3 * a) + 2)]));
                 
                 self addOptBoolPreview((IsString(self.TitleColor) && self.TitleColor == "Rainbow"), "white", "Rainbow", "Smooth Rainbow", ::SetTitleColor, "Rainbow");
             break;
@@ -73,8 +73,8 @@ PopulateMenuCustomization(menu)
         case "Options Color":
             self addMenu("Options Color");
                 
-                for(a = 0; a < level.colorNames.size; a++)
-                    self addOptBoolPreview((IsVec(self.OptionsColor) && self.OptionsColor == divideColor(level.colors[(3 * a)], level.colors[((3 * a) + 1)], level.colors[((3 * a) + 2)])), "white", divideColor(level.colors[(3 * a)], level.colors[((3 * a) + 1)], level.colors[((3 * a) + 2)]), level.colorNames[a], ::SetOptionsColor, divideColor(level.colors[(3 * a)], level.colors[((3 * a) + 1)], level.colors[((3 * a) + 2)]));
+                for(a = 0; a < GetColorNames().size; a++)
+                    self addOptBoolPreview((IsVec(self.OptionsColor) && self.OptionsColor == divideColor(GetColorValues()[(3 * a)], GetColorValues()[((3 * a) + 1)], GetColorValues()[((3 * a) + 2)])), "white", divideColor(GetColorValues()[(3 * a)], GetColorValues()[((3 * a) + 1)], GetColorValues()[((3 * a) + 2)]), GetColorNames()[a], ::SetOptionsColor, divideColor(GetColorValues()[(3 * a)], GetColorValues()[((3 * a) + 1)], GetColorValues()[((3 * a) + 2)]));
 
                 self addOptBoolPreview((IsString(self.OptionsColor) && self.OptionsColor == "Rainbow"), "white", "Rainbow", "Smooth Rainbow", ::SetOptionsColor, "Rainbow");
             break;
@@ -82,8 +82,8 @@ PopulateMenuCustomization(menu)
         case "Toggled Option Color":
             self addMenu("Toggled Option Color");
                 
-                for(a = 0; a < level.colorNames.size; a++)
-                    self addOptBoolPreview((IsVec(self.ToggleTextColor) && self.ToggleTextColor == divideColor(level.colors[(3 * a)], level.colors[((3 * a) + 1)], level.colors[((3 * a) + 2)])), "white", divideColor(level.colors[(3 * a)], level.colors[((3 * a) + 1)], level.colors[((3 * a) + 2)]), level.colorNames[a], ::SetToggleTextColor, divideColor(level.colors[(3 * a)], level.colors[((3 * a) + 1)], level.colors[((3 * a) + 2)]));
+                for(a = 0; a < GetColorNames().size; a++)
+                    self addOptBoolPreview((IsVec(self.ToggleTextColor) && self.ToggleTextColor == divideColor(GetColorValues()[(3 * a)], GetColorValues()[((3 * a) + 1)], GetColorValues()[((3 * a) + 2)])), "white", divideColor(GetColorValues()[(3 * a)], GetColorValues()[((3 * a) + 1)], GetColorValues()[((3 * a) + 2)]), GetColorNames()[a], ::SetToggleTextColor, divideColor(GetColorValues()[(3 * a)], GetColorValues()[((3 * a) + 1)], GetColorValues()[((3 * a) + 2)]));
 
                 self addOptBoolPreview((IsString(self.ToggleTextColor) && self.ToggleTextColor == "Rainbow"), "white", "Rainbow", "Smooth Rainbow", ::SetToggleTextColor, "Rainbow");
             break;
@@ -91,8 +91,8 @@ PopulateMenuCustomization(menu)
         case "Scrolling Option Color":
             self addMenu("Scrolling Option Color");
 
-                for(a = 0; a < level.colorNames.size; a++)
-                    self addOptBoolPreview((IsVec(self.ScrollingTextColor) && self.ScrollingTextColor == divideColor(level.colors[(3 * a)], level.colors[((3 * a) + 1)], level.colors[((3 * a) + 2)])), "white", divideColor(level.colors[(3 * a)], level.colors[((3 * a) + 1)], level.colors[((3 * a) + 2)]), level.colorNames[a], ::SetScrollingTextColor, divideColor(level.colors[(3 * a)], level.colors[((3 * a) + 1)], level.colors[((3 * a) + 2)]));
+                for(a = 0; a < GetColorNames().size; a++)
+                    self addOptBoolPreview((IsVec(self.ScrollingTextColor) && self.ScrollingTextColor == divideColor(GetColorValues()[(3 * a)], GetColorValues()[((3 * a) + 1)], GetColorValues()[((3 * a) + 2)])), "white", divideColor(GetColorValues()[(3 * a)], GetColorValues()[((3 * a) + 1)], GetColorValues()[((3 * a) + 2)]), GetColorNames()[a], ::SetScrollingTextColor, divideColor(GetColorValues()[(3 * a)], GetColorValues()[((3 * a) + 1)], GetColorValues()[((3 * a) + 2)]));
             
                 self addOptBoolPreview((IsString(self.ScrollingTextColor) && self.ScrollingTextColor == "Rainbow"), "white", "Rainbow", "Smooth Rainbow", ::SetScrollingTextColor, "Rainbow");
             break;
@@ -116,41 +116,45 @@ MenuTheme(color)
     
     for(a = 0; a < hud.size; a++)
     {
-        if(!isDefined(self.menuHud[hud[a]]))
+        if(!IsDefined(self.menuUI[hud[a]]))
             continue;
         
-        if(IsArray(self.menuHud[hud[a]]))
+        if(IsArray(self.menuUI[hud[a]]))
         {
-            for(b = 0; b < self.menuHud[hud[a]].size; b++)
+            for(b = 0; b < self.menuUI[hud[a]].size; b++)
             {
-                if(!isDefined(self.menuHud[hud[a]][b]))
+                if(!IsDefined(self.menuUI[hud[a]][b]))
                     continue;
                 
                 if(self.MenuStyle == "Native" && hud[a] == "outlines" && b)
                     continue;
                 
-                if(isDefined(self.menuHud[hud[a]][b]))
-                    self.menuHud[hud[a]][b] hudFadeColor(color, 1);
+                if(IsDefined(self.menuUI[hud[a]][b]))
+                    self.menuUI[hud[a]][b] hudFadeColor(color, 1);
             }
         }
         else
-            self.menuHud[hud[a]] hudFadeColor(color, 1);
+            self.menuUI[hud[a]] hudFadeColor(color, 1);
     }
     
     wHud = (self.MenuStyle == "Nautaremake") ? "BoolBack" : "BoolOpt";
     
-    if(isDefined(self.menuStructure) && self.menuStructure.size)
+    if(IsDefined(self.menuStructure) && self.menuStructure.size)
+    {
         for(a = 0; a < self.menuStructure.size; a++)
-            if(isDefined(self.menuHud[wHud][a]) && (Is_True(self.menuStructure[a].bool) || self.MenuStyle == "Nautaremake") && self.ToggleStyle != "Text")
-                self.menuHud[wHud][a] hudFadeColor(color, 1);
+        {
+            if(IsDefined(self.menuUI[wHud][a]) && (Is_True(self.menuStructure[a].bool) || self.MenuStyle == "Nautaremake") && self.ToggleStyle != "Text")
+                self.menuUI[wHud][a] hudFadeColor(color, 1);
+        }
+    }
     
-    if(isDefined(self.menuInstructions["outline"]))
-        self.menuInstructions["outline"] hudFadeColor(color, 1);
+    if(IsDefined(self.menuInstructionsUI["outline"]))
+        self.menuInstructionsUI["outline"] hudFadeColor(color, 1);
     
-    if(isDefined(self.playerInfoHud["outline"]))
+    if(IsDefined(self.playerInfoHud["outline"]))
         self.playerInfoHud["outline"] hudFadeColor(color, 1);
     
-    self.MainColor = color;
+    self.MainTheme = color;
     self SaveMenuTheme();
 }
 
@@ -177,44 +181,48 @@ SmoothRainbowTheme()
 
         for(a = 0; a < hud.size; a++)
         {
-            if(!isDefined(self.menuHud[hud[a]]))
+            if(!IsDefined(self.menuUI[hud[a]]))
                 continue;
             
-            if(IsArray(self.menuHud[hud[a]]))
+            if(IsArray(self.menuUI[hud[a]]))
             {
-                for(b = 0; b < self.menuHud[hud[a]].size; b++)
+                for(b = 0; b < self.menuUI[hud[a]].size; b++)
                 {
-                    if(!isDefined(self.menuHud[hud[a]][b]))
+                    if(!IsDefined(self.menuUI[hud[a]][b]))
                         continue;
                     
                     if(self.MenuStyle == "Native" && hud[a] == "outlines" && b)
                         continue;
                     
-                    if(isDefined(self.menuHud[hud[a]][b]))
-                        self.menuHud[hud[a]][b].color = level.RGBFadeColor;
+                    if(IsDefined(self.menuUI[hud[a]][b]))
+                        self.menuUI[hud[a]][b].color = level.RGBFadeColor;
                 }
             }
             else
-                self.menuHud[hud[a]].color = level.RGBFadeColor;
+                self.menuUI[hud[a]].color = level.RGBFadeColor;
         }
 
         wHud = (self.MenuStyle == "Nautaremake") ? "BoolBack" : "BoolOpt";
         
-        if(isDefined(self.menuStructure) && self.menuStructure.size)
+        if(IsDefined(self.menuStructure) && self.menuStructure.size)
+        {
             for(a = 0; a < self.menuStructure.size; a++)
-                if(isDefined(self.menuHud[wHud][a]) && (Is_True(self.menuStructure[a].bool) || self.MenuStyle == "Nautaremake") && self.ToggleStyle != "Text")
-                    self.menuHud[wHud][a].color = level.RGBFadeColor;
+            {
+                if(IsDefined(self.menuUI[wHud][a]) && (Is_True(self.menuStructure[a].bool) || self.MenuStyle == "Nautaremake") && self.ToggleStyle != "Text")
+                    self.menuUI[wHud][a].color = level.RGBFadeColor;
+            }
+        }
         
-        if(isDefined(self.menuInstructions["outline"]))
-            self.menuInstructions["outline"].color = level.RGBFadeColor;
+        if(IsDefined(self.menuInstructionsUI["outline"]))
+            self.menuInstructionsUI["outline"].color = level.RGBFadeColor;
         
-        if(isDefined(self.playerInfoHud["outline"]))
+        if(IsDefined(self.playerInfoHud["outline"]))
             self.playerInfoHud["outline"].color = level.RGBFadeColor;
         
-        if(isDefined(self.keyboard) && isDefined(self.keyboard["scroller"]))
+        if(IsDefined(self.keyboard) && IsDefined(self.keyboard["scroller"]))
             self.keyboard["scroller"].color = level.RGBFadeColor;
         
-        self.MainColor = level.RGBFadeColor;
+        self.MainTheme = level.RGBFadeColor;
         wait 0.01;
     }
 }
@@ -240,28 +248,28 @@ ElementSmoothRainbow(element)
     {
         if(!self isInQuickMenu())
         {
-            if(IsArray(self.menuHud[element]))
+            if(IsArray(self.menuUI[element]))
             {
-                foreach(index, elem in self.menuHud[element])
+                foreach(index, elem in self.menuUI[element])
                 {
-                    if(!isDefined(elem))
+                    if(!IsDefined(elem))
                         continue;
                     
-                    if(self isInQuickMenu() && !isDefined(textToggled))
+                    if(self isInQuickMenu() && !IsDefined(textToggled))
                         continue;
                     
                     if(element == "text")
                     {
-                        if(isDefined(textToggled) && (!isDefined(self.menuStructure[index].boolOpt) || !Is_True(self.menuStructure[index].bool) || self.ToggleStyle != "Text Color"))
+                        if(IsDefined(textToggled) && (!IsDefined(self.menuStructure[index].boolOpt) || !Is_True(self.menuStructure[index].bool) || self.ToggleStyle != "Text Color"))
                             continue;
                         
-                        if(!isDefined(textScrolling) && !isDefined(textToggled) && index == self getCursor())
+                        if(!IsDefined(textScrolling) && !IsDefined(textToggled) && index == self getCursor())
                             continue;
                         
-                        if(isDefined(textScrolling) && (index != self getCursor() || Is_True(self.menuStructure[index].bool) && self.ToggleStyle == "Text Color"))
+                        if(IsDefined(textScrolling) && (index != self getCursor() || Is_True(self.menuStructure[index].bool) && self.ToggleStyle == "Text Color"))
                             continue;
                         
-                        if(!isDefined(textToggled) && Is_True(self.menuStructure[index].bool) && self.ToggleStyle == "Text Color")
+                        if(!IsDefined(textToggled) && Is_True(self.menuStructure[index].bool) && self.ToggleStyle == "Text Color")
                             continue;
                     }
 
@@ -269,18 +277,20 @@ ElementSmoothRainbow(element)
                     hudElems = Array("BoolOpt", "subMenu", "IntSlider", "StringSlider");
 
                     for(a = 0; a < hudElems.size; a++)
-                        if(isDefined(self.menuHud[hudElems[a]][index]) && (hudElems[a] != "BoolOpt" || hudElems[a] == "BoolOpt" && self.ToggleStyle == "Text"))
-                            self.menuHud[hudElems[a]][index].color = level.RGBFadeColor;
+                    {
+                        if(IsDefined(self.menuUI[hudElems[a]][index]) && (hudElems[a] != "BoolOpt" || hudElems[a] == "BoolOpt" && self.ToggleStyle == "Text"))
+                            self.menuUI[hudElems[a]][index].color = level.RGBFadeColor;
+                    }
                 }
             }
             else
             {
-                if(isDefined(self.menuHud[element]) && (element != "title" || element == "title" && self.MenuStyle != "Zodiac" && !self isInQuickMenu()))
+                if(IsDefined(self.menuUI[element]) && (element != "title" || element == "title" && self.MenuStyle != "Zodiac" && !self isInQuickMenu()))
                 {
-                    self.menuHud[element].color = level.RGBFadeColor;
+                    self.menuUI[element].color = level.RGBFadeColor;
 
-                    if(element == "title" && self.MenuStyle == "AIO" && isDefined(self.menuHud["MenuName"]))
-                        self.menuHud["MenuName"].color = level.RGBFadeColor;
+                    if(element == "title" && self.MenuStyle == "AIO" && IsDefined(self.menuUI["MenuName"]))
+                        self.menuUI["MenuName"].color = level.RGBFadeColor;
                 }
             }
         }
@@ -380,8 +390,8 @@ RepositionMenu()
     
     self SoftLockMenu(120);
     
-    if(isDefined(self.menuHud["scroller"]))
-        self.menuHud["scroller"].alpha = 0;
+    if(IsDefined(self.menuUI["scroller"]))
+        self.menuUI["scroller"].alpha = 0;
     
     self SetMenuInstructions((self.MenuStyle == "Zodiac") ? "[{+melee}] - Exit\n[{+activate}] - Save Position\n[{+actionslot 3}] - Move Left\n[{+actionslot 4}] - Move Right" : "[{+melee}] - Exit\n[{+activate}] - Save Position\n[{+actionslot 1}] - Move Up\n[{+actionslot 2}] - Move Down\n[{+actionslot 3}] - Move Left\n[{+actionslot 4}] - Move Right");
     
@@ -391,19 +401,21 @@ RepositionMenu()
         {
             incValue = self ActionSlotTwoButtonPressed() ? 8 : -8;
             
-            foreach(key in GetArrayKeys(self.menuHud))
+            foreach(key in GetArrayKeys(self.menuUI))
             {
-                if(!isDefined(self.menuHud[key]))
+                if(!IsDefined(self.menuUI[key]))
                     continue;
                 
-                if(IsArray(self.menuHud[key]))
+                if(IsArray(self.menuUI[key]))
                 {
-                    for(a = 0; a < self.menuHud[key].size; a++)
-                        if(isDefined(self.menuHud[key][a]))
-                            self.menuHud[key][a].y += incValue;
+                    for(a = 0; a < self.menuUI[key].size; a++)
+                    {
+                        if(IsDefined(self.menuUI[key][a]))
+                            self.menuUI[key][a].y += incValue;
+                    }
                 }
                 else
-                    self.menuHud[key].y += incValue;
+                    self.menuUI[key].y += incValue;
             }
             
             adjY += incValue;
@@ -412,19 +424,21 @@ RepositionMenu()
         {
             incValue = self ActionSlotFourButtonPressed() ? 8 : -8;
             
-            foreach(key in GetArrayKeys(self.menuHud))
+            foreach(key in GetArrayKeys(self.menuUI))
             {
-                if(!isDefined(self.menuHud[key]))
+                if(!IsDefined(self.menuUI[key]))
                     continue;
                 
-                if(IsArray(self.menuHud[key]))
+                if(IsArray(self.menuUI[key]))
                 {
-                    for(a = 0; a < self.menuHud[key].size; a++)
-                        if(isDefined(self.menuHud[key][a]))
-                            self.menuHud[key][a].x += incValue;
+                    for(a = 0; a < self.menuUI[key].size; a++)
+                    {
+                        if(IsDefined(self.menuUI[key][a]))
+                            self.menuUI[key][a].x += incValue;
+                    }
                 }
                 else
-                    self.menuHud[key].x += incValue;
+                    self.menuUI[key].x += incValue;
             }
             
             adjX += incValue;
@@ -534,12 +548,12 @@ MenuStyle(style)
 
 SaveMenuTheme()
 {
-    variables = Array("MenuStyle", "ToggleStyle", "menuBoxLocation", "MaxOptions", "menuX", "menuY", "ScrollingBuffer", "DisableMenuInstructions", "LargeCursor", "DisableQM", "DisableMenuAnimations", "DisableMenuSounds", "MainColor", "OptionsColor", "TitleColor", "ToggleTextColor", "ScrollingTextColor", "OpenControls");
-    values    = Array(self.MenuStyle, self.ToggleStyle, self.menuBoxLocation, self.MaxOptions, self.menuX, self.menuY, self.ScrollingBuffer, self.DisableMenuInstructions, self.LargeCursor, self.DisableQM, self.DisableMenuAnimations, self.DisableMenuSounds, self.MainColor, self.OptionsColor, self.TitleColor, self.ToggleTextColor, self.ScrollingTextColor, self.OpenControls);
+    variables = Array("MenuStyle", "ToggleStyle", "menuBoxLocation", "MaxOptions", "menuX", "menuY", "ScrollingBuffer", "DisableMenuInstructions", "LargeCursor", "DisableQM", "DisableMenuAnimations", "DisableMenuSounds", "MainTheme", "OptionsColor", "TitleColor", "ToggleTextColor", "ScrollingTextColor", "OpenControls");
+    values    = Array(self.MenuStyle, self.ToggleStyle, self.menuBoxLocation, self.MaxOptions, self.menuX, self.menuY, self.ScrollingBuffer, self.DisableMenuInstructions, self.LargeCursor, self.DisableQM, self.DisableMenuAnimations, self.DisableMenuSounds, self.MainTheme, self.OptionsColor, self.TitleColor, self.ToggleTextColor, self.ScrollingTextColor, self.OpenControls);
     
     foreach(index, variable in variables)
     {
-        value = isDefined(values[index]) ? values[index] : 0;
+        value = IsDefined(values[index]) ? values[index] : 0;
 
         if(variable == "OpenControls")
         {
@@ -551,7 +565,7 @@ SaveMenuTheme()
             value = str;
         }
 
-        self SetSavedVariable(variable, (variable == "MainColor" && Is_True(self.SmoothRainbowTheme)) ? "Rainbow" : value);
+        self SetSavedVariable(variable, (variable == "MainTheme" && Is_True(self.SmoothRainbowTheme)) ? "Rainbow" : value);
     }
 }
 
@@ -570,14 +584,14 @@ GetSavedVariable(variable)
 
 LoadMenuVars()
 {
-    self.MenuStyle          = level.menuName; //Current Choices: level.menuName, Zodiac, Nautaremake, AIO, Native, Quick Menu
+    self.MenuStyle          = GetMenuName(); //Current Choices: Apparition, Zodiac, Nautaremake, AIO, Native, Quick Menu
     self.menuX              = (self.MenuStyle == "Zodiac") ? 298 : (self.MenuStyle == "Quick Menu") ? 0 : -101; //Keep in mind that the position is close to the center to ensure the menu is visible on any resolution(use the menu position editor to place it where it best fits your liking)
     self.menuY              = (self.MenuStyle == "Quick Menu") ? -230 : -185;
     self.MaxOptions         = (self.MenuStyle == "Zodiac") ? 12 : (self.MenuStyle == "Quick Menu") ? 25 : 10;
     self.ScrollingBuffer    = 10;
     self.ToggleStyle        = "Boxes";
     self.menuBoxLocation    = "Right";
-    self.MainColor          = (1, 0, 0);
+    self.MainTheme          = (1, 0, 0);
     self.OptionsColor       = (1, 1, 1);
     self.TitleColor         = (1, 1, 1);
     self.ToggleTextColor    = (0, 1, 0);
@@ -590,7 +604,7 @@ LoadMenuVars()
     
     saved = self GetSavedVariable("MenuStyle");
     
-    if(isDefined(saved) && saved != "")
+    if(IsDefined(saved) && saved != "")
     {
         self.MenuStyle               = self GetSavedVariable("MenuStyle");
         self.ToggleStyle             = self GetSavedVariable("ToggleStyle");
@@ -643,14 +657,13 @@ LoadMenuVars()
         else
             self.ScrollingTextColor = GetDvarVector1("ScrollingTextColor" + self GetXUID());
 
-        if(self GetSavedVariable("MainColor") == "Rainbow")
+        if(self GetSavedVariable("MainTheme") == "Rainbow")
             self thread SmoothRainbowTheme();
         else
-            self.MainColor = GetDvarVector1("MainColor" + self GetXUID());
+            self.MainTheme = GetDvarVector1("MainTheme" + self GetXUID());
     }
     else
     {
-        self thread SmoothRainbowTheme();
         self SaveMenuTheme();
     }
     

@@ -20,7 +20,7 @@ GetAISpawnLocation()
 
 ServerSpawnAI(amount, spawner)
 {
-    if(!isDefined(spawner) || !IsFunctionPtr((spawner)))
+    if(!IsDefined(spawner) || !IsFunctionPtr((spawner)))
         return;
 
     for(a = 0; a < amount; a++)
@@ -37,7 +37,7 @@ ServerSpawnZombie()
     spawner = ArrayGetClosest(level.zombie_spawners, self.origin);
     zombie = zombie_utility::spawn_zombie(spawner);
 
-    if(isDefined(zombie) && (self.AISpawnLocation == "Crosshairs" || self.AISpawnLocation == "Self"))
+    if(IsDefined(zombie) && (self.AISpawnLocation == "Crosshairs" || self.AISpawnLocation == "Self"))
     {
         zombie endon("death");
 
@@ -55,7 +55,7 @@ ServerSpawnZombie()
         linker waittill("movedone");
 
         zombie Unlink();
-        linker delete();
+        linker Delete();
 
         zombie.completed_emerging_into_playable_area = 1;
         zombie.find_flesh_struct_string = "find_flesh";
@@ -71,12 +71,12 @@ ServerSpawnDog()
 {
     favorite_enemy = dogs_get_favorite_enemy();
 
-    if(isDefined(level.dog_spawn_func))
+    if(IsDefined(level.dog_spawn_func))
     {
         spawn_loc = [[ level.dog_spawn_func ]](level.dog_spawners, favorite_enemy);
         ai = zombie_utility::spawn_zombie(level.dog_spawners[0]);
 
-        if(isDefined(ai))
+        if(IsDefined(ai))
         {
             ai.favoriteenemy = favorite_enemy;
             self thread dog_spawn_fx(ai, spawn_loc);
@@ -88,7 +88,7 @@ ServerSpawnDog()
         spawn_point = dog_spawn_factory_logic(favorite_enemy);
         ai = zombie_utility::spawn_zombie(level.dog_spawners[0]);
 
-        if(isDefined(ai))
+        if(IsDefined(ai))
         {
             ai.favoriteenemy = favorite_enemy;
             self thread dog_spawn_fx(ai, spawn_point);
@@ -104,7 +104,7 @@ dogs_get_favorite_enemy()
 
     for(i = 0; i < dog_targets.size; i++)
     {
-        if(!isDefined(dog_targets[i].hunted_by))
+        if(!IsDefined(dog_targets[i].hunted_by))
             dog_targets[i].hunted_by = 0;
 
         if(!zm_utility::is_player_valid(dog_targets[i]))
@@ -139,7 +139,7 @@ dog_spawn_fx(ai, ent)
     Earthquake(0.5, 0.75, target, 1000);
     PlaySoundAtPosition("zmb_hellhound_spawn", target);
 
-    angles = isDefined(ai.favoriteenemy) ? (ai.angles[0], VectorToAngles(ai.favoriteenemy.origin - target)[1], ai.angles[2]) : ent.angles;
+    angles = IsDefined(ai.favoriteenemy) ? (ai.angles[0], VectorToAngles(ai.favoriteenemy.origin - target)[1], ai.angles[2]) : ent.angles;
 
     ai ForceTeleport(target, angles);
     ai zombie_setup_attack_properties_dog();
@@ -161,7 +161,7 @@ zombie_setup_attack_properties_dog()
     self.disablearrivals = 1;
     self.disableexits = 1;
 
-    if(isDefined(level.dog_setup_func))
+    if(IsDefined(level.dog_setup_func))
         self [[ level.dog_setup_func ]]();
 }
 
@@ -177,7 +177,7 @@ dog_behind_audio()
     {
         foreach(player in GetPlayers())
         {
-            if(IsAlive(player) && !isDefined(player.revivetrigger) && Abs(AngleClamp180(VectorToAngles(self.origin - player.origin)[1] - player.angles[1])) > 90 && Distance2D(self.origin, player.origin) > 100)
+            if(IsAlive(player) && !IsDefined(player.revivetrigger) && Abs(AngleClamp180(VectorToAngles(self.origin - player.origin)[1] - player.angles[1])) > 90 && Distance2D(self.origin, player.origin) > 100)
             {
                 self notify("bhtn_action_notify", "close");
                 wait 3;
@@ -200,7 +200,7 @@ dog_spawn_factory_logic(favorite_enemy)
 
     for(i = 0; i < dog_locs.size; i++)
     {
-        if(isDefined(level.old_dog_spawn) && level.old_dog_spawn == dog_locs[i] || !isDefined(favorite_enemy))
+        if(IsDefined(level.old_dog_spawn) && level.old_dog_spawn == dog_locs[i] || !IsDefined(favorite_enemy))
             continue;
 
         dist_squared = DistanceSquared(dog_locs[i].origin, favorite_enemy.origin);
@@ -230,13 +230,13 @@ ServerSpawnMargwa()
 
     s_location = (self.AISpawnLocation == "Crosshairs") ? self TraceBullet() : self.origin;
 
-    if(!isDefined(level.var_b398aafa) || !IsArray(level.var_b398aafa))
+    if(!IsDefined(level.var_b398aafa) || !IsArray(level.var_b398aafa))
         return;
 
     level.var_b398aafa[0].script_forcespawn = 1;
     ai = zombie_utility::spawn_zombie(level.var_b398aafa[0], "margwa", s_location);
 
-    if(!isDefined(ai))
+    if(!IsDefined(ai))
         return;
 
     ai DisableAimAssist();
@@ -251,7 +251,7 @@ ServerSpawnMargwa()
     ai ForceTeleport(s_location, v_angles);
     ai function_551e32b4();
 
-    if(isDefined(level.var_7cef68dc))
+    if(IsDefined(level.var_7cef68dc))
         ai thread function_8d578a58();
 
     ai.ignore_round_robbin_death = 1;
@@ -268,13 +268,13 @@ function_551e32b4()
 
 function_8d578a58()
 {
-    if(!isDefined(self))
+    if(!IsDefined(self))
         return;
 
     self waittill("death", attacker, mod, weapon);
 
     foreach(player in level.players)
-        if(isDefined(player.am_i_valid) && player.am_i_valid && (!(isDefined(level.var_1f6ca9c8) && level.var_1f6ca9c8)) && (!(isDefined(self.var_2d5d7413) && self.var_2d5d7413)))
+        if(IsDefined(player.am_i_valid) && player.am_i_valid && (!(IsDefined(level.var_1f6ca9c8) && level.var_1f6ca9c8)) && (!(IsDefined(self.var_2d5d7413) && self.var_2d5d7413)))
             scoreevents::processScoreEvent("kill_margwa", player, undefined, undefined);
 
     level notify(#"hash_1a2d33d7");
@@ -309,30 +309,30 @@ ServerSpawnWasp()
     favorite_enemy = wasp_get_favorite_enemy();
     spawn_enemy = favorite_enemy;
 
-    if(!isDefined(spawn_enemy))
+    if(!IsDefined(spawn_enemy))
         spawn_enemy = players[0];
 
-    if(isDefined(level.wasp_spawn_func))
+    if(IsDefined(level.wasp_spawn_func))
         spawn_point = [[ level.wasp_spawn_func ]](spawn_enemy);
 
-    while(!isDefined(spawn_point))
+    while(!IsDefined(spawn_point))
     {
-        if(!isDefined(spawn_point))
+        if(!IsDefined(spawn_point))
             spawn_point = wasp_spawn_logic(spawn_enemy);
 
-        if(isDefined(spawn_point))
+        if(IsDefined(spawn_point))
             break;
 
         wait 0.05;
     }
 
     //SOE and Revelations have different wasp spawner variables
-    spawner = isDefined(level.var_c200ab6) ? level.var_c200ab6[0] : level.wasp_spawners[0];
+    spawner = IsDefined(level.var_c200ab6) ? level.var_c200ab6[0] : level.wasp_spawners[0];
 
     ai = zombie_utility::spawn_zombie(spawner);
     v_spawn_origin = spawn_point.origin;
 
-    if(isDefined(ai))
+    if(IsDefined(ai))
     {
         queryresult = PositionQuery_Source_Navigation(v_spawn_origin, 0, 32, 32, 15, "navvolume_small");
 
@@ -351,14 +351,14 @@ wasp_get_favorite_enemy()
     {
         e_enemy = level.a_wasp_priority_targets[0];
 
-        if(isDefined(e_enemy))
+        if(IsDefined(e_enemy))
         {
             ArrayRemoveValue(level.a_wasp_priority_targets, e_enemy);
             return e_enemy;
         }
     }
 
-    if(isDefined(level.fn_custom_wasp_favourate_enemy))
+    if(IsDefined(level.fn_custom_wasp_favourate_enemy))
     {
         e_enemy = [[ level.fn_custom_wasp_favourate_enemy ]]();
         return e_enemy;
@@ -376,7 +376,7 @@ get_parasite_enemy()
 
     for(i = 0; i < parasite_targets.size; i++)
     {
-        if(!isDefined(parasite_targets[i].hunted_by))
+        if(!IsDefined(parasite_targets[i].hunted_by))
             parasite_targets[i].hunted_by = 0;
 
         if(!wasp_is_target_valid(parasite_targets[i]))
@@ -397,7 +397,7 @@ get_parasite_enemy()
 
 wasp_is_target_valid(target)
 {
-    if(!isDefined(target))
+    if(!IsDefined(target))
         return 0;
 
     if(!IsAlive(target))
@@ -409,13 +409,13 @@ wasp_is_target_valid(target)
     if(IsPlayer(target) && target.sessionstate == "intermission")
         return 0;
 
-    if(isDefined(target.ignoreme) && target.ignoreme)
+    if(IsDefined(target.ignoreme) && target.ignoreme)
         return 0;
 
     if(target IsNoTarget())
         return 0;
 
-    if(isDefined(self.is_target_valid_cb))
+    if(IsDefined(self.is_target_valid_cb))
         return self [[ self.is_target_valid_cb ]](target);
 
     return 1;
@@ -442,9 +442,9 @@ set_parasite_enemy(enemy)
     if(!wasp_is_target_valid(enemy))
         return;
 
-    if(isDefined(self.parasiteenemy))
+    if(IsDefined(self.parasiteenemy))
     {
-        if(!isDefined(self.parasiteenemy.hunted_by))
+        if(!IsDefined(self.parasiteenemy.hunted_by))
             self.parasiteenemy.hunted_by = 0;
 
         if(self.parasiteenemy.hunted_by > 0)
@@ -453,7 +453,7 @@ set_parasite_enemy(enemy)
 
     self.parasiteenemy = enemy;
 
-    if(!isDefined(self.parasiteenemy.hunted_by))
+    if(!IsDefined(self.parasiteenemy.hunted_by))
         self.parasiteenemy.hunted_by = 0;
 
     self.parasiteenemy.hunted_by++;
@@ -463,13 +463,13 @@ set_parasite_enemy(enemy)
 
 wasp_spawn_init(ai, origin, should_spawn_fx)
 {
-    if(!isDefined(should_spawn_fx))
+    if(!IsDefined(should_spawn_fx))
         should_spawn_fx = 1;
 
     ai endon("death");
 
     ai SetInvisibleToAll();
-    v_origin = isDefined(origin) ? origin : ai.origin;
+    v_origin = IsDefined(origin) ? origin : ai.origin;
 
     if(should_spawn_fx)
         PlayFX(level._effect["lightning_wasp_spawn"], v_origin);
@@ -477,14 +477,14 @@ wasp_spawn_init(ai, origin, should_spawn_fx)
     wait 1.5;
     Earthquake(0.3, 0.5, v_origin, 256);
 
-    angle = isDefined(ai.favoriteenemy) ? VectorToAngles(ai.favoriteenemy.origin - v_origin) : ai.angles;
+    angle = IsDefined(ai.favoriteenemy) ? VectorToAngles(ai.favoriteenemy.origin - v_origin) : ai.angles;
     angles = (ai.angles[0], angle[1], ai.angles[2]);
 
     ai.origin = v_origin;
     ai.angles = angles;
     ai thread zombie_setup_attack_properties_wasp();
 
-    if(isDefined(level._wasp_death_cb))
+    if(IsDefined(level._wasp_death_cb))
         ai callback::add_callback(#"hash_acb66515", level._wasp_death_cb);
 
     ai SetVisibleToAll();
@@ -522,9 +522,11 @@ wasp_behind_audio()
 
         foreach(player in GetPlayers())
         {
-            if(IsAlive(player) && !isDefined(player.revivetrigger))
+            if(IsAlive(player) && !IsDefined(player.revivetrigger))
+            {
                 if(Abs(AngleClamp180(VectorToAngles(self.origin - player.origin)[1] - player.angles[1])) > 90 && Distance2D(self.origin, player.origin) > 100)
                     wait 3;
+            }
         }
 
         wait 0.75;
@@ -539,7 +541,7 @@ stop_wasp_sound_on_death()
 
 function_7085a2e4(einflictor, eattacker, idamage, idflags, smeansofdeath, weapon, vpoint, vdir, shitloc, vdamageorigin, psoffsettime, damagefromunderneath, modelindex, partname, vsurfacenormal)
 {
-    if(IsPlayer(eattacker) && (isDefined(eattacker.var_e8e8daad) && eattacker.var_e8e8daad))
+    if(IsPlayer(eattacker) && (IsDefined(eattacker.var_e8e8daad) && eattacker.var_e8e8daad))
         idamage = Int(idamage * 1.5);
 
     return idamage;
@@ -574,7 +576,7 @@ ServerSpawnCivilProtector()
     foreach(player in level.players)
         player SetPerk("specialty_pistoldeath");
 
-    if(isDefined(level.ai_robot))
+    if(IsDefined(level.ai_robot))
     {
         level.ai_robot ForceTeleport(var_36e9b69a);
         level.ai_robot thread function_ab4d9ece(v_ground_position);
@@ -597,15 +599,17 @@ ServerSpawnCivilProtector()
 
     level.ai_robot SetCanDamage(1);
 
-    if(isDefined(level.o_zod_train))
+    if(IsDefined(level.o_zod_train))
+    {
         if([[ level.o_zod_train ]]() is_touching_train_volume(level.ai_robot))
             level.ai_robot LinkTo([[ level.o_zod_train ]]() function_8cf8e3a5());
+    }
 
     level.ai_robot scene::play("cin_zod_robot_companion_exit_death");
     level.ai_robot = undefined;
     players = GetPlayers();
 
-    if(players.size != 1 || !level flag::get("solo_game") || (!(isDefined(players[0].waiting_to_revive) && players[0].waiting_to_revive)))
+    if(players.size != 1 || !level flag::get("solo_game") || (!(IsDefined(players[0].waiting_to_revive) && players[0].waiting_to_revive)))
         level zm::checkforalldead();
 }
 
@@ -626,7 +630,7 @@ function_70541dc1(v_ground_position)
 
     PlayFXOnTag(level._effect["robot_ground_spawn"], var_b47822ca, "tag_origin");
     level waittill(#"hash_10a36fa2");
-    var_b47822ca delete();
+    var_b47822ca Delete();
 }
 
 function_ab4d9ece(var_21e230b7)
@@ -651,20 +655,22 @@ robot_sky_trail()
 {
     var_8d888091 = Spawn("script_model", self.origin);
     var_8d888091 SetModel("tag_origin");
+
     PlayFXOnTag(level._effect["robot_sky_trail"], var_8d888091, "tag_origin");
     var_8d888091 LinkTo(self);
+
     level waittill(#"hash_10a36fa2");
-    var_8d888091 delete();
+    var_8d888091 Delete();
 }
 
 function_fa1df614(v_origin, eattacker, n_radius)
 {
-    team = isDefined(level.zombie_team) ? level.zombie_team : "axis";
+    team = IsDefined(level.zombie_team) ? level.zombie_team : "axis";
     a_ai_zombies = array::get_all_closest(v_origin, GetAITeamArray(team), undefined, undefined, n_radius);
 
     foreach(ai_zombie in a_ai_zombies)
     {
-        ai_zombie DoDamage(ai_zombie.health + 10000, ai_zombie.origin, isDefined(eattacker) ? eattacker : undefined);
+        ai_zombie DoDamage(ai_zombie.health + 10000, ai_zombie.origin, IsDefined(eattacker) ? eattacker : undefined);
 
         v_fling = VectorNormalize(((ai_zombie.origin - v_origin) + VectorScale((0, 0, 1), 15)));
         v_fling = (v_fling[0], v_fling[1], abs(v_fling[2]));
@@ -685,10 +691,10 @@ function_f9a6039c(entity, suffix, delay)
     if(num_variants <= 0)
         return;
 
-    if(isDefined(delay))
+    if(IsDefined(delay))
         wait delay;
 
-    if(isDefined(entity) && (!(isDefined(entity.is_speaking) && entity.is_speaking)))
+    if(IsDefined(entity) && (!(IsDefined(entity.is_speaking) && entity.is_speaking)))
     {
         entity.is_speaking = 1;
         entity PlaySoundWithNotify("vox_crbt_robot_" + suffix + "_" + RandomIntRange(0, num_variants + 1), "sndDone");
@@ -772,25 +778,25 @@ get_placed_array_from_number(n_number)
 //Raps
 ServerSpawnRaps()
 {
-    if(!isDefined(level.raps_spawners) || level.raps_spawners.size < 1)
+    if(!IsDefined(level.raps_spawners) || level.raps_spawners.size < 1)
         return;
 
     favorite_enemy = raps_get_favorite_enemy();
 
-    if(!isDefined(favorite_enemy))
+    if(!IsDefined(favorite_enemy))
         return;
 
-    if(isDefined(level.raps_spawn_func))
+    if(IsDefined(level.raps_spawn_func))
         s_spawn_loc = [[ level.raps_spawn_func ]](favorite_enemy);
     else
         s_spawn_loc = raps_calculate_spawn_position(favorite_enemy);
 
-    if(!isDefined(s_spawn_loc))
+    if(!IsDefined(s_spawn_loc))
         return;
 
     ai = zombie_utility::spawn_zombie(level.raps_spawners[0]);
 
-    if(isDefined(ai))
+    if(IsDefined(ai))
     {
         ai.favoriteenemy = favorite_enemy;
         ai.favoriteenemy.hunted_by++;
@@ -808,16 +814,16 @@ raps_get_favorite_enemy()
     {
         e_target = raps_targets[i];
 
-        if(!isDefined(e_target.hunted_by))
+        if(!IsDefined(e_target.hunted_by))
             e_target.hunted_by = 0;
 
         if(!zm_utility::is_player_valid(e_target))
             continue;
 
-        if(isDefined(level.is_player_accessible_to_raps) && ![[ level.is_player_accessible_to_raps ]](e_target))
+        if(IsDefined(level.is_player_accessible_to_raps) && ![[ level.is_player_accessible_to_raps ]](e_target))
             continue;
 
-        if(!isDefined(e_least_hunted))
+        if(!IsDefined(e_least_hunted))
         {
             e_least_hunted = e_target;
             continue;
@@ -834,7 +840,7 @@ raps_calculate_spawn_position(favorite_enemy)
 {
     position = favorite_enemy.last_valid_position;
 
-    if(!isDefined(position))
+    if(!IsDefined(position))
         position = favorite_enemy.origin;
 
     switch(level.players.size)
@@ -866,7 +872,7 @@ raps_calculate_spawn_position(favorite_enemy)
     {
         a_s_locs = array::randomize(query_result.data);
 
-        if(isDefined(a_s_locs))
+        if(IsDefined(a_s_locs))
         {
             foreach(s_loc in a_s_locs)
             {
@@ -886,7 +892,7 @@ raps_spawn_fx(ai, ent)
 {
     ai endon("death");
 
-    if(!isDefined(ent))
+    if(!IsDefined(ent))
         ent = self;
 
     ai vehicle_ai::set_state("scripted");
@@ -908,14 +914,14 @@ raps_spawn_fx(ai, ent)
     portal_fx_location = Spawn("script_model", pos);
     portal_fx_location SetModel("tag_origin");
 
-    if(!isDefined(level._effect["raps_portal"]))
+    if(!IsDefined(level._effect["raps_portal"]))
         level._effect["raps_portal"] = "zombie/fx_meatball_portal_sky_zod_zmb";
 
     PlayFXOnTag(level._effect["raps_portal"], portal_fx_location, "tag_origin");
     ground_tell_location = Spawn("script_model", raps_impact_location);
     ground_tell_location SetModel("tag_origin");
 
-    if(!isDefined(level._effect["raps_ground_spawn"]))
+    if(!IsDefined(level._effect["raps_ground_spawn"]))
         level._effect["raps_ground_spawn"] = "zombie/fx_meatball_impact_ground_tell_zod_zmb";
 
     PlayFXOnTag(level._effect["raps_ground_spawn"], ground_tell_location, "tag_origin");
@@ -930,7 +936,7 @@ raps_spawn_fx(ai, ent)
     raps_meteor.angles = angles;
     raps_meteor PlayLoopSound("zmb_meatball_spawn_loop", 0.25);
 
-    if(!isDefined(level._effect["raps_meteor_fire"]))
+    if(!IsDefined(level._effect["raps_meteor_fire"]))
         level._effect["raps_meteor_fire"] = "zombie/fx_meatball_trail_sky_zod_zmb";
 
     PlayFXOnTag(level._effect["raps_meteor_fire"], raps_meteor, "tag_origin");
@@ -941,20 +947,20 @@ raps_spawn_fx(ai, ent)
     raps_meteor thread cleanup_meteor();
     wait fall_time;
 
-    raps_meteor delete();
+    raps_meteor Delete();
 
-    if(isDefined(portal_fx_location))
-        portal_fx_location delete();
+    if(IsDefined(portal_fx_location))
+        portal_fx_location Delete();
 
-    if(isDefined(ground_tell_location))
-        ground_tell_location delete();
+    if(IsDefined(ground_tell_location))
+        ground_tell_location Delete();
 
     ai vehicle_ai::set_state("combat");
     ai.origin = raps_impact_location;
     ai.angles = angles;
     ai Show();
 
-    if(!isDefined(level._effect["raps_impact"]))
+    if(!IsDefined(level._effect["raps_impact"]))
         level._effect["raps_impact"] = "zombie/fx_meatball_impact_ground_zod_zmb";
 
     PlayFX(level._effect["raps_impact"], raps_impact_location);
@@ -971,11 +977,11 @@ cleanup_meteor_fx(portal_fx, ground_tell)
 {
     self waittill("death");
 
-    if(isDefined(portal_fx))
-        portal_fx delete();
+    if(IsDefined(portal_fx))
+        portal_fx Delete();
 
-    if(isDefined(ground_tell))
-        ground_tell delete();
+    if(IsDefined(ground_tell))
+        ground_tell Delete();
 }
 
 cleanup_meteor()
@@ -983,7 +989,7 @@ cleanup_meteor()
     self endon("death");
 
     self.ai waittill("death");
-    self delete();
+    self Delete();
 }
 
 zombie_setup_attack_properties_raps()
@@ -1000,7 +1006,7 @@ zombie_setup_attack_properties_raps()
 //Mechz
 ServerSpawnMechz(pos)
 {
-    if(!isDefined(pos))
+    if(!IsDefined(pos))
     {
         trace = BulletTrace(self GetWeaponMuzzlePoint(), self GetWeaponMuzzlePoint() + VectorScale(AnglesToForward(self GetPlayerAngles()), 1000000), 0, self);
 
@@ -1017,13 +1023,13 @@ ServerSpawnMechz(pos)
 
     flyin = 0;
 
-    if(isDefined(level.var_7f2a926d))
+    if(IsDefined(level.var_7f2a926d))
         [[ level.var_7f2a926d ]]();
 
     level.mechz_spawners[0].script_forcespawn = 1;
     ai = zombie_utility::spawn_zombie(level.mechz_spawners[0], "mechz", s_location);
 
-    if(isDefined(ai))
+    if(IsDefined(ai))
     {
         ai DisableAimAssist();
         ai thread function_ef1ba7e5();
@@ -1050,7 +1056,7 @@ ServerSpawnMechz(pos)
         v_ground_position = s_location;
         var_1750e965 = v_ground_position;
 
-        if(isDefined(level.var_e1e49cc1))
+        if(IsDefined(level.var_e1e49cc1))
             ai thread [[ level.var_e1e49cc1 ]]();
 
         ai ForceTeleport(var_1750e965, var_89f898ad);
@@ -1062,7 +1068,7 @@ ServerSpawnMechz(pos)
             ai thread function_c441eaba(var_1750e965);
             ai thread function_bbdc1f34(var_1750e965);
         }
-        else if(isDefined(level.var_7d2a391d))
+        else if(IsDefined(level.var_7d2a391d))
             ai thread [[ level.var_7d2a391d ]]();
 
         ai.b_flyin_done = 1;
@@ -1079,10 +1085,10 @@ function_ef1ba7e5()
 
     if(IsPlayer(self.attacker))
     {
-        if(!(isDefined(self.deathpoints_already_given) && self.deathpoints_already_given))
+        if(!(IsDefined(self.deathpoints_already_given) && self.deathpoints_already_given))
             self.attacker zm_score::player_add_points("death_mechz", 1500);
 
-        if(isDefined(level.hero_power_update))
+        if(IsDefined(level.hero_power_update))
             [[ level.hero_power_update ]](self.attacker, self);
     }
 }
@@ -1097,7 +1103,7 @@ function_949a3fdf()
 
     foreach(ai_enemy in a_ai_kill_zombies)
     {
-        if(isDefined(ai_enemy))
+        if(IsDefined(ai_enemy))
         {
             if(ai_enemy.archetype == "mechz")
                 ai_enemy DoDamage(level.mechz_health * 0.25, v_origin);
@@ -1111,9 +1117,11 @@ function_949a3fdf()
 
 function_b03abc02(inflictor, attacker, damage, dflags, mod, weapon, point, dir, hitloc, offsettime, boneindex, modelindex)
 {
-    if(isDefined(attacker) && IsPlayer(attacker))
-        if(!(isDefined(self.no_damage_points) && self.no_damage_points))
+    if(IsDefined(attacker) && IsPlayer(attacker))
+    {
+        if(!(IsDefined(self.no_damage_points) && self.no_damage_points))
             attacker zm_score::player_add_points(zm_spawner::player_using_hi_score_weapon(attacker) ? "damage" : "damage_light", mod, hitloc, self.isdog, self.team, weapon);
+    }
 }
 
 function_55483494()
@@ -1122,7 +1130,7 @@ function_55483494()
 
     foreach(var_a3a3ed4c, zombie in a_zombies)
     {
-        if(!isDefined(zombie) || !IsAlive(zombie))
+        if(!IsDefined(zombie) || !IsAlive(zombie))
             continue;
 
         if(zombie function_10d36217(self) && DistanceSquared(self.origin, zombie.origin) <= 12544)
@@ -1202,8 +1210,10 @@ function_c441eaba(var_678a2319)
     self waittill(#"hash_f93797a6");
 
     foreach(e_zombie in GetAIArchetypeArray("zombie"))
+    {
         if(DistanceSquared(e_zombie.origin, var_678a2319) <= 2304)
             e_zombie Kill();
+    }
 
     foreach(player in GetPlayers())
     {
@@ -1235,8 +1245,8 @@ function_c441eaba(var_678a2319)
         player PlayRumbleOnEntity("reload_small");
     }
 
-    if(isDefined(self.var_1411e129))
-        self.var_1411e129 delete();
+    if(IsDefined(self.var_1411e129))
+        self.var_1411e129 Delete();
 }
 
 function_bbdc1f34(var_678a2319)
@@ -1252,8 +1262,10 @@ function_bbdc1f34(var_678a2319)
         foreach(player in GetPlayers())
         {
             if(DistanceSquared(player.origin, var_678a2319) <= distance)
-                if(!(isDefined(player.is_burning) && player.is_burning) && zombie_utility::is_player_valid(player, 0))
+            {
+                if(!(IsDefined(player.is_burning) && player.is_burning) && zombie_utility::is_player_valid(player, 0))
                     player function_3389e2f3(self);
+            }
         }
 
         foreach(e_zombie in function_d41418b8())
@@ -1271,7 +1283,7 @@ function_bbdc1f34(var_678a2319)
 
 function_3389e2f3(mechz)
 {
-    if(!(isDefined(self.is_burning) && self.is_burning) && zombie_utility::is_player_valid(self, 1))
+    if(!(IsDefined(self.is_burning) && self.is_burning) && zombie_utility::is_player_valid(self, 1))
     {
         self.is_burning = 1;
         self burnplayer::setplayerburning(1.5, 0.5, !self HasPerk("specialty_armorvest") ? 30 : 20, mechz, undefined);
@@ -1301,24 +1313,24 @@ function_361f6caa(ai_zombie, type)
 
 function_f4defbc2()
 {
-    if(isDefined(self))
-    {
-        ai_zombie = self;
-        var_ac4641b = function_4aeed0a5("napalm");
+    if(!IsDefined(self))
+        return;
+    
+    ai_zombie = self;
+    var_ac4641b = function_4aeed0a5("napalm");
 
-        if(!isDefined(level.var_bd64e31e) || var_ac4641b < level.var_bd64e31e)
+    if(!IsDefined(level.var_bd64e31e) || var_ac4641b < level.var_bd64e31e)
+    {
+        if(!IsDefined(ai_zombie.is_elemental_zombie) || ai_zombie.is_elemental_zombie == 0)
         {
-            if(!isDefined(ai_zombie.is_elemental_zombie) || ai_zombie.is_elemental_zombie == 0)
-            {
-                ai_zombie.is_elemental_zombie = 1;
-                ai_zombie.var_9a02a614 = "napalm";
-                ai_zombie clientfield::set("arch_actor_fire_fx", 1);
-                ai_zombie clientfield::set("napalm_sfx", 1);
-                ai_zombie.health = Int(ai_zombie.health * 0.75);
-                ai_zombie thread napalm_zombie_death();
-                ai_zombie thread function_d070bfba();
-                ai_zombie zombie_utility::set_zombie_run_cycle("sprint");
-            }
+            ai_zombie.is_elemental_zombie = 1;
+            ai_zombie.var_9a02a614 = "napalm";
+            ai_zombie clientfield::set("arch_actor_fire_fx", 1);
+            ai_zombie clientfield::set("napalm_sfx", 1);
+            ai_zombie.health = Int(ai_zombie.health * 0.75);
+            ai_zombie thread napalm_zombie_death();
+            ai_zombie thread function_d070bfba();
+            ai_zombie zombie_utility::set_zombie_run_cycle("sprint");
         }
     }
 }
@@ -1342,14 +1354,14 @@ napalm_zombie_death()
     ai_zombie = self;
     ai_zombie waittill("death", attacker);
 
-    if(!isDefined(ai_zombie) || ai_zombie.nuked == 1)
+    if(!IsDefined(ai_zombie) || ai_zombie.nuked == 1)
         return;
 
     ai_zombie clientfield::set("napalm_zombie_death_fx", 1);
     ai_zombie zombie_utility::gib_random_parts();
     gibserverutils::annihilate(ai_zombie);
 
-    if(isDefined(level.var_36b5dab) && level.var_36b5dab || (isDefined(ai_zombie.var_36b5dab) && ai_zombie.var_36b5dab))
+    if(IsDefined(level.var_36b5dab) && level.var_36b5dab || (IsDefined(ai_zombie.var_36b5dab) && ai_zombie.var_36b5dab))
         ai_zombie.custom_player_shellshock = ::function_e6cd7e78;
 
     RadiusDamage(ai_zombie.origin + VectorScale((0, 0, 1), 35), 128, 70, 30, self, "MOD_EXPLOSIVE");
@@ -1410,7 +1422,7 @@ ServerSpawnSentinelDrone()
     s_location += (0, 0, 25);
     ai = function_fded8158(level.var_fda4b3f3[0]);
 
-    if(isDefined(ai))
+    if(IsDefined(ai))
     {
         ai.nuke_damage_func = ::function_306f9403;
         ai.instakill_func = ::function_306f9403;
@@ -1428,7 +1440,7 @@ function_f9c9e7e0()
 
     foreach(var_12e32073, s_zone in level.zones)
     {
-        if(s_zone.is_enabled && isDefined(s_zone.a_loc_types["sentinel_location"]) && s_zone.a_loc_types["sentinel_location"].size)
+        if(s_zone.is_enabled && IsDefined(s_zone.a_loc_types["sentinel_location"]) && s_zone.a_loc_types["sentinel_location"].size)
         {
             foreach(var_ef5f441b, s_loc in s_zone.a_loc_types["sentinel_location"])
             {
@@ -1438,13 +1450,12 @@ function_f9c9e7e0()
 
                     if(n_dist_sq > 65536 && n_dist_sq < 2250000)
                     {
-                        if(!isDefined(a_s_spawn_locs))
+                        if(!IsDefined(a_s_spawn_locs))
                             a_s_spawn_locs = [];
                         else if(!IsArray(a_s_spawn_locs))
                             a_s_spawn_locs = Array(a_s_spawn_locs);
 
                         a_s_spawn_locs[a_s_spawn_locs.size] = s_loc;
-
                         break;
                     }
                 }
@@ -1454,7 +1465,7 @@ function_f9c9e7e0()
 
     s_spawn_loc = array::random(a_s_spawn_locs);
 
-    if(!isDefined(s_spawn_loc))
+    if(!IsDefined(s_spawn_loc))
         s_spawn_loc = array::random(level.zm_loc_types["sentinel_location"]);
 
     return s_spawn_loc;
@@ -1464,7 +1475,7 @@ function_fded8158(spawner, s_spot)
 {
     var_663b2442 = zombie_utility::spawn_zombie(level.var_fda4b3f3[0], "sentinel", s_spot);
 
-    if(isDefined(var_663b2442))
+    if(IsDefined(var_663b2442))
         var_663b2442.check_point_in_enabled_zone = zm_utility::check_point_in_playable_area;
 
     return var_663b2442;
@@ -1535,7 +1546,6 @@ sentinel_navigationstandstill()
         self ClearVehGoalPos();
         self SetVehVelocity((0, 0, 0));
         self.vehaircraftcollisionenabled = 1;
-
         return;
     }
 
@@ -1569,7 +1579,7 @@ sentinel_introcompleted()
 
 is_instate(statename)
 {
-    if(isDefined(self.current_role) && isDefined(self.state_machines[self.current_role].current_state))
+    if(IsDefined(self.current_role) && IsDefined(self.state_machines[self.current_role].current_state))
         return self.state_machines[self.current_role].current_state.name == statename;
 
     return 0;
@@ -1599,8 +1609,10 @@ sentinel_navigatetheworld()
         current_pathto_pos = undefined;
         b_in_tactical_position = 0;
 
-        if(isDefined(self.playing_intro_anim) && self.playing_intro_anim)
+        if(IsDefined(self.playing_intro_anim) && self.playing_intro_anim)
+        {
             wait 0.1;
+        }
         else if(self.goalforced)
         {
             returndata = [];
@@ -1608,7 +1620,7 @@ sentinel_navigatetheworld()
             returndata["centerOnNav"] = IsPointInNavVolume(self.origin, "navvolume_small");
             current_pathto_pos = returndata["origin"];
         }
-        else if(isDefined(self.forced_pos))
+        else if(IsDefined(self.forced_pos))
         {
             returndata = [];
             returndata["origin"] = self GetClosestPointOnNavVolume(self.forced_pos, 100);
@@ -1617,7 +1629,7 @@ sentinel_navigatetheworld()
         }
         else if(sentinel_shouldchangesentinelposition())
         {
-            if(isDefined(self.evading_player) && self.evading_player)
+            if(IsDefined(self.evading_player) && self.evading_player)
             {
                 self.evading_player = 0;
                 self SetSpeed(sentinel_evade_speed);
@@ -1641,9 +1653,9 @@ sentinel_navigatetheworld()
 
         is_on_nav_volume = IsPointInNavVolume(self.origin, "navvolume_small");
 
-        if(isDefined(current_pathto_pos))
+        if(IsDefined(current_pathto_pos))
         {
-            if(isDefined(self.stucktime) && (isDefined(is_on_nav_volume) && is_on_nav_volume))
+            if(IsDefined(self.stucktime) && (IsDefined(is_on_nav_volume) && is_on_nav_volume))
                 self.stucktime = undefined;
 
             if(self SetVehGoalPos(current_pathto_pos, 1, b_use_path_finding))
@@ -1654,16 +1666,16 @@ sentinel_navigatetheworld()
                 self waittill_pathing_done(5);
                 current_pathto_pos = undefined;
             }
-            else if(isDefined(is_on_nav_volume) && is_on_nav_volume)
+            else if(IsDefined(is_on_nav_volume) && is_on_nav_volume)
             {
                 self sentinel_killmyself();
                 self.last_failsafe_time = undefined;
             }
         }
 
-        if(!(isDefined(is_on_nav_volume) && is_on_nav_volume))
+        if(!(IsDefined(is_on_nav_volume) && is_on_nav_volume))
         {
-            if(!isDefined(self.last_failsafe_time))
+            if(!IsDefined(self.last_failsafe_time))
                 self.last_failsafe_time = GetTime();
 
             if(GetTime() - self.last_failsafe_time >= 3000)
@@ -1677,7 +1689,7 @@ sentinel_navigatetheworld()
             {
                 new_sentinel_pos = self GetClosestPointOnNavVolume(self.origin, 120);
 
-                if(isDefined(new_sentinel_pos))
+                if(IsDefined(new_sentinel_pos))
                 {
                     dvar_sentinel_getback_to_volume_epsilon = GetDvarInt("dvar_sentinel_getback_to_volume_epsilon", 5);
 
@@ -1702,9 +1714,9 @@ sentinel_navigatetheworld()
             }
         }
 
-        if(!(isDefined(is_on_nav_volume) && is_on_nav_volume))
+        if(!(IsDefined(is_on_nav_volume) && is_on_nav_volume))
         {
-            if(!isDefined(self.stucktime))
+            if(!IsDefined(self.stucktime))
                 self.stucktime = GetTime();
 
             if(GetTime() - self.stucktime > 15000)
@@ -1717,7 +1729,7 @@ sentinel_navigatetheworld()
 
 sentinel_shouldchangesentinelposition()
 {
-    if(GetTime() > self.nextjuketime || isDefined(self.sentinel_droneenemy) && isDefined(self.lastjuketime) && GetTime() - self.lastjuketime > 3000 && self GetSpeed() < 1 && !sentinel_isinsideengagementdistance(self.origin, self.sentinel_droneenemy.origin + VectorScale((0, 0, 1), 48), 1))
+    if(GetTime() > self.nextjuketime || IsDefined(self.sentinel_droneenemy) && IsDefined(self.lastjuketime) && GetTime() - self.lastjuketime > 3000 && self GetSpeed() < 1 && !sentinel_isinsideengagementdistance(self.origin, self.sentinel_droneenemy.origin + VectorScale((0, 0, 1), 48), 1))
         return 1;
 
     return 0;
@@ -1728,7 +1740,7 @@ sentinel_isinsideengagementdistance(origin, position, b_accept_negative_height)
     if(!(Distance2DSquared(position, origin) > sentinel_getengagementdistmin() * sentinel_getengagementdistmin() && Distance2DSquared(position, origin) < sentinel_getengagementdistmax() * sentinel_getengagementdistmax()))
         return 0;
 
-    if(isDefined(b_accept_negative_height) && b_accept_negative_height)
+    if(IsDefined(b_accept_negative_height) && b_accept_negative_height)
         return Abs(origin[2] - position[2]) >= sentinel_getengagementheightmin() && Abs(origin[2] - position[2]) <= sentinel_getengagementheightmax();
 
     return position[2] - origin[2] >= sentinel_getengagementheightmin() && position[2] - origin[2] <= sentinel_getengagementheightmax();
@@ -1739,7 +1751,7 @@ sentinel_getengagementdistmin()
     if(sentinel_isenemyinnarrowplace())
         return self.settings.engagementdistmin * 0.2;
 
-    if(isDefined(self.in_compact_mode) && self.in_compact_mode)
+    if(IsDefined(self.in_compact_mode) && self.in_compact_mode)
         return self.settings.engagementdistmin * 0.5;
 
     return self.settings.engagementdistmin;
@@ -1750,7 +1762,7 @@ sentinel_getengagementdistmax()
     if(sentinel_isenemyinnarrowplace())
         return self.settings.engagementdistmax * 0.3;
 
-    if(isDefined(self.in_compact_mode) && self.in_compact_mode)
+    if(IsDefined(self.in_compact_mode) && self.in_compact_mode)
         return self.settings.engagementdistmax * 0.85;
 
     return self.settings.engagementdistmax;
@@ -1758,7 +1770,7 @@ sentinel_getengagementdistmax()
 
 sentinel_getengagementheightmin()
 {
-    if(!isDefined(self.sentinel_droneenemy))
+    if(!IsDefined(self.sentinel_droneenemy))
         return self.settings.engagementheightmin * 3;
 
     return self.settings.engagementheightmin;
@@ -1766,7 +1778,7 @@ sentinel_getengagementheightmin()
 
 sentinel_getengagementheightmax()
 {
-    if(isDefined(self.in_compact_mode) && self.in_compact_mode)
+    if(IsDefined(self.in_compact_mode) && self.in_compact_mode)
         return self.settings.engagementheightmax * 0.8;
 
     return self.settings.engagementheightmax;
@@ -1774,15 +1786,17 @@ sentinel_getengagementheightmax()
 
 sentinel_isenemyinnarrowplace()
 {
-    if(!isDefined(self.sentinel_droneenemy))
+    if(!IsDefined(self.sentinel_droneenemy))
         return 0;
 
-    if(!isDefined(self.v_narrow_volume))
+    if(!IsDefined(self.v_narrow_volume))
         self.v_narrow_volume = GetEnt("sentinel_narrow_nav", "targetname");
 
-    if(isDefined(self.v_narrow_volume) && isDefined(self.sentinel_droneenemy))
+    if(IsDefined(self.v_narrow_volume) && IsDefined(self.sentinel_droneenemy))
+    {
         if(self.sentinel_droneenemy IsTouching(self.v_narrow_volume))
             return 1;
+    }
 
     return 0;
 }
@@ -1792,7 +1806,7 @@ sentinel_getnextmovepositiontactical(b_do_not_chase_enemy)
     self endon("change_state");
     self endon("death");
 
-    selfdisttotarget = isDefined(self.sentinel_droneenemy) ? Distance2D(self.origin, self.sentinel_droneenemy.origin) : 0;
+    selfdisttotarget = IsDefined(self.sentinel_droneenemy) ? Distance2D(self.origin, self.sentinel_droneenemy.origin) : 0;
     gooddist = 0.5 * sentinel_getengagementdistmin() + sentinel_getengagementdistmax();
     closedist = 1.2 * gooddist;
     fardist = 3 * gooddist;
@@ -1808,7 +1822,7 @@ sentinel_getnextmovepositiontactical(b_do_not_chase_enemy)
     query_min_dist = self.settings.engagementdistmin;
     query_max_dist = sentinel_drone_move_dist_max_ex;
 
-    if(!(isDefined(b_do_not_chase_enemy) && b_do_not_chase_enemy) && isDefined(self.sentinel_droneenemy) && GetTime() > self.targetplayertime)
+    if(!(IsDefined(b_do_not_chase_enemy) && b_do_not_chase_enemy) && IsDefined(self.sentinel_droneenemy) && GetTime() > self.targetplayertime)
     {
         charge_at_position = self.sentinel_droneenemy.origin + VectorScale((0, 0, 1), 48);
 
@@ -1818,7 +1832,7 @@ sentinel_getnextmovepositiontactical(b_do_not_chase_enemy)
             charge_at_position = self GetClosestPointOnNavVolume(charge_at_position, closest_point_on_nav_volume);
         }
 
-        if(!isDefined(charge_at_position))
+        if(!IsDefined(charge_at_position))
             queryresult = PositionQuery_Source_Navigation(self.origin, sentinel_drone_too_close_to_self_dist_ex, sentinel_drone_move_dist_max_ex * querymultiplier, sentinel_drone_hight_ex * querymultiplier, sentinel_drone_move_spacing, "navvolume_small", sentinel_drone_move_spacing * spacing_multiplier);
         else if(sentinel_isenemyinnarrowplace())
         {
@@ -1827,7 +1841,7 @@ sentinel_getnextmovepositiontactical(b_do_not_chase_enemy)
             query_min_dist = self.settings.engagementdistmin * GetDvarFloat("sentinel_query_min_dist", 0.2);
             query_max_dist = query_max_dist * 0.5;
         }
-        else if(isDefined(self.in_compact_mode) && self.in_compact_mode || sentinel_isenemyindoors())
+        else if(IsDefined(self.in_compact_mode) && self.in_compact_mode || sentinel_isenemyindoors())
         {
             spacing_multiplier = 1;
             sentinel_drone_move_spacing = 15;
@@ -1842,7 +1856,7 @@ sentinel_getnextmovepositiontactical(b_do_not_chase_enemy)
     PositionQuery_Filter_DistanceToGoal(queryresult, self);
     PositionQuery_Filter_OutOfGoalAnchor(queryresult);
 
-    if(isDefined(self.sentinel_droneenemy))
+    if(IsDefined(self.sentinel_droneenemy))
     {
         if(RandomInt(100) > 15)
             self PositionQuery_Filter_EngagementDist(queryresult, self.sentinel_droneenemy, sentinel_getengagementdistmin(), sentinel_getengagementdistmax());
@@ -1867,22 +1881,22 @@ sentinel_getnextmovepositiontactical(b_do_not_chase_enemy)
 
         point.score = point.score + RandomFloatRange(0, randomness);
 
-        if(isDefined(point.distawayfromengagementarea))
+        if(IsDefined(point.distawayfromengagementarea))
             point.score = point.score + point.distawayfromengagementarea * -1;
 
         is_near_another_sentinel = sentinel_isnearanothersentinel(point.origin, 200);
 
-        if(isDefined(is_near_another_sentinel) && is_near_another_sentinel)
+        if(IsDefined(is_near_another_sentinel) && is_near_another_sentinel)
             point.score = point.score + -200;
 
         is_overlap_another_sentinel = sentinel_isnearanothersentinel(point.origin, 100);
 
-        if(isDefined(is_overlap_another_sentinel) && is_overlap_another_sentinel)
+        if(IsDefined(is_overlap_another_sentinel) && is_overlap_another_sentinel)
             point.score = point.score + -2000;
 
         is_near_another_player = sentinel_isnearanotherplayer(point.origin, 150);
 
-        if(isDefined(is_near_another_player) && is_near_another_player)
+        if(IsDefined(is_near_another_player) && is_near_another_player)
             point.score = point.score + -200;
 
         distfrompreferredheight = Abs(point.origin[2] - goalheight);
@@ -1893,18 +1907,17 @@ sentinel_getnextmovepositiontactical(b_do_not_chase_enemy)
             point.score = point.score + heightscore * -1;
         }
 
-        if(!isDefined(best_score))
+        if(!IsDefined(best_score))
         {
             best_score = point.score;
             best_point = point;
-            best_point.visibile = isDefined(self.sentinel_droneenemy) ? Int(BulletTracePassed(point.origin, enemy_origin, 0, self, self.sentinel_droneenemy)) : Int(BulletTracePassed(point.origin, enemy_origin, 0, self));
-
+            best_point.visibile = IsDefined(self.sentinel_droneenemy) ? Int(BulletTracePassed(point.origin, enemy_origin, 0, self, self.sentinel_droneenemy)) : Int(BulletTracePassed(point.origin, enemy_origin, 0, self));
             continue;
         }
 
         if(point.score > best_score)
         {
-            point.visibile = isDefined(self.sentinel_droneenemy) ? Int(BulletTracePassed(point.origin, enemy_origin, 0, self, self.sentinel_droneenemy)) : Int(BulletTracePassed(point.origin, enemy_origin, 0, self));
+            point.visibile = IsDefined(self.sentinel_droneenemy) ? Int(BulletTracePassed(point.origin, enemy_origin, 0, self, self.sentinel_droneenemy)) : Int(BulletTracePassed(point.origin, enemy_origin, 0, self));
 
             if(point.visibile >= best_point.visibile)
             {
@@ -1914,12 +1927,14 @@ sentinel_getnextmovepositiontactical(b_do_not_chase_enemy)
         }
     }
 
-    if(isDefined(best_point))
+    if(IsDefined(best_point))
+    {
         if(best_point.score < -1000)
             best_point = undefined;
+    }
 
     returndata = [];
-    returndata["origin"] = isDefined(best_point) ? best_point.origin : undefined;
+    returndata["origin"] = IsDefined(best_point) ? best_point.origin : undefined;
     returndata["centerOnNav"] = queryresult.centeronnav;
 
     return returndata;
@@ -1927,12 +1942,14 @@ sentinel_getnextmovepositiontactical(b_do_not_chase_enemy)
 
 sentinel_isenemyindoors()
 {
-    if(!isDefined(self.v_compact_mode))
+    if(!IsDefined(self.v_compact_mode))
         v_compact_mode = GetEnt("sentinel_compact", "targetname");
 
-    if(isDefined(v_compact_mode))
+    if(IsDefined(v_compact_mode))
+    {
         if(self.sentinel_droneenemy IsTouching(v_compact_mode))
             return 1;
+    }
 
     return 0;
 }
@@ -1940,13 +1957,15 @@ sentinel_isenemyindoors()
 positionquery_filter_outofgoalanchor(queryresult, tolerance = 1)
 {
     foreach(point in queryresult.data)
+    {
         if(point.disttogoal > tolerance)
             point.score = (point.score + ((-10000 - point.disttogoal) * 10));
+    }
 }
 
 positionquery_filter_engagementdist(queryresult, enemy, engagementdistancemin, engagementdistancemax)
 {
-    if(!isDefined(enemy))
+    if(!IsDefined(enemy))
         return;
 
     engagementdistance = engagementdistancemin + engagementdistancemax * 0.5;
@@ -1986,12 +2005,12 @@ positionquery_filter_engagementdist(queryresult, enemy, engagementdistancemin, e
 
 sentinel_isnearanothersentinel(point, min_distance)
 {
-    if(!isDefined(level.a_sentinel_drones))
+    if(!IsDefined(level.a_sentinel_drones))
         return 0;
 
     for(i = 0; i < level.a_sentinel_drones.size; i++)
     {
-        if(!isDefined(level.a_sentinel_drones[i]))
+        if(!IsDefined(level.a_sentinel_drones[i]))
             continue;
 
         if(level.a_sentinel_drones[i] == self)
@@ -2020,7 +2039,7 @@ sentinel_isnearanotherplayer(origin, min_distance)
 
 sentinel_is_target_valid(target)
 {
-    if(!isDefined(target))
+    if(!IsDefined(target))
         return 0;
 
     if(!IsAlive(target))
@@ -2032,29 +2051,33 @@ sentinel_is_target_valid(target)
     if(IsPlayer(target) && target.sessionstate == "intermission")
         return 0;
 
-    if(isDefined(target.ignoreme) && target.ignoreme)
+    if(IsDefined(target.ignoreme) && target.ignoreme)
         return 0;
 
     if(target IsNoTarget())
         return 0;
 
-    if(isDefined(target.is_elemental_zombie) && target.is_elemental_zombie)
+    if(IsDefined(target.is_elemental_zombie) && target.is_elemental_zombie)
         return 0;
 
-    if(isDefined(level.is_valid_player_for_sentinel_drone))
+    if(IsDefined(level.is_valid_player_for_sentinel_drone))
+    {
         if(![[ level.is_valid_player_for_sentinel_drone ]](target))
             return 0;
+    }
 
-    if(isDefined(self.should_buff_zombies) && self.should_buff_zombies && IsPlayer(target))
-        if(isDefined(get_sentinel_nearest_zombie()))
+    if(IsDefined(self.should_buff_zombies) && self.should_buff_zombies && IsPlayer(target))
+    {
+        if(IsDefined(get_sentinel_nearest_zombie()))
             return 0;
+    }
 
     return 1;
 }
 
 get_sentinel_nearest_zombie(b_ignore_elemental = 1, b_outside_playable_area = 1, radius = 2000)
 {
-    if(isDefined(self.sentinel_getnearestzombie))
+    if(IsDefined(self.sentinel_getnearestzombie))
     {
         ai_zombie = [[ self.sentinel_getnearestzombie ]](self.origin, b_ignore_elemental, b_outside_playable_area, radius);
         return ai_zombie;
@@ -2081,7 +2104,7 @@ sentinel_pathupdateinterrupt()
 
     while(1)
     {
-        if(isDefined(self.current_pathto_pos))
+        if(IsDefined(self.current_pathto_pos))
         {
             if(Distance2DSquared(self.origin, self.goalpos) < self.goalradius * self.goalradius)
             {
@@ -2125,7 +2148,7 @@ ServerSpawnMangler()
 {
     var_19764360 = mangler_get_favorite_enemy();
 
-    if(!isDefined(var_19764360))
+    if(!IsDefined(var_19764360))
         return;
 
     trace = BulletTrace(self GetWeaponMuzzlePoint(), self GetWeaponMuzzlePoint() + VectorScale(AnglesToForward(self GetPlayerAngles()), 1000000), 0, self);
@@ -2139,12 +2162,12 @@ ServerSpawnMangler()
     s_location = (self.AISpawnLocation == "Crosshairs") ? self TraceBullet() : self.origin;
     ai = function_665a13cd(level.var_6bca5baa[0]);
 
-    if(isDefined(ai))
+    if(IsDefined(ai))
     {
         ai thread function_b8671cc0(s_location);
         ai ForceTeleport(s_location);
 
-        if(isDefined(var_19764360))
+        if(IsDefined(var_19764360))
         {
             ai.favoriteenemy = var_19764360;
             ai.favoriteenemy.hunted_by++;
@@ -2161,13 +2184,13 @@ mangler_get_favorite_enemy()
 
     foreach(var_9e2c0900, e_target in var_bc3f44bf)
     {
-        if(!isDefined(e_target.hunted_by))
+        if(!IsDefined(e_target.hunted_by))
             e_target.hunted_by = 0;
 
-        if(!zm_utility::is_player_valid(e_target) || isDefined(level.var_3fded92e) && ![[ level.var_3fded92e ]](e_target))
+        if(!zm_utility::is_player_valid(e_target) || IsDefined(level.var_3fded92e) && ![[ level.var_3fded92e ]](e_target))
             continue;
 
-        if(!isDefined(e_least_hunted))
+        if(!IsDefined(e_least_hunted))
         {
             e_least_hunted = e_target;
             continue;
@@ -2184,7 +2207,7 @@ function_665a13cd(spawner, s_spot)
 {
     var_a09c80cd = zombie_utility::spawn_zombie(level.var_6bca5baa[0], "raz", s_spot);
 
-    if(isDefined(var_a09c80cd))
+    if(IsDefined(var_a09c80cd))
     {
         var_a09c80cd.check_point_in_enabled_zone = zm_utility::check_point_in_playable_area;
         var_a09c80cd thread zombie_utility::round_spawn_failsafe();
@@ -2196,10 +2219,10 @@ function_665a13cd(spawner, s_spot)
 
 function_b8671cc0(s_spot)
 {
-    if(isDefined(level.var_71ab2462))
+    if(IsDefined(level.var_71ab2462))
         self thread [[ level.var_71ab2462 ]](s_spot);
 
-    if(isDefined(level.var_ae95a175))
+    if(IsDefined(level.var_ae95a175))
         self thread [[ level.var_ae95a175 ]]();
 }
 
@@ -2218,7 +2241,7 @@ ServerSpawnThrasher()
     s_loc = self GetAISpawnLocation();
     var_e3372b59 = zombie_utility::spawn_zombie(level.var_feebf312[0], "thrasher", s_loc);
 
-    if(isDefined(var_e3372b59) && isDefined(s_loc))
+    if(IsDefined(var_e3372b59) && IsDefined(s_loc))
     {
         var_e3372b59 Forceteleport(s_loc);
         PlaySoundAtPosition("zmb_vocals_thrash_spawn", var_e3372b59.origin);
@@ -2244,12 +2267,12 @@ function_89976d94(v_pos)
     self util::waittill_notify_or_timeout("thrasher_teleport_out_done", 4);
     a_v_points = util::positionquery_pointarray(v_pos, 128, 750, 32, 64, self);
 
-    if(isDefined(self.thrasher_teleport_dest_func))
+    if(IsDefined(self.thrasher_teleport_dest_func))
         a_v_points = self [[ self.thrasher_teleport_dest_func ]](a_v_points);
 
     var_72436e1a = ArrayGetFarthest(v_pos, a_v_points);
 
-    if(isDefined(var_72436e1a))
+    if(IsDefined(var_72436e1a))
     {
         var_948d85e3 = util::spawn_model("tag_origin", var_72436e1a, VectorToAngles(VectorNormalize((v_pos - var_72436e1a))));
         var_2e57f81c scene::stop("scene_zm_dlc2_thrasher_teleport_out");
@@ -2281,14 +2304,14 @@ ServerSpawnSpider()
 {
     ai = zombie_utility::spawn_zombie(level.var_c38a4fee[0]);
 
-    if(isDefined(ai))
+    if(IsDefined(ai))
     {
         thread function_49e57a3b(ai);
         level.zombie_total--;
         level flag::set("spider_clips");
     }
 
-    if(isDefined(ai))
+    if(IsDefined(ai))
         return ai;
 }
 
@@ -2299,7 +2322,7 @@ spider_get_favorite_enemy()
 
     for(i = 0; i < var_5a210579.size; i++)
     {
-        if(!isDefined(var_5a210579[i].hunted_by))
+        if(!IsDefined(var_5a210579[i].hunted_by))
             var_5a210579[i].hunted_by = 0;
 
         if(!zm_utility::is_player_valid(var_5a210579[i]))
@@ -2332,7 +2355,7 @@ function_49e57a3b(var_c79d3f71)
     if(IsAlive(var_c79d3f71))
     {
         a_ground_trace = GroundTrace((var_c79d3f71.origin + VectorScale((0, 0, 1), 100)), (var_c79d3f71.origin - VectorScale((0, 0, 1), 1000)), 0, var_c79d3f71, 1);
-        var_197f1988 = util::spawn_model("tag_origin", isDefined(a_ground_trace["position"]) ? a_ground_trace["position"] : var_c79d3f71.origin, var_c79d3f71.angles);
+        var_197f1988 = util::spawn_model("tag_origin", IsDefined(a_ground_trace["position"]) ? a_ground_trace["position"] : var_c79d3f71.origin, var_c79d3f71.angles);
 
         var_197f1988 scene::play("scene_zm_dlc2_spider_burrow_out_of_ground", var_c79d3f71);
         var_c79d3f71 vehicle_ai::set_state((RandomFloat(1) > 0.6) ? "meleeCombat" : "combat");
@@ -2366,7 +2389,7 @@ ServerSpawnFury()
     s_loc = self GetAISpawnLocation();
     var_33504256 = SpawnActor("spawner_zm_genesis_apothicon_fury", s_loc, (0, 0, 0), undefined, 1, 1);
 
-    if(isDefined(var_33504256))
+    if(IsDefined(var_33504256))
     {
         var_33504256 endon("death");
 
@@ -2388,7 +2411,6 @@ ServerSpawnFury()
 
         wait 1;
         var_33504256.zombie_think_done = 1;
-
         return var_33504256;
     }
 
@@ -2399,10 +2421,10 @@ apothicon_fury_death()
 {
     self waittill("death", e_attacker);
 
-    if(isDefined(e_attacker) && isDefined(e_attacker.var_4d307aef))
+    if(IsDefined(e_attacker) && IsDefined(e_attacker.var_4d307aef))
         e_attacker.var_4d307aef++;
 
-    if(isDefined(e_attacker) && isDefined(e_attacker.var_8b5008fe))
+    if(IsDefined(e_attacker) && IsDefined(e_attacker.var_8b5008fe))
         e_attacker.var_8b5008fe++;
 }
 
@@ -2411,12 +2433,12 @@ function_7ba80ea7()
     self.is_zombie = 1;
     zombiehealth = level.zombie_health;
 
-    if(!isDefined(zombiehealth))
+    if(!IsDefined(zombiehealth))
         zombiehealth = level.zombie_vars["zombie_health_start"];
 
     self.maxhealth = (level.round_number <= 20) ? (zombiehealth * 1.2) : (level.round_number <= 50) ? (zombiehealth * 1.5) : (zombiehealth * 1.7);
 
-    if(!isDefined(self.maxhealth) || self.maxhealth <= 0 || self.maxhealth > 2147483647 || self.maxhealth != self.maxhealth)
+    if(!IsDefined(self.maxhealth) || self.maxhealth <= 0 || self.maxhealth > 2147483647 || self.maxhealth != self.maxhealth)
         self.maxhealth = zombiehealth;
 
     self.health = Int(self.maxhealth);
@@ -2428,10 +2450,14 @@ function_1be68e3f()
 
     while(1)
     {
-        if(isDefined(self.zone_name))
+        if(IsDefined(self.zone_name))
+        {
             if(self.zone_name == "dark_arena_zone" || self.zone_name == "dark_arena2_zone")
+            {
                 if(!IsPointOnNavMesh(self.origin))
                     self ForceTeleport(GetClosestPointOnNavMesh(self.origin, 256, 30));
+            }
+        }
 
         wait 0.25;
     }
@@ -2453,12 +2479,12 @@ function_1be68e3f()
 //Quad Zombie(Nova Gas Zombie)
 ServerSpawnNovaZombie()
 {
-    spawn_array = isDefined(level.quad_spawners) ? level.quad_spawners : GetEntArray("quad_zombie_spawner", "script_noteworthy");
+    spawn_array = IsDefined(level.quad_spawners) ? level.quad_spawners : GetEntArray("quad_zombie_spawner", "script_noteworthy");
     spawn_point = spawn_array[RandomInt(spawn_array.size)];
     ai = zombie_utility::spawn_zombie(spawn_point);
     s_loc = self GetAISpawnLocation();
 
-    if(isDefined(ai))
+    if(IsDefined(ai))
     {
         ai thread zombie_utility::round_spawn_failsafe();
         ai thread QuadSetup();
@@ -2474,7 +2500,7 @@ ServerSpawnNovaZombie()
         linker waittill("movedone");
 
         ai Unlink();
-        linker delete();
+        linker Delete();
 
         ai thread quad_traverse_death_fx();
     }
@@ -2508,7 +2534,7 @@ QuadSetup()
     self.death_gas_radius = 125;
     self.death_gas_time = 7;
 
-    if(isDefined(level.quad_explode) && level.quad_explode)
+    if(IsDefined(level.quad_explode) && level.quad_explode)
     {
         self.deathfunction = ::quad_post_death;
         self.actor_killed_override = ::quad_killed_override;
@@ -2524,7 +2550,7 @@ QuadSetup()
     self AllowPitchAngle(1);
     self SetPhysParams(15, 0, 24);
 
-    if(isDefined(level.quad_prespawn))
+    if(IsDefined(level.quad_prespawn))
         self thread [[ level.quad_prespawn ]]();
 }
 
@@ -2542,14 +2568,14 @@ quad_killed_override(einflictor, attacker, idamage, smeansofdeath, weapon, vdir,
     {
         self.can_explode = 0;
 
-        if(isDefined(self.fx_quad_trail))
+        if(IsDefined(self.fx_quad_trail))
         {
-            self.fx_quad_trail unlink();
-            self.fx_quad_trail delete();
+            self.fx_quad_trail Unlink();
+            self.fx_quad_trail Delete();
         }
     }
 
-    if(isDefined(level._override_quad_explosion))
+    if(IsDefined(level._override_quad_explosion))
         [[ level._override_quad_explosion ]](self);
 }
 
@@ -2567,10 +2593,10 @@ quad_thundergun_knockdown(player, gib)
 
 quad_pre_teleport()
 {
-    if(isDefined(self.fx_quad_trail))
+    if(IsDefined(self.fx_quad_trail))
     {
-        self.fx_quad_trail unlink();
-        self.fx_quad_trail delete();
+        self.fx_quad_trail Unlink();
+        self.fx_quad_trail Delete();
 
         wait 0.1;
     }
@@ -2578,10 +2604,10 @@ quad_pre_teleport()
 
 quad_post_teleport()
 {
-    if(isDefined(self.fx_quad_trail))
+    if(IsDefined(self.fx_quad_trail))
     {
-        self.fx_quad_trail unlink();
-        self.fx_quad_trail delete();
+        self.fx_quad_trail Unlink();
+        self.fx_quad_trail Delete();
     }
 
     if(self.health > 0)

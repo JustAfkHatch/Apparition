@@ -52,7 +52,7 @@ CompleteMeteorEE()
             }
         }
 
-        if(isDefined(triggerObj))
+        if(IsDefined(triggerObj))
             triggerObj notify("trigger_activated", self);
 
         wait 0.05;
