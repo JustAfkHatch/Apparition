@@ -44,8 +44,6 @@ RunMenuOptions(menu)
 
                             if(level.players.size > 1)
                                 self addOpt("All Players Menu", ::newMenu, "All Players");
-                            
-                            self addOpt("Game Modes", ::newMenu, "Game Modes");
                         }
                     }
                 }
@@ -268,7 +266,7 @@ RunMenuOptions(menu)
                 self addOpt("Disconnect", ::disconnect);
                 self addOpt("Player Info", ::newMenu, "Player Info");
                 self addOpt("Custom Map Spawns", ::newMenu, "Custom Map Spawns");
-                self addOptBool(self.ShowOrigin, "Show Origin", ::ShowOrigin);
+                self addOptBool(self.ShowOrigin, "Show Cords", ::ShowOrigin);
                 self addOptBool(level.AntiEndGame, "Anti-End Game", ::AntiEndGame);
                 self addOptBool((GetDvarInt("migration_forceHost") == 1), "Force Host", ::ForceHost);
                 self addOptBool(level.GSpawnProtection, "G_Spawn Crash Protection", ::GSpawnProtection);
@@ -310,12 +308,6 @@ RunMenuOptions(menu)
         case "All Players Model Manipulation":
         case "All Players Malicious Options":
             self PopulateAllPlayerOptions(menu);
-            break;
-        
-        case "Game Modes":
-            self addMenu("Game Modes");
-                self addOptSlider("Sharpshooter", ::initSharpshooter, "Base Weapons;Upgraded Weapons;Both");
-                self addOptSlider("All The Weapons", ::initAllTheWeapons, "Base Weapons;Upgraded Weapons;Both");
             break;
         
         default:
